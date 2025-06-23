@@ -1,11 +1,12 @@
+import Select from 'react-select';
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react'; // pastikan import router
-import Select from 'react-select'; // Tambahkan import ini
 
-export default function ListData({ posts, limit, flash, search, filterStatus, filterAuthor  }) {
-    console.log(filterStatus)
-    console.log(filterAuthor)
+export default function ProductList({ products, limit, flash, search, brands, categories }) {
+    console.log(products)
+    console.log(brands)
+    console.log(categories)
     const [statusFilter, setStatusFilter] = useState('');
     const [authorFilter, setAuthorFilter] = useState('');
     const [showToast, setShowToast] = useState(!!(flash && (flash.success || flash.error)));
@@ -13,17 +14,12 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
     const [toastType, setToastType] = useState(flash?.success ? 'success' : (flash?.error ? 'error' : ''));
     const [fade, setFade] = useState(false);
     const [searchQuery, setSearchQuery] = useState(search || '');
-    // Siapkan opsi untuk react-select
-    const statusOptions = (filterStatus || []).map(status => ({
-        value: status,
-        label: status.charAt(0).toUpperCase() + status.slice(1)
-    }));
-    const authorOptions = (filterAuthor || []).map(author => ({
-        value: author.id,
-        label: author.name
-    }));
 
-   useEffect(() => {
+    const brandOptions = brands?.map(brand => ({ value: brand.id, label: brand.name })) || [];
+    const categoryOptions = categories?.map(category => ({ value: category.id, label: category.name })) || [];
+
+
+    useEffect(() => {
         if (flash && (flash.success || flash.error)) {
             setToastMsg(flash.success || flash.error);
             setToastType(flash.success ? 'success' : 'error');
@@ -48,28 +44,28 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
     };
 
     const handleChangeFilter = (filter, e) => {
-        if(filter == 'status'){
+        if (filter == 'status') {
             setStatusFilter(e.target.value)
-                router.get(
+            router.get(
                 route(route().current()),
                 { limit, search: searchQuery, status: e.target.value, author: authorFilter },
                 { preserveState: true, preserveScroll: true }
             );
         }
-        if(filter == 'author'){
+        if (filter == 'author') {
             setAuthorFilter(e.target.value)
-                router.get(
+            router.get(
                 route(route().current()),
                 { limit, search: searchQuery, status: statusFilter, author: e.target.value },
                 { preserveState: true, preserveScroll: true }
             );
         }
-        
+
     }
-    
+
     const [showConfirm, setShowConfirm] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
-    let number = posts.from;
+    let number = products.from;
     // Handler saat select berubah
     const handleLimitChange = (e) => {
         router.get(
@@ -85,7 +81,7 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
     };
 
     const confirmDelete = () => {
-        router.delete(`post/${deleteId}`);
+        router.delete(`product/${deleteId}`);
         setShowConfirm(false);
         setDeleteId(null);
     };
@@ -114,34 +110,27 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                             </svg>
                         </li>
                         <li className="inline-flex items-center text-gray-700 font-semibold ml-2">
-                            Posts
+                            Products
                         </li>
                     </ol>
                 </nav>
             }
         >
-            <Head title="List Data Posts" />
+            <Head title="List Data products" />
 
             <div className="pb-6 pt-3">
                 <div className="max-w-12xl sm:px-0 lg:px-0">
                     <div className="overflow-hidden bg-white shadow-sm sm:rounded-lg">
-                        
+
                         <div className="p-3 sm:p-3 flex flex-col sm:flex-row sm:items-center sm:justify-end gap-3">
-                            {/* Filter Status pakai react-select */}
+                            {/* Filter Brand */}
                             <div className="w-full sm:w-48">
                                 <Select
-                                    options={statusOptions}
+                                    options={brandOptions}
                                     isClearable
-                                    placeholder="Semua Status"
-                                    value={statusOptions.find(opt => opt.value == statusFilter) || null}
-                                    onChange={option => {
-                                        setStatusFilter(option ? option.value : '');
-                                        router.get(
-                                            route(route().current()),
-                                            { limit, search: searchQuery, status: option ? option.value : '', author: authorFilter },
-                                            { preserveState: true, preserveScroll: true }
-                                        );
-                                    }}
+                                    placeholder="Cari Brand..."
+                                    value={brandOptions.find(opt => opt.value == statusFilter) || null}
+                                    onChange={option => handleChangeFilter("status", { target: { value: option ? option.value : '' } })}
                                     classNamePrefix="react-select"
                                     menuPortalTarget={typeof window !== "undefined" ? document.body : null}
                                     menuPosition="fixed"
@@ -150,21 +139,14 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                                     }}
                                 />
                             </div>
-                            {/* Filter Author pakai react-select */}
+                            {/* Filter Category */}
                             <div className="w-full sm:w-48">
                                 <Select
-                                    options={authorOptions}
+                                    options={categoryOptions}
                                     isClearable
-                                    placeholder="Semua Author"
-                                    value={authorOptions.find(opt => opt.value == authorFilter) || null}
-                                    onChange={option => {
-                                        setAuthorFilter(option ? option.value : '');
-                                        router.get(
-                                            route(route().current()),
-                                            { limit, search: searchQuery, status: statusFilter, author: option ? option.value : '' },
-                                            { preserveState: true, preserveScroll: true }
-                                        );
-                                    }}
+                                    placeholder="Cari Category..."
+                                    value={categoryOptions.find(opt => opt.value == authorFilter) || null}
+                                    onChange={option => handleChangeFilter("author", { target: { value: option ? option.value : '' } })}
                                     classNamePrefix="react-select"
                                     menuPortalTarget={typeof window !== "undefined" ? document.body : null}
                                     menuPosition="fixed"
@@ -175,7 +157,7 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                             </div>
                             {/* Tombol Tambah Artikel */}
                             <Link
-                                href={route('post.create')}
+                                href={route('product.create')}
                                 className="flex items-center justify-center w-12 h-12 sm:w-10 sm:h-10 bg-grey-600 rounded-lg shadow bg-orange-200 hover:bg-grey-500 active:bg-grey-700 transition mx-auto sm:mx-0"
                                 title="Tulis Artikel"
                             >
@@ -187,10 +169,11 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                                     stroke="currentColor"
                                     strokeWidth={2}
                                 >
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 8h10M7 12h4m1 8H6a2 2 0 01-2-2V6a2 2 0 012-2h7l5 5v11a2 2 0 01-2 2z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
                                 </svg>
                             </Link>
                         </div>
+
                     </div>
                 </div>
                 {/* Toast */}
@@ -226,7 +209,7 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                                         name="search"
                                         value={searchQuery}
                                         onChange={e => setSearchQuery(e.target.value)}
-                                        placeholder="Cari artikel..."
+                                        placeholder="Cari product..."
                                         className="border border-gray-300 rounded-l px-3 py-2 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition w-full sm:w-64"
                                     />
                                     <button
@@ -243,48 +226,54 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                                     <thead className="bg-gray-50">
                                         <tr>
                                             <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">No</th>
-                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Title</th>
-                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Author</th>
-                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Created At</th>
+                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product Name</th>
+                                            {/* <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Category</th> */}
+                                            {/* <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Brand</th> */}
+                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">SKU</th>
+                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Price</th>
+                                            {/* <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Created At</th> */}
                                             <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
                                             <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
-                                        {posts.data.map((post) => (
-                                            <tr key={post.id} className="hover:bg-gray-50">
+                                        {products.data.map((product) => (
+                                            <tr key={product.id} className="hover:bg-gray-50">
                                                 <td className="px-2 py-2 whitespace-nowrap">{number++}</td>
-                                                <td className="px-2 py-2 whitespace-nowrap">{post.title}</td>
-                                                <td className="px-2 py-2 whitespace-nowrap">{post.user_name}</td>
-                                                <td className="px-2 py-2 whitespace-nowrap">
-                                                    {new Date(post.created_at).toLocaleDateString('id-ID', {
+                                                <td className="px-2 py-2 whitespace-nowrap">{product.product_name}</td>
+                                                {/* <td className="px-2 py-2 whitespace-nowrap">{product.category_name}</td> */}
+                                                {/* <td className="px-2 py-2 whitespace-nowrap">{product.brand_name}</td> */}
+                                                <td className="px-2 py-2 whitespace-nowrap">{product.sku}</td>
+                                                <td className="px-2 py-2 whitespace-nowrap">{product.price}</td>
+                                                {/* <td className="px-2 py-2 whitespace-nowrap">
+                                                    {new Date(product.created_at).toLocaleDateString('id-ID', {
                                                         day: '2-digit',
                                                         month: 'long',
                                                         year: 'numeric',
                                                         hour: '2-digit',
                                                         minute: '2-digit'
                                                     })}
-                                                </td>
+                                                </td> */}
                                                 <td className="px-2 py-2 whitespace-nowrap">
-                                                    {post.status === 'published' && (
+                                                    {product.status === 1 && (
                                                         <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
-                                                            Published
+                                                            Active
                                                         </span>
                                                     )}
-                                                    {post.status === 'draft' && (
+                                                    {product.status === 0 && (
                                                         <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded">
-                                                            Draft
+                                                            Inactive
                                                         </span>
                                                     )}
-                                                    {post.status === 'archived' && (
-                                                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-gray-200 text-gray-800 rounded">
-                                                            Archived
+                                                    {product.status === 2 && (
+                                                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-red-200 text-gray-800 rounded">
+                                                            Deleted
                                                         </span>
                                                     )}
                                                 </td>
                                                 <td className="px-2 py-2 whitespace-nowrap flex gap-2">
                                                     <Link
-                                                        href={`post/${post.id}/edit`}
+                                                        href={`product/${product.id}/edit`}
                                                         className="text-blue-600 hover:text-blue-900 flex items-center"
                                                         title="Edit"
                                                     >
@@ -301,7 +290,7 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                                                     </Link>
                                                     <button
                                                         type="button"
-                                                        onClick={() => handleDelete(post.id)}
+                                                        onClick={() => handleDelete(product.id)}
                                                         className="text-red-600 hover:text-red-800 flex items-center"
                                                         title="Delete"
                                                     >
@@ -326,7 +315,7 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
                                     <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-xs">
                                         <div className="mb-4 text-center text-gray-800 font-semibold">
-                                            Yakin ingin menghapus post ini?
+                                            Yakin ingin menghapus product ini?
                                         </div>
                                         <div className="flex justify-center gap-4">
                                             <button
@@ -347,10 +336,10 @@ export default function ListData({ posts, limit, flash, search, filterStatus, fi
                             )}
                             <div className="px-6 py-4 flex flex-col gap-2 sm:flex-row sm:justify-between sm:items-center">
                                 <div className="text-center sm:text-left text-gray-500 ">
-                                    Showing {posts.from} to {posts.to} of {posts.total} posts
+                                    Showing {products.from} to {products.to} of {products.total} products
                                 </div>
                                 <div className="flex flex-wrap gap-1 justify-center sm:justify-start">
-                                    {posts.links.map((link, idx) =>
+                                    {products.links.map((link, idx) =>
                                         link.url ? (
                                             <Link
                                                 key={idx}

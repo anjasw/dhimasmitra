@@ -23,21 +23,21 @@ class DatabaseSeeder extends Seeder
         // Post::factory(20)->create();
 
 
-        // $brands = Brand::factory(5)->create();
-        // $categories = Category::factory(5)->create();
+        $brands = Brand::factory(5)->create();
+        $categories = Category::factory(5)->create();
 
         // // Seed products
-        // $products = Product::factory(20)
-        //     ->make()
-        //     ->each(function ($product) use ($brands, $categories) {
-        //         $product->brand_id = $brands->random()->id;
-        //         $product->category_id = $categories->random()->id;
-        //         $product->save();
+        $products = Product::factory(20)
+            ->make()
+            ->each(function ($product) use ($brands, $categories) {
+                $product->brand_id = $brands->random()->id;
+                $product->category_id = $categories->random()->id;
+                $product->save();
 
-        //         // Seed product images for each product
-        //         ProductImage::factory(rand(1, 3))->create([
-        //             'product_id' => $product->id,
-        //         ]);
-        //     });
+                // Seed product images for each product
+                ProductImage::factory(rand(1, 3))->create([
+                    'product_id' => $product->id,
+                ]);
+            });
     }
 }

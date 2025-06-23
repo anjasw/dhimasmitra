@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Post;
+use App\Models\User;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
 
@@ -19,6 +20,18 @@ class PostController extends Controller
         $query = Post::query()
                 ->where('status', '!=', 'deleted')
                 ->with(['user']);
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+
+        // Filter author (misal berdasarkan nama user)
+        if ($request->filled('author')) {
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('user_id', $request->author);
+            });
+        }
         if ($search) {
             $query->where(function($q) use ($search) {
                 $q->where('title', 'like', "%{$search}%")
@@ -27,6 +40,12 @@ class PostController extends Controller
                 });
             });
         }
+
+        $author = User::whereHas('posts', function($q) {
+                $q->where('status', '!=', 'deleted');
+            })
+            ->orderBy('name')
+            ->get(['id', 'name']);
         
         $posts = $query->orderBy('created_at', 'desc')
             ->paginate($limit)
@@ -55,6 +74,10 @@ class PostController extends Controller
                 'success' => session('success'),
                 'error' => session('error'),
             ],
+            'filterStatus' => array(
+                'draft','published','archived'
+            ),
+            'filterAuthor' => $author
         ]);
     }
 
@@ -77,7 +100,21 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'meta_description' => 'required|string|max:500',
-            'slug' => 'required|string|max:255|unique:posts,slug',
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        $exists = Post::where('slug', $value)
+                            ->where('status', '!=', 'deleted')
+                            ->exists();
+                        if ($exists) {
+                            $fail('Slug sudah digunakan.');
+                        }
+                    }
+                }
+            ],
             // 'tags' => 'nullable|string',
             'status' => 'required|in:draft,published,archived',
             'language' => 'required|in:id,en',
@@ -132,7 +169,22 @@ class PostController extends Controller
             'title' => 'required|string|max:255',
             'content' => 'required|string',
             'meta_description' => 'required|string|max:500',
-            'slug' => "required|string|max:255|unique:posts,slug,{$id}",
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                function ($attribute, $value, $fail) use ($id) {
+                    if ($value) {
+                        $exists = Post::where('slug', $value)
+                            ->where('id', '!=', $id)
+                            ->where('status', '!=', 'deleted')
+                            ->exists();
+                        if ($exists) {
+                            $fail('Slug sudah digunakan.');
+                        }
+                    }
+                }
+            ],
             'status' => 'required|in:draft,published,archived',
             'language' => 'required|in:id,en',
             // 'thumbnail' => 'nullable|image|max:2048',
@@ -162,7 +214,7 @@ class PostController extends Controller
         // dd($id);
 
         Post::where('id', $id)->update(['status' => 'deleted']);
-        return redirect()->route('post.index')->with('success', 'Post berhasil diperbarui!');
+        return redirect()->route('post.index')->with('success', 'Post berhasil dihapus!');
         
     }
 

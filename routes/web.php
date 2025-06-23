@@ -3,8 +3,12 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\SubCategoryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
+// use App\Http\Middleware\AdminMiddleware;
 use Inertia\Inertia;
 
 Route::get('/', function () {
@@ -26,7 +30,7 @@ Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.deta
 //     ]);
 // })->name('product.detail');
 
-Route::middleware(['auth', 'verified'])->group(function () {
+Route::middleware(['auth', 'verified','is_admin'])->group(function () {
     Route::get('/sysadmin/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
     Route::prefix('sysadmin')->group(function () {
@@ -48,6 +52,30 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::resource('product', ProductController::class)
             ->parameters(['product' => 'slug'])
             ->names('product');
+
+        Route::resource('brand', BrandController::class)
+            ->parameters(['brand' => 'slug'])
+            ->names('brand');
+
+        Route::resource('category', CategoryController::class)->parameters(['category' => 'id']);
+        // Route::resource('category', CategoryController::class)
+        //     ->parameters(['category' => 'slug'])
+        //     ->names('category');
+
+        Route::put('/category/{category}/delete', [CategoryController::class, 'delete'])->name('category.delete');
+        
+        Route::get('category/{slug}/sub_category', [SubCategoryController::class, 'index'])->name('sub_category.list');
+        Route::post('/category/{category_id}/sub-category', [SubCategoryController::class, 'store'])->name('sub_category.store');
+        Route::put('/category/{category_id}/sub-category/{id}', [SubCategoryController::class, 'update'])->name('sub_category.update');
+
+        Route::put('/category/{category_id}/sub-category/{id}/delete', [SubCategoryController::class, 'delete'])->name('sub_category.delete');
+        // Route::resource('sub_category', SubCategoryController::class)
+        //     ->parameters(['sub_category' => 'slug'])
+        //     ->names('sub_category');
+
+        Route::resource('brand', BrandController::class)->parameters(['brand' => 'id']);
+        Route::put('/brand/{brand}/delete', [BrandController::class, 'delete'])->name('brand.delete');
+        Route::post('/brand/{id}', [BrandController::class, 'update'])->name('brand.update');
     });
 });
 

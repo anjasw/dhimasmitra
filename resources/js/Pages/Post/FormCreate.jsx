@@ -69,7 +69,7 @@ export default function FormCreate() {
                                 {/* Kiri */}
                                 <div className="space-y-4 col-span-1">
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Title</label>
+                                        <label className="block text-sm font-medium text-gray-700">Title<span className="text-red-400">*</span></label>
                                         <input
                                             type="text"
                                             className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
@@ -80,7 +80,7 @@ export default function FormCreate() {
                                     </div>
                                     {/* upload thumbnail */}
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Thumbnail</label>
+                                        <label className="block text-sm font-medium text-gray-700">Thumbnail<span className="text-red-400">*</span></label>
                                         <input
                                             type="file"
                                             accept="image/*"
@@ -97,7 +97,7 @@ export default function FormCreate() {
                                         {errors.thumbnail && <div className="text-red-500 text-xs mt-1">{errors.thumbnail}</div>}
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Meta Description</label>
+                                        <label className="block text-sm font-medium text-gray-700">Meta Description<span className="text-red-400">*</span></label>
                                         <input
                                             type="text"
                                             className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
@@ -107,7 +107,7 @@ export default function FormCreate() {
                                         {errors.meta_description && <div className="text-red-500 text-xs mt-1">{errors.meta_description}</div>}
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Slug</label>
+                                        <label className="block text-sm font-medium text-gray-700">Slug<span className="text-red-400">*</span></label>
                                         <input
                                             type="text"
                                             className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
@@ -117,7 +117,7 @@ export default function FormCreate() {
                                         {errors.slug && <div className="text-red-500 text-xs mt-1">{errors.slug}</div>}
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Tags (pisahkan dengan koma)</label>
+                                        <label className="block text-sm font-medium text-gray-700">Tags (pisahkan dengan koma)<span className="text-red-400">*</span></label>
                                         <input
                                             type="text"
                                             className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
@@ -127,7 +127,7 @@ export default function FormCreate() {
                                         {errors.tags && <div className="text-red-500 text-xs mt-1">{errors.tags}</div>}
                                     </div>
                                     <div>
-                                        <label className="block text-sm font-medium text-gray-700">Status</label>
+                                        <label className="block text-sm font-medium text-gray-700">Status<span className="text-red-400">*</span></label>
                                         <select
                                             className="mt-1 block w-full rounded border-gray-300 shadow-sm focus:border-blue-500 focus:ring focus:ring-blue-200"
                                             value={data.status}
@@ -151,7 +151,7 @@ export default function FormCreate() {
                                 </div>
                                 {/* Kanan */}
                                 <div className="col-span-1 md:col-span-2 flex flex-col">
-                                    <label className="block text-sm font-medium text-gray-700 mb-2">Content</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Content<span className="text-red-400">*</span></label>
                                     <ReactQuill
                                         theme="snow"
                                         value={data.content}
