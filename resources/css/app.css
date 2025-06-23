@@ -1,3 +1,26 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Scrollbar tampil di kiri */
+.scrollbar-left {
+  direction: ltr;
+  scrollbar-gutter: stable both-edges;
+}
+.scrollbar-left::-webkit-scrollbar {
+  width: 8px;
+}
+.scrollbar-left::-webkit-scrollbar-track {
+  background: #f9f9f9;
+}
+.scrollbar-left::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 4px;
+}
+/* Trik untuk pindahkan scrollbar ke kiri */
+.scrollbar-left {
+  direction: rtl;
+}
+.scrollbar-left > * {
+  direction: ltr;
+}
