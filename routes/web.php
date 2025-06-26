@@ -6,19 +6,13 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
+use App\Http\Controllers\FrontController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin'      => Route::has('login'),
-        'canRegister'   => Route::has('register'),
-        'laravelVersion'=> Application::VERSION,
-        'phpVersion'    => PHP_VERSION,
-    ]);
-});
+Route::get('/', [FrontController::class, 'home']);
 
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 
@@ -50,8 +44,11 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::post('post/{slug}', [PostController::class, 'update'])->name('post.update');
 
         Route::resource('product', ProductController::class)
+            ->except(['product.update'])
             ->parameters(['product' => 'slug'])
             ->names('product');
+
+        Route::post('product/update/{id}', [ProductController::class,'update'])->name('product.update');
 
         Route::resource('brand', BrandController::class)
             ->parameters(['brand' => 'slug'])

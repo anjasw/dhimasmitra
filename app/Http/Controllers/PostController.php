@@ -121,9 +121,37 @@ class PostController extends Controller
         ]);
 
         // Proses upload thumbnail jika ada
+        // if ($request->hasFile('thumbnail')) {
+        //     $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        // } else {
+        //     $validated['thumbnail'] = null;
+        // }
+
         if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
-        } else {
+            $img = $request->file('thumbnail');
+            $filename = uniqid('thumbnail_') . '.webp';
+            $path = storage_path('app/public/thumbnails/' . $filename);
+
+            // Baca file gambar asli
+            $imageResource = null;
+            $mime = $img->getMimeType();
+            if ($mime === 'image/jpeg') {
+                $imageResource = imagecreatefromjpeg($img->getPathname());
+            } elseif ($mime === 'image/png') {
+                $imageResource = imagecreatefrompng($img->getPathname());
+            } elseif ($mime === 'image/webp') {
+                $imageResource = imagecreatefromwebp($img->getPathname());
+            }
+
+            if ($imageResource) {
+                // Simpan sebagai webp (quality 80)
+                imagewebp($imageResource, $path, 80);
+                imagedestroy($imageResource);
+
+                // Simpan path ke database (relatif ke public)
+                $validated['thumbnail'] = 'thumbnails/' . $filename;
+            }
+        }else{
             $validated['thumbnail'] = null;
         }
 
@@ -191,9 +219,36 @@ class PostController extends Controller
             'tags' => 'nullable|string',
         ]);
 
+        // if ($request->hasFile('thumbnail')) {
+        //     $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
+        // } else {
+        //     unset($validated['thumbnail']);
+        // }
         if ($request->hasFile('thumbnail')) {
-            $validated['thumbnail'] = $request->file('thumbnail')->store('thumbnails', 'public');
-        } else {
+            $img = $request->file('thumbnail');
+            $filename = uniqid('thumbnail_') . '.webp';
+            $path = storage_path('app/public/thumbnails/' . $filename);
+
+            // Baca file gambar asli
+            $imageResource = null;
+            $mime = $img->getMimeType();
+            if ($mime === 'image/jpeg') {
+                $imageResource = imagecreatefromjpeg($img->getPathname());
+            } elseif ($mime === 'image/png') {
+                $imageResource = imagecreatefrompng($img->getPathname());
+            } elseif ($mime === 'image/webp') {
+                $imageResource = imagecreatefromwebp($img->getPathname());
+            }
+
+            if ($imageResource) {
+                // Simpan sebagai webp (quality 80)
+                imagewebp($imageResource, $path, 80);
+                imagedestroy($imageResource);
+
+                // Simpan path ke database (relatif ke public)
+                $validated['thumbnail'] = 'thumbnails/' . $filename;
+            }
+        }else{
             unset($validated['thumbnail']);
         }
 

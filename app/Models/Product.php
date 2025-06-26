@@ -10,6 +10,12 @@ class Product extends Model
     //
     use HasFactory;
 
+    protected $fillable = [
+        'name', 'slug', 'sku', 'description',
+        'price', 'fix_price', 'discount', 'stock',
+        'minimum_stock', 'minimum_order', 'brand_id', 'category_id', 'subcategory_id','weight'
+    ];
+
     public function images(){
         return $this->hasMany(ProductImage::class);
     }
@@ -22,4 +28,12 @@ class Product extends Model
     public function category(){
         return $this->belongsTo(Category::class);
     }
+    public function colors(){
+        return $this->belongsToMany(Color::class);
+    }
+    public function sizes()
+    {
+        return $this->belongsToMany(Size::class);
+    }
+
 }

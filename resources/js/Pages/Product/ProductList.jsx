@@ -255,17 +255,22 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                                                     })}
                                                 </td> */}
                                                 <td className="px-2 py-2 whitespace-nowrap">
-                                                    {product.status === 1 && (
-                                                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
-                                                            Active
-                                                        </span>
-                                                    )}
                                                     {product.status === 0 && (
                                                         <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded">
                                                             Inactive
                                                         </span>
                                                     )}
+                                                    {product.status === 1 && (
+                                                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
+                                                            Active
+                                                        </span>
+                                                    )}
                                                     {product.status === 2 && (
+                                                        <span className="inline-block px-2 py-1 text-xs font-semibold bg-yellow-100 text-yellow-800 rounded">
+                                                            Draft
+                                                        </span>
+                                                    )}
+                                                    {product.status === 99 && (
                                                         <span className="inline-block px-2 py-1 text-xs font-semibold bg-red-200 text-gray-800 rounded">
                                                             Deleted
                                                         </span>

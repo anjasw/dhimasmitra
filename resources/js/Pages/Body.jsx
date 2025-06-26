@@ -6,11 +6,12 @@ import ProductList from "./Front/Components/ProductList";
 import Blog from "./Front/Components/Blog";
 import MarketplaceSection from "./Front/Components/MarketplaceSection";
 
-export default function Body() {
+export default function Body({brands}) {
+    console.log(brands)
     return (
         <main className="bg-gray-100">
             <Hero />
-            <Brand />
+            <Brand brands={brands}/>
             <Category />
             <WhyUs />
             <ProductList />

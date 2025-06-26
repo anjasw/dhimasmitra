@@ -17,8 +17,9 @@ class SubCategoryController extends Controller
         $search = $request->input('search');
         $limit = $request->input('limit', 10);
 
+        // dd($category_id);
         $category = Category::findOrFail($category_id);
-        $query = SubCategory::query()->where('status','!=', 2);
+        $query = SubCategory::query()->where('category_id', $category_id)->where('status','!=', 2)->orderByDesc('id');
         
         if ($search) {
             $query->where('name', 'like', "%{$search}%");

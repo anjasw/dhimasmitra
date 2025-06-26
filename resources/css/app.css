@@ -30,6 +30,12 @@ a, a:hover, a:focus {
   box-shadow: none !important;
 }
 
-.react-select__input:focus{
+input[type=text]:focus{
   box-shadow: none;
+}
+
+body{
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  transition: 0.3s;
 }

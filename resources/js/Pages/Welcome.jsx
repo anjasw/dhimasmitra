@@ -5,15 +5,17 @@ import Navbar from "./Front/Components/Navbar";
 import Footer from "./Front/Components/Footer";
 import Body from "./Body";
 
-export default function Welcome({ auth, laravelVersion, phpVersion }) {
+export default function Welcome({ brands, laravelVersion, phpVersion }) {
+    console.log(brands)
     return (
         <>
             <Head>
-                <title>Dashboard</title>
-                <meta name="description" content="Dashboard page" />
+                <title>Homepage</title>
+                <meta name="description" content="Home page" />
+                
             </Head>
             <Navbar />
-            <Body />
+            <Body brands={brands}/>
             <Footer laravelVersion={laravelVersion} phpVersion={phpVersion} />
         </>
     );

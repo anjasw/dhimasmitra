@@ -59,8 +59,33 @@ class BrandController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
+        // if ($request->hasFile('image')) {
+        //     $validated['image'] = $request->file('image')->store('brands', 'public');
+        // }
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('brands', 'public');
+            $img = $request->file('image');
+            $filename = uniqid('brand_') . '.webp';
+            $path = storage_path('app/public/brands/' . $filename);
+
+            // Baca file gambar asli
+            $imageResource = null;
+            $mime = $img->getMimeType();
+            if ($mime === 'image/jpeg') {
+                $imageResource = imagecreatefromjpeg($img->getPathname());
+            } elseif ($mime === 'image/png') {
+                $imageResource = imagecreatefrompng($img->getPathname());
+            } elseif ($mime === 'image/webp') {
+                $imageResource = imagecreatefromwebp($img->getPathname());
+            }
+
+            if ($imageResource) {
+                // Simpan sebagai webp (quality 80)
+                imagewebp($imageResource, $path, 80);
+                imagedestroy($imageResource);
+
+                // Simpan path ke database (relatif ke public)
+                $validated['image'] = 'brands/' . $filename;
+            }
         }
 
         Brand::create($validated);
@@ -106,12 +131,42 @@ class BrandController extends Controller
             'image' => 'nullable|image|max:2048',
         ]);
 
+        // if ($request->hasFile('image')) {
+        //     // Hapus file lama jika ada
+        //     if ($brand->image && \Storage::disk('public')->exists($brand->image)) {
+        //         \Storage::disk('public')->delete($brand->image);
+        //     }
+        //     $validated['image'] = $request->file('image')->store('brands', 'public');
+        // }
         if ($request->hasFile('image')) {
             // Hapus file lama jika ada
             if ($brand->image && \Storage::disk('public')->exists($brand->image)) {
                 \Storage::disk('public')->delete($brand->image);
             }
-            $validated['image'] = $request->file('image')->store('brands', 'public');
+
+            $img = $request->file('image');
+            $filename = uniqid('brand_') . '.webp';
+            $path = storage_path('app/public/brands/' . $filename);
+
+            // Baca file gambar asli
+            $imageResource = null;
+            $mime = $img->getMimeType();
+            if ($mime === 'image/jpeg') {
+                $imageResource = imagecreatefromjpeg($img->getPathname());
+            } elseif ($mime === 'image/png') {
+                $imageResource = imagecreatefrompng($img->getPathname());
+            } elseif ($mime === 'image/webp') {
+                $imageResource = imagecreatefromwebp($img->getPathname());
+            }
+
+            if ($imageResource) {
+                // Simpan sebagai webp (quality 80)
+                imagewebp($imageResource, $path, 80);
+                imagedestroy($imageResource);
+
+                // Simpan path ke database (relatif ke public)
+                $validated['image'] = 'brands/' . $filename;
+            }
         }
 
         $brand->update($validated);
@@ -125,5 +180,12 @@ class BrandController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function delete(string $id)
+    {
+        $brand = Brand::where('id', $id)->firstOrFail();
+        $brand->update(['status' => 2]);
+        return redirect()->route('brand.index')->with('success', 'Brand berhasil dihapus.');
     }
 }

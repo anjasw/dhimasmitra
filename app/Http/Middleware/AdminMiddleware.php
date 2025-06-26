@@ -24,7 +24,7 @@ class AdminMiddleware
             abort(403, 'Unauthorized');
             // redirect('/login');
         }else{
-            // dd($user);
+            // dd($roles);
             if (!in_array($user->role, $roles)) {
                 abort(403, 'Unauthorized');
             }
