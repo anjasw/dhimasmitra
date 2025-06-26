@@ -5,6 +5,134 @@ export default function Navbar() {
     const [offcanvasOpen, setOffcanvasOpen] = useState(false);
     const [showSubmenu, setShowSubmenu] = useState(false);
 
+    const categories = [
+        {
+            name: "Produk A",
+            href: "/kategori/produk-a",
+            subcategories: [
+                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+            ],
+        },
+        {
+            name: "Produk B",
+            href: "/kategori/produk-b",
+            subcategories: [
+                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+            ],
+        },
+        {
+            name: "Produk C",
+            href: "/kategori/produk-c",
+            subcategories: [],
+        },
+        {
+            name: "Produk D",
+            href: "/kategori/produk-a",
+            subcategories: [
+                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+            ],
+        },
+        {
+            name: "Produk E",
+            href: "/kategori/produk-b",
+            subcategories: [
+                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+            ],
+        },
+        {
+            name: "Produk F",
+            href: "/kategori/produk-c",
+            subcategories: [],
+        },
+        {
+            name: "Produk G",
+            href: "/kategori/produk-a",
+            subcategories: [
+                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+            ],
+        },
+        {
+            name: "Produk H",
+            href: "/kategori/produk-b",
+            subcategories: [
+                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+            ],
+        },
+        {
+            name: "Produk I",
+            href: "/kategori/produk-c",
+            subcategories: [],
+        },
+        {
+            name: "Produk J",
+            href: "/kategori/produk-a",
+            subcategories: [
+                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+            ],
+        },
+        {
+            name: "Produk K",
+            href: "/kategori/produk-b",
+            subcategories: [
+                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+            ],
+        },
+        {
+            name: "Produk L",
+            href: "/kategori/produk-c",
+            subcategories: [],
+        },
+        {
+            name: "Produk M",
+            href: "/kategori/produk-a",
+            subcategories: [
+                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+            ],
+        },
+        {
+            name: "Produk N",
+            href: "/kategori/produk-b",
+            subcategories: [
+                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+            ],
+        },
+        {
+            name: "Produk O",
+            href: "/kategori/produk-c",
+            subcategories: [],
+        },
+    ];
+
     return (
         <>
             {/* Overlay */}
@@ -36,9 +164,10 @@ export default function Navbar() {
                             >
                                 Home
                             </Link>
-                            <div className="relative">
+
+                            <div className="relative group">
                                 <button
-                                    className="flex items-center gap-1 peer"
+                                    className="flex items-center gap-1"
                                     type="button"
                                 >
                                     Kategori
@@ -48,29 +177,75 @@ export default function Navbar() {
                                 </button>
 
                                 <div
-                                    className="absolute left-0 top-full mt-2 w-40 bg-white text-black shadow-md z-50
-                                    invisible opacity-0 transition-all duration-200
-                                    peer-hover:visible peer-hover:opacity-100
-                                    hover:visible hover:opacity-100"
+                                    className="fixed top-16 left-0 w-screen bg-white text-black shadow-md z-40 py-6
+        opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200"
                                 >
-                                    <Link
-                                        href="/kategori/produk-a"
-                                        className="block px-4 py-2 hover:bg-gray-100"
-                                    >
-                                        Produk A
-                                    </Link>
-                                    <Link
-                                        href="/kategori/produk-b"
-                                        className="block px-4 py-2 hover:bg-gray-100"
-                                    >
-                                        Produk B
-                                    </Link>
-                                    <Link
-                                        href="/kategori/produk-c"
-                                        className="block px-4 py-2 hover:bg-gray-100"
-                                    >
-                                        Produk C
-                                    </Link>
+                                    <div className="max-w-screen-xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 text-sm">
+                                        {categories
+                                            .slice(0, 10)
+                                            .map((category, idx) => (
+                                                <div key={idx}>
+                                                    <Link
+                                                        href={category.href}
+                                                        className="font-semibold hover:bg-yellow-200 transition px-2 block mb-1"
+                                                    >
+                                                        {category.name}
+                                                    </Link>
+                                                    <ul className="ml-2 space-y-1">
+                                                        {category.subcategories
+                                                            .slice(0, 4)
+                                                            .map(
+                                                                (
+                                                                    sub,
+                                                                    subIdx
+                                                                ) => (
+                                                                    <li
+                                                                        key={
+                                                                            subIdx
+                                                                        }
+                                                                    >
+                                                                        <Link
+                                                                            href={
+                                                                                sub.href
+                                                                            }
+                                                                            className="hover:bg-gray-600 hover:text-white transition px-2"
+                                                                        >
+                                                                            {
+                                                                                sub.name
+                                                                            }
+                                                                        </Link>
+                                                                    </li>
+                                                                )
+                                                            )}
+                                                        {category.subcategories
+                                                            .length > 4 && (
+                                                            <li>
+                                                                <Link
+                                                                    href={
+                                                                        category.href
+                                                                    }
+                                                                    className="text-yellow-800 hover:bg-yellow-200 transition px-2 font-medium"
+                                                                >
+                                                                    Lihat Semua
+                                                                    Subkategori
+                                                                </Link>
+                                                            </li>
+                                                        )}
+                                                    </ul>
+                                                </div>
+                                            ))}
+
+                                        {categories.length > 10 && (
+                                            <div className="col-span-full text-center mt-4">
+                                                <Link
+                                                    href="/kategori"
+                                                    className="inline-block text-yellow-800 font-semibold hover:bg-yellow-200 transition px-2"
+                                                >
+                                                    Lihat Semua Kategori
+                                                </Link>
+                                            </div>
+                                        )}
+                                    </div>
                                 </div>
                             </div>
 
@@ -132,47 +307,84 @@ export default function Navbar() {
                         >
                             Home
                         </Link>
-                        <div>
-                            <button
-                                onClick={() => setShowSubmenu(!showSubmenu)}
-                                className="flex items-center justify-between w-full"
-                            >
-                                <span>Kategori</span>
-                                <span className="material-symbols-outlined">
-                                    {showSubmenu
-                                        ? "expand_less"
-                                        : "expand_more"}
-                                </span>
-                            </button>
+                        {categories.slice(0, 10).map((category, index) => {
+                            const [openSub, setOpenSub] = useState(false);
 
-                            <div
-                                className={`mt-2 ml-2 pl-2 border-l border-gray-700 space-y-2 transition-all duration-200 ${
-                                    showSubmenu ? "block" : "hidden"
-                                }`}
+                            return (
+                                <div key={index}>
+                                    <div className="flex justify-between items-center">
+                                        <Link
+                                            href={category.href}
+                                            onClick={() =>
+                                                setOffcanvasOpen(false)
+                                            }
+                                            className="flex-1"
+                                        >
+                                            {category.name}
+                                        </Link>
+                                        <button
+                                            onClick={() =>
+                                                setShowSubmenu((prev) => ({
+                                                    ...prev,
+                                                    [index]: !prev[index],
+                                                }))
+                                            }
+                                        >
+                                            <span className="material-symbols-outlined text-sm">
+                                                {showSubmenu[index]
+                                                    ? "expand_less"
+                                                    : "expand_more"}
+                                            </span>
+                                        </button>
+                                    </div>
+
+                                    {/* Subkategori */}
+                                    {showSubmenu[index] && (
+                                        <div className="ml-4 mt-1 space-y-1 text-sm">
+                                            {category.subcategories
+                                                .slice(0, 4)
+                                                .map((sub, subIdx) => (
+                                                    <Link
+                                                        key={subIdx}
+                                                        href={sub.href}
+                                                        onClick={() =>
+                                                            setOffcanvasOpen(
+                                                                false
+                                                            )
+                                                        }
+                                                        className="block"
+                                                    >
+                                                        {sub.name}
+                                                    </Link>
+                                                ))}
+
+                                            {category.subcategories.length >
+                                                4 && (
+                                                <Link
+                                                    href={category.href}
+                                                    onClick={() =>
+                                                        setOffcanvasOpen(false)
+                                                    }
+                                                    className="block text-blue-400"
+                                                >
+                                                    Lihat Semua Subkategori
+                                                </Link>
+                                            )}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+
+                        {categories.length > 10 && (
+                            <Link
+                                href="/kategori"
+                                onClick={() => setOffcanvasOpen(false)}
+                                className="text-blue-400"
                             >
-                                <Link
-                                    href="/kategori/produk-a"
-                                    onClick={() => setOffcanvasOpen(false)}
-                                    className="block"
-                                >
-                                    Produk A
-                                </Link>
-                                <Link
-                                    href="/kategori/produk-b"
-                                    onClick={() => setOffcanvasOpen(false)}
-                                    className="block"
-                                >
-                                    Produk B
-                                </Link>
-                                <Link
-                                    href="/kategori/produk-c"
-                                    onClick={() => setOffcanvasOpen(false)}
-                                    className="block"
-                                >
-                                    Produk C
-                                </Link>
-                            </div>
-                        </div>
+                                Lihat Semua Kategori
+                            </Link>
+                        )}
 
                         <Link
                             href="/shop"
