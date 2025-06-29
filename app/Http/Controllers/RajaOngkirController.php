@@ -21,11 +21,11 @@ class RajaOngkirController extends Controller
         return response()->json($ongkir);
     }
 
-    public function getKota(Request $request){
+    public function getKota(){
         $res = Http::withHeaders(['key' => config('services.rajaongkir.key')])
             ->get(config('services.rajaongkir.url') . '/city')
             ->json('rajaongkir.results');
 
-        return response()->json($res);
+        return $res;
     }
 }

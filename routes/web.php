@@ -55,6 +55,7 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
             ->names('brand');
 
         Route::resource('category', CategoryController::class)->parameters(['category' => 'id']);
+        Route::post('/category/{id}', [CategoryController::class, 'update'])->name('category.update');
         // Route::resource('category', CategoryController::class)
         //     ->parameters(['category' => 'slug'])
         //     ->names('category');

@@ -60,10 +60,11 @@ export default function BrandList({ brands, flash }) {
     let number = (brands.current_page - 1) * brands.per_page + 1;
 
     const openAddModal = () => {
-        setForm({ name: '', slug: '', status: 1, id: null });
+        setForm({ name: '', slug: '', status: 1, id: null, image: null });
         setModalType('add');
         setErrors({});
         setShowModal(true);
+        setOldImage(null); // simpan path lama untuk preview
     };
 
     const openEditModal = (brand) => {

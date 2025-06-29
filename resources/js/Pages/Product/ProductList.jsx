@@ -278,7 +278,7 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                                                 </td>
                                                 <td className="px-2 py-2 whitespace-nowrap flex gap-2">
                                                     <Link
-                                                        href={`product/${product.id}/edit`}
+                                                        href={route('product.edit', product.id)}
                                                         className="text-blue-600 hover:text-blue-900 flex items-center"
                                                         title="Edit"
                                                     >

@@ -5,4 +5,4 @@ use App\Http\Controllers\RajaOngkirController;
 
 
 Route::post('/get-ongkir', [RajaOngkirController::class, 'getOngkir']);
-Route::get('/get-kota', [RajaOngkirController::class, 'getKota']);
+// Route::get('/get-kota', [RajaOngkirController::class, 'getKota']);

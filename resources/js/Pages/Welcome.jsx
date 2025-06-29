@@ -5,8 +5,8 @@ import Navbar from "./Front/Components/Navbar";
 import Footer from "./Front/Components/Footer";
 import Body from "./Body";
 
-export default function Welcome({ brands, laravelVersion, phpVersion }) {
-    console.log(brands)
+export default function Welcome({ brands, laravelVersion, phpVersion, listKota }) {
+    console.log(listKota)
     return (
         <>
             <Head>

@@ -6,11 +6,18 @@ use Illuminate\Http\Request;
 use Illuminate\Foundation\Application;
 use App\Models\Brand;
 use Inertia\Inertia;
+
+use App\Http\Controllers\RajaOngkirController;
+
 class FrontController extends Controller
 {
     
 
     public function home(){
+
+        $rjc = new RajaOngkirController;
+        $listKota = $rjc->getKota();
+
         $laravelVersion = Application::VERSION;
         $phpVersion = PHP_VERSION;
 
@@ -19,7 +26,8 @@ class FrontController extends Controller
         return Inertia::render('Welcome', [
             'brands' => $brands,
             'laravelVersion' => $laravelVersion,
-            'phpVersion' => $phpVersion
+            'phpVersion' => $phpVersion,
+            'listKota' => $listKota
         ]);
     }
 }

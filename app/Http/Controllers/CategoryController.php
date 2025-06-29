@@ -63,7 +63,34 @@ class CategoryController extends Controller
                 }
             ],
             'status' => 'required|in:0,1',
+            'image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $img = $request->file('image');
+            $filename = uniqid($validated['slug']) . '.webp';
+            $path = storage_path('app/public/category/' . $filename);
+
+            // Baca file gambar asli
+            $imageResource = null;
+            $mime = $img->getMimeType();
+            if ($mime === 'image/jpeg') {
+                $imageResource = imagecreatefromjpeg($img->getPathname());
+            } elseif ($mime === 'image/png') {
+                $imageResource = imagecreatefrompng($img->getPathname());
+            } elseif ($mime === 'image/webp') {
+                $imageResource = imagecreatefromwebp($img->getPathname());
+            }
+
+            if ($imageResource) {
+                // Simpan sebagai webp (quality 80)
+                imagewebp($imageResource, $path, 80);
+                imagedestroy($imageResource);
+
+                // Simpan path ke database (relatif ke public)
+                $validated['image'] = 'category/' . $filename;
+            }
+        }
 
         Category::create($validated);
 
@@ -112,7 +139,34 @@ class CategoryController extends Controller
                 }
             ],
             'status' => 'required|in:0,1',
+            'image' => 'nullable|image|max:2048',
         ]);
+
+        if ($request->hasFile('image')) {
+            $img = $request->file('image');
+            $filename = uniqid($validated['slug']) . '.webp';
+            $path = storage_path('app/public/category/' . $filename);
+
+            // Baca file gambar asli
+            $imageResource = null;
+            $mime = $img->getMimeType();
+            if ($mime === 'image/jpeg') {
+                $imageResource = imagecreatefromjpeg($img->getPathname());
+            } elseif ($mime === 'image/png') {
+                $imageResource = imagecreatefrompng($img->getPathname());
+            } elseif ($mime === 'image/webp') {
+                $imageResource = imagecreatefromwebp($img->getPathname());
+            }
+
+            if ($imageResource) {
+                // Simpan sebagai webp (quality 80)
+                imagewebp($imageResource, $path, 80);
+                imagedestroy($imageResource);
+
+                // Simpan path ke database (relatif ke public)
+                $validated['image'] = 'category/' . $filename;
+            }
+        }
 
         $category->update($validated);
 

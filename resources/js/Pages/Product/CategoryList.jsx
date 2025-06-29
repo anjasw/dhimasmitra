@@ -3,11 +3,15 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
 
 export default function CategoryList({ categories, flash, search: initialSearch = '', limit: initialLimit = 10 }) {
+    console.log(categories)
+    const [showImageModal, setShowImageModal] = useState(false);
+    const [imageUrl, setImageUrl] = useState('');
+
     const [searchQuery, setSearchQuery] = useState(initialSearch);
     const [limit, setLimit] = useState(initialLimit);
     const [showModal, setShowModal] = useState(false);
     const [modalType, setModalType] = useState('add'); // 'add' or 'edit'
-    const [form, setForm] = useState({ name: '', slug: '', status: 1, id: null });
+    const [form, setForm] = useState({ name: '', slug: '', status: 1, id: null, image: null });
     const [errors, setErrors] = useState({});
     const [showToast, setShowToast] = useState(!!(flash && (flash.success || flash.error)));
     const [toastMsg, setToastMsg] = useState(flash?.success || flash?.error || '');
@@ -15,6 +19,7 @@ export default function CategoryList({ categories, flash, search: initialSearch 
     const [fade, setFade] = useState(false);
     const [showConfirm, setShowConfirm] = useState(false);
     const [deleteId, setDeleteId] = useState(null);
+    const [oldImage, setOldImage] = useState(null);
 
     useEffect(() => {
         if (flash && (flash.success || flash.error)) {
@@ -54,10 +59,11 @@ export default function CategoryList({ categories, flash, search: initialSearch 
     let number = (categories.current_page - 1) * categories.per_page + 1;
 
     const openAddModal = () => {
-        setForm({ name: '', slug: '', status: 1, id: null });
+        setForm({ name: '', slug: '', status: 1, id: null, image: null });
         setModalType('add');
         setErrors({});
         setShowModal(true);
+        setOldImage(null); // simpan path lama untuk preview
     };
 
     const openEditModal = (category) => {
@@ -66,10 +72,14 @@ export default function CategoryList({ categories, flash, search: initialSearch 
             slug: category.slug,
             status: category.status,
             id: category.id,
+            image: null,
         });
+        // console.log(category.image)
         setModalType('edit');
         setErrors({});
         setShowModal(true);
+        setOldImage(category.image || null); // simpan path lama untuk preview
+
     };
 
     const handleFormChange = (e) => {
@@ -87,13 +97,22 @@ export default function CategoryList({ categories, flash, search: initialSearch 
         setErrors({});
         if (modalType === 'add') {
             router.post(route('category.store'), form, {
-                onSuccess: () => setShowModal(false),
+                onSuccess: () => {
+                    setShowModal(false);
+                    setOldImage(null);
+                },
                 onError: (err) => setErrors(err),
+                forceFormData: true,
             });
+            
         } else {
-            router.put(route('category.update', form.id), form, {
-                onSuccess: () => setShowModal(false),
+            router.post(route('category.update', form.id), form, {
+                onSuccess: () => {
+                    setShowModal(false);
+                    setOldImage(null);
+                },
                 onError: (err) => setErrors(err),
+                forceFormData: true,
             });
         }
     };
@@ -207,6 +226,7 @@ export default function CategoryList({ categories, flash, search: initialSearch 
                                         <tr>
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">No</th>
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Nama Kategori</th>
+                                            <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Gambar</th>
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Aksi</th>
                                         </tr>
@@ -221,6 +241,22 @@ export default function CategoryList({ categories, flash, search: initialSearch 
                                             <tr key={category.id} className="hover:bg-gray-50">
                                                 <td className="px-2 py-2 whitespace-nowrap">{number++}</td>
                                                 <td className="px-2 py-2 whitespace-nowrap">{category.name}</td>
+                                                <td className="px-2 py-2 whitespace-nowrap">
+                                                    {category.image ? (
+                                                        <button
+                                                            type="button"
+                                                            onClick={() => {
+                                                                setImageUrl(`/storage/${category.image}`);
+                                                                setShowImageModal(true);
+                                                            }}
+                                                            className="px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition text-xs"
+                                                        >
+                                                            Lihat Gambar
+                                                        </button>
+                                                    ) : (
+                                                        <span className="text-gray-400 text-xs">Tidak ada</span>
+                                                    )}
+                                                </td>
                                                 <td className="px-2 py-2 whitespace-nowrap">
                                                     {category.status === 1 ? (
                                                         <span className="inline-block px-2 py-1 text-xs font-semibold bg-green-100 text-green-800 rounded">
@@ -323,6 +359,19 @@ export default function CategoryList({ categories, flash, search: initialSearch 
                 </div>
             </div>
 
+            {showImageModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60">
+                    <div className="bg-white rounded-lg shadow-lg p-6 max-w-2xl w-full flex flex-col items-center">
+                        <img src={imageUrl} alt="Brand" className="max-h-[70vh] object-contain mb-4 w-full" />
+                        <button
+                            onClick={() => setShowImageModal(false)}
+                            className="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300"
+                        >
+                            Tutup
+                        </button>
+                    </div>
+                </div>
+            )}
             {/* Modal Tambah/Edit */}
             {showModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
@@ -331,6 +380,24 @@ export default function CategoryList({ categories, flash, search: initialSearch 
                             {modalType === 'add' ? 'Tambah Kategori' : 'Edit Kategori'}
                         </h3>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Category Image</label>
+                                <input
+                                    type="file"
+                                    name="image"
+                                    accept="image/*"
+                                    onChange={e => setForm(prev => ({ ...prev, image: e.target.files[0] }))}
+                                    className="w-full border border-gray-300 rounded px-3 py-2"
+                                />
+                                {oldImage && !form.image && (
+                                    <img src={`/storage/${oldImage}`} alt="Logo" className="h-16 mt-2" />
+                                )}
+                                {form.image && typeof form.image !== 'string' && (
+                                    <img src={URL.createObjectURL(form.image)} alt="Logo" className="h-16 mt-2" />
+                                )}
+                                {errors.image && <div className="text-red-500 text-xs mt-1">{errors.image}</div>}
+
+                            </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">Nama Kategori</label>
                                 <input
