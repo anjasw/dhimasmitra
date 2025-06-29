@@ -16,6 +16,11 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/order', function () {
+    return Inertia::render('Front/Order');
+})->name('order.index');
+
+
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 
 // Route untuk produk detail berdasarkan slug

@@ -262,14 +262,15 @@ export default function Navbar() {
                                 placeholder="Cari"
                                 className="px-3 py-1 rounded-sm text-black bg-gray-200 focus:outline-none text-sm"
                             />
-                            <div className="relative">
+                            <Link href="/order" className="relative">
                                 <span className="material-symbols-outlined text-[24px] text-white">
                                     shopping_cart
                                 </span>
                                 <span className="absolute -top-2 -right-2 bg-yellow-400 text-black text-xs font-bold px-1 rounded-full">
                                     0
                                 </span>
-                            </div>
+                            </Link>
+
                             {/* Toggle Offcanvas */}
                             <button
                                 onClick={() => setOffcanvasOpen(true)}
