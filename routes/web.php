@@ -20,6 +20,10 @@ Route::get('/order', function () {
     return Inertia::render('Front/Order');
 })->name('order.index');
 
+Route::get('/kategori', function () {
+    return Inertia::render('Front/Kategori');
+})->name('kategori.index');
+
 
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 
