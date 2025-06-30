@@ -10,7 +10,7 @@ export default function Kategori() {
     // 40 dummy kategori, sebagian punya subkategori lebih dari 10
     const allCategories = Array.from({ length: 40 }, (_, i) => ({
         name: `Kategori ${i + 1}`,
-        image: 'assets/dummy-image.jpg',
+        image: "assets/dummy-image.jpg",
         href: `/kategori/kategori-${i + 1}`,
         subcategories:
             i % 2 === 0
@@ -67,7 +67,10 @@ export default function Kategori() {
                                     className="flex overflow-hidden shadow-sm hover:shadow-md transition"
                                 >
                                     {/* Kiri: Gambar + Nama Kategori */}
-                                    <div className="flex-1 bg-gray-200 flex flex-col items-center justify-center p-4 text-center">
+                                    <a
+                                        href={cat.href}
+                                        className="flex-1 bg-gray-300 flex flex-col items-center justify-center p-4 text-center hover:bg-gray-400 transition"
+                                    >
                                         <img
                                             src={cat.image}
                                             alt={cat.name}
@@ -76,7 +79,7 @@ export default function Kategori() {
                                         <div className="text-sm font-semibold text-gray-800">
                                             {cat.name}
                                         </div>
-                                    </div>
+                                    </a>
 
                                     {/* Kanan: Subkategori Scrollable */}
                                     {cat.subcategories.length > 0 && (
