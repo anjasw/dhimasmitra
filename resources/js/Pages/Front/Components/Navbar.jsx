@@ -144,7 +144,7 @@ export default function Navbar() {
             )}
 
             {/* Navbar */}
-            <nav className="bg-[#1e1e1e] text-white z-50 relative">
+            <nav className="bg-[#1e1e1e] text-white z-50 relative sticky top-0 shadow-md">
                 <div className="container mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
@@ -260,7 +260,7 @@ export default function Navbar() {
                             <input
                                 type="text"
                                 placeholder="Cari"
-                                className="px-3 py-1 rounded-sm text-black bg-gray-200 focus:outline-none text-sm"
+                                className="px-3 py-1 text-black bg-gray-200 focus:outline-none focus:ring focus:ring-yellow-300 text-sm"
                             />
                             <Link href="/order" className="relative">
                                 <span className="material-symbols-outlined text-[24px] text-white">
