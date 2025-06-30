@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react";
-
+import { usePage } from "@inertiajs/react";
 import { useState } from "react";
 
 import Navbar from "./Components/Navbar";
@@ -7,19 +7,8 @@ import Footer from "./Components/Footer";
 import MarketplaceSection from "./Components/MarketplaceSection";
 
 export default function Kategori() {
-    // 40 dummy kategori, sebagian punya subkategori lebih dari 10
-    const allCategories = Array.from({ length: 40 }, (_, i) => ({
-        name: `Kategori ${i + 1}`,
-        image: "assets/dummy-image.jpg",
-        href: `/kategori/kategori-${i + 1}`,
-        subcategories:
-            i % 2 === 0
-                ? Array.from({ length: i % 3 === 0 ? 12 : 6 }, (_, j) => ({
-                      name: `Sub ${i + 1}.${j + 1}`,
-                      href: `/kategori/kategori-${i + 1}/sub-${j + 1}`,
-                  }))
-                : [],
-    }));
+    const { props } = usePage();
+    const allCategories = props.categories ?? [];
 
     const [search, setSearch] = useState("");
     const [visibleCount, setVisibleCount] = useState(12);
@@ -32,11 +21,11 @@ export default function Kategori() {
     const loadMore = () => setVisibleCount((prev) => prev + 12);
 
     return (
-        <>
+        <div className="bg-gray-100">
             <Head title="Kategori" />
             <Navbar />
 
-            <div className="bg-gray-100 py-10 px-4 min-h-screen">
+            <div className="py-10 px-4 min-h-screen">
                 {/* Heading + Search */}
                 <div className="max-w-7xl mx-auto mb-6 px-4">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-center md:text-left">
@@ -130,6 +119,6 @@ export default function Kategori() {
             </div>
             <MarketplaceSection />
             <Footer />
-        </>
+        </div>
     );
 }

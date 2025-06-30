@@ -6,8 +6,8 @@ export default function Order() {
     return (
         <>
             <Head>
-                <title>Dashboard</title>
-                <meta name="description" content="Dashboard page" />
+                <title>Order</title>
+                <meta name="description" content="Order page" />
             </Head>
             <Navbar />
             
