@@ -17,7 +17,7 @@ export default function Breadcrumb({ items }) {
     }
 
     return (
-        <div className="container mx-auto py-1">
+        <div className="container mx-auto px-4">
             <nav className="text-sm text-gray-600 py-3 font-semibold" aria-label="Breadcrumb">
                 <ol className="list-reset flex flex-wrap items-center">
                     {items.map((item, index) => (
@@ -43,6 +43,7 @@ export default function Breadcrumb({ items }) {
                     ))}
                 </ol>
             </nav>
+            <hr className="border-t-1 border-gray-200" />
         </div>
     );
 }

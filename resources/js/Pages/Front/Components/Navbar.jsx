@@ -145,7 +145,7 @@ export default function Navbar() {
 
             {/* Navbar */}
             <nav className="bg-[#1e1e1e] text-white z-50 relative sticky top-0 shadow-md">
-                <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="container mx-auto px-4">
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <div className="flex items-center gap-2">
@@ -164,9 +164,9 @@ export default function Navbar() {
                                 Home
                             </Link>
 
-                            <div className="relative group h-16 hover:text-yellow-400 transition">
+                            <div className="relative group hover:text-yellow-400 transition">
                                 <button
-                                    className="flex items-center gap-1"
+                                    className="flex items-center gap-1 h-16"
                                     type="button"
                                 >
                                     Kategori
@@ -223,7 +223,7 @@ export default function Navbar() {
                                                                     href={
                                                                         category.href
                                                                     }
-                                                                    className="text-white hover:text-yellow-400 transition px-2 font-medium"
+                                                                    className="text-blue-400 hover:text-yellow-400 transition px-2 font-medium"
                                                                 >
                                                                     Lihat Semua
                                                                     Subkategori
@@ -236,10 +236,10 @@ export default function Navbar() {
 
                                         {categories.length > 10 && (
                                             <div className="col-span-full text-center mt-4">
-                                                <hr className="mb-4" />
+                                                <hr className="mb-4 border-t-1 border-gray-600 " />
                                                 <Link
                                                     href="/kategori"
-                                                    className="inline-block text-white font-semibold hover:text-yellow-400 transition px-2"
+                                                    className="inline-block text-blue-400 font-semibold hover:text-yellow-400 transition px-2"
                                                 >
                                                     Lihat Semua Kategori
                                                 </Link>

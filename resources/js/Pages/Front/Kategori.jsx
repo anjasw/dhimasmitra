@@ -28,7 +28,7 @@ export default function Kategori() {
             <Navbar />
             {breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
 
-            <div className="py-10 px-4 min-h-screen">
+            <div className="px-4 min-h-screen">
                 {/* Heading + Search */}
                 <div className="max-w-7xl mx-auto mb-6 px-4">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-center md:text-left">

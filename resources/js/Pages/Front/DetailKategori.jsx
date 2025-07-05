@@ -16,7 +16,7 @@ export default function DetailKategori() {
             <Navbar />
             {breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
 
-            <div className="bg-gray-100 min-h-screen py-10">
+            <div className="bg-gray-100 min-h-screen">
                 <div className="container mx-auto p-4">
                     {/* Nama Kategori */}
                     <h1 className="text-2xl font-bold text-gray-800 mb-4">
