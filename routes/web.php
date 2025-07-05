@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PostController;
 use App\Http\Controllers\ProductController;
@@ -12,7 +13,24 @@ use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
 use Inertia\Inertia;
 
-Route::get('/', [FrontController::class, 'home']);
+Route::get('/', function () {
+    return Inertia::render('Welcome', [
+        'canLogin'      => Route::has('login'),
+        'canRegister'   => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion'    => PHP_VERSION,
+    ]);
+})->name('home');;
+
+Route::get('/order', function () {
+    return Inertia::render('Front/Order');
+})->name('order.index');
+
+Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
+Route::get('/kategori/{slug}', [KategoriController::class, 'show'])->name('kategori.show');
+Route::get('/kategori/{slug}/{sub?}', [KategoriController::class, 'show'])->name('kategori.show');
+
+
 
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 
@@ -29,7 +47,7 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
 
     Route::prefix('sysadmin')->group(function () {
         // Profile
-        Route::get('/', function(){
+        Route::get('/', function () {
             return redirect('/sysadmin/dashboard');
         });
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -40,7 +58,7 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::resource('post', PostController::class)
             ->parameters(['post' => 'slug'])
             ->names('post');
-        
+
         Route::post('post/{slug}', [PostController::class, 'update'])->name('post.update');
 
         Route::resource('product', ProductController::class)
@@ -77,4 +95,4 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
     });
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
