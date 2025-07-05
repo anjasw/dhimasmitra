@@ -8,26 +8,20 @@ use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\FrontController;
+use App\Http\Controllers\PagesController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
 use Inertia\Inertia;
 
-Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin'      => Route::has('login'),
-        'canRegister'   => Route::has('register'),
-        'laravelVersion' => Application::VERSION,
-        'phpVersion'    => PHP_VERSION,
-    ]);
-})->name('home');;
+Route::get('/', [FrontController::class, 'home'])->name('home');
 
 Route::get('/order', function () {
     return Inertia::render('Front/Order');
 })->name('order.index');
 
 Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
-Route::get('/kategori/{slug}', [KategoriController::class, 'show'])->name('kategori.show');
+Route::get('/kategori/{slug`}', [KategoriController::class, 'show'])->name('kategori.show');
 Route::get('/kategori/{slug}/{sub?}', [KategoriController::class, 'show'])->name('kategori.show');
 
 
@@ -92,6 +86,13 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::resource('brand', BrandController::class)->parameters(['brand' => 'id']);
         Route::put('/brand/{brand}/delete', [BrandController::class, 'delete'])->name('brand.delete');
         Route::post('/brand/{id}', [BrandController::class, 'update'])->name('brand.update');
+
+
+        Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
+        Route::post('/pages/about', [PagesController::class, 'saveAbout'])->name('about.save');
+        Route::get('/pages/contact', [PagesController::class, 'contact'])->name('pages.contact');
+        Route::post('/pages/contact', [PagesController::class, 'saveContact'])->name('contact.save');
+        Route::get('/reporting', [PagesController::class, 'reporting'])->name('reporting.index');
     });
 });
 

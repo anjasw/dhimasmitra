@@ -7,6 +7,7 @@ import { useState,useEffect, useRef } from 'react';
 
 export default function AuthenticatedLayout({ header, children }) {
     const [showProductDropdown, setShowProductDropdown] = useState(false);
+    const [showPagesDropdown, setShowPagesDropdown] = useState(false);
     
     const productMenuRef = useRef(null);
 
@@ -34,7 +35,15 @@ export default function AuthenticatedLayout({ header, children }) {
             setShowProductDropdown(true)
         }else{
             setShowProductDropdown(false)
+        }
 
+        if(
+            route().current('pages.about') ||
+            route().current('pages.contact')
+        ){
+            setShowPagesDropdown(true)
+        }else{
+            setShowPagesDropdown(false)
         }
         function handleClickOutside(event) {
             if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -267,7 +276,137 @@ export default function AuthenticatedLayout({ header, children }) {
                                 </ul>
                             </div>
                         </li>
+                        <li
+                            ref={productMenuRef}
+                            className={`flex flex-col relative text-sm
+                                ${showPagesDropdown ? 'z-20' : ''}
+                            `}
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <button
+                                type="button"
+                                className={`flex items-center gap-2 px-4 py-2 rounded transition w-full text-left text-sm
+                                    ${
+                                        route().current('pages.about') || 
+                                        route().current('pages.contact')
+                                        ? 'bg-gray-100 text-gray-900 font-semibold'
+                                        : 'text-gray-500 hover:bg-gray-50'}
+                                `}
+                                onClick={() => setShowPagesDropdown((v) => !v)}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5
+                                        ${route().current('pages.about') || route().current('pages.contact') ? 'text-gray-700' : 'text-gray-500'}
+                                `} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 7V3a1 1 0 011-1h8a1 1 0 011 1v18a1 1 0 01-1 1H8a1 1 0 01-1-1v-4" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h8M7 11h8M7 15h4" />
+                                </svg>
+                                Pages
+                                <svg className={`ml-auto h-4 w-4 text-gray-400 transition-transform duration-200 ${showPagesDropdown ? 'rotate-180 text-gray-00' : 'group-hover:text-gray-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                                </svg>
+                            </button>
+                            <div
+                                className={`
+                                    w-full
+                                    transition-all duration-200
+                                    ${showPagesDropdown ? 'max-h-60 opacity-100 visible mt-1' : 'max-h-0 opacity-0 invisible'}
+                                    overflow-hidden
+                                `}
+                            >
+                                <ul className="flex flex-col gap-1 py-0">
+                                    <li
+                                        className={`block pl-10 py-2 text-sm rounded no-underline
+                                            ${route().current('pages.about')
+                                                ? 'bg-blue-50 text-blue-700 font-semibold'
+                                                : 'text-gray-700 hover:bg-gray-50'}
+                                        `}
+                                    >
+                                        <NavLink
+                                            href={route('pages.about')}
+                                            className="no-underline block w-full"
+                                        >
+                                            About
+                                        </NavLink>
+                                    </li>
+                                    <li
+                                        className={`block pl-10 py-2 text-sm rounded no-underline
+                                            ${route().current('pages.contact')
+                                                ? 'bg-blue-50 text-blue-700 font-semibold'
+                                                : 'text-gray-700 hover:bg-gray-50'}
+                                        `}
+                                    >
+                                        <NavLink
+                                            href={route('pages.contact')}
+                                            className="no-underline block w-full"
+                                        >
+                                            Contact
+                                        </NavLink>
+                                    </li>
+                                    {/* <li
+                                        className={`block pl-10 py-2 text-sm rounded no-underline
+                                            ${(
+                                                route().current('category.index') ||
+                                                route().current('sub_category.list')
+                                            )
+                                                ? 'bg-blue-50 text-blue-700 font-semibold'
+                                                : 'text-gray-700 hover:bg-gray-50'}
+                                        `}
+                                    >
+                                        <NavLink
+                                            href={route('category.index')}
+                                            className="no-underline block w-full"
+                                        >
+                                            Categories
+                                        </NavLink>
+                                    </li>
+                                    <li
+                                        className={`block pl-10 py-2 text-sm rounded no-underline
+                                            ${(
+                                                route().current('product.index') ||
+                                                route().current('product.create') || 
+                                                route().current('product.edit') 
+
+                                            )
+                                                ? 'bg-blue-50 text-blue-700 font-semibold'
+                                                : 'text-gray-700 hover:bg-gray-50'}
+                                        `}
+                                    >
+                                        <NavLink
+                                            href={route('product.index')}
+                                            className="no-underline block w-full"
+                                        >
+                                            List Products
+                                        </NavLink>
+                                    </li> */}
+                                </ul>
+                            </div>
+                        </li>
                         {/* ...menu lain... */}
+                        <li
+                            className={`flex items-center gap-2 px-3 py-2 rounded transition relative text-sm
+                                ${route().current('reporting.index')
+                                    ? 'bg-gray-100 text-gray-900 font-semibold'
+                                    : 'text-gray-500 hover:bg-gray-50'}
+                            `}
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <NavLink
+                                href={route('reporting.index')}
+                                className={`no-underline hover:no-underline flex items-center gap-2 w-full text-sm
+                                    ${route().current('reporting.index')
+                                        ? 'bg-gray-100 text-gray-900 font-semibold'
+                                        : 'text-gray-500 hover:bg-gray-50'}
+                                `}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 
+                                    ${route().current('reporting.index') ? 'text-gray-700' : 'text-gray-500'}
+                                `} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M9 17v-6a2 2 0 012-2h2a2 2 0 012 2v6m-6 0h6" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13 7h-1V4a1 1 0 00-2 0v3H9a1 1 0 000 2h6a1 1 0 000-2z" />
+                                </svg>
+                                Reporting
+                            </NavLink>
+                        </li>
                     </ul>
                 </nav>
                 <div className="mt-auto border-t px-4 py-4">

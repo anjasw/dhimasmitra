@@ -13,7 +13,8 @@ class Product extends Model
     protected $fillable = [
         'name', 'slug', 'sku', 'description',
         'price', 'fix_price', 'discount', 'stock',
-        'minimum_stock', 'minimum_order', 'brand_id', 'category_id', 'subcategory_id','weight'
+        'minimum_stock', 'minimum_order', 'brand_id', 'category_id', 'subcategory_id','weight',
+        'user_id', 'status'
     ];
 
     public function images(){

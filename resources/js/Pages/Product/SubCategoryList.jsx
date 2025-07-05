@@ -134,7 +134,7 @@ export default function SubCategoryList({ category, id_category, sub_categories,
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
                         </li>
-                        <li className="inline-flex items-center text-gray-700 font-semibold ml-2">
+                        <li className="inline-flex items-center text-gray-500 ml-2">
                             <Link href={route('category.index')}>Categories</Link>
                         </li>
                         <li>
@@ -142,7 +142,7 @@ export default function SubCategoryList({ category, id_category, sub_categories,
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
                         </li>
-                        <li className="inline-flex items-center text-gray-700 font-semibold ml-2">
+                        <li className="inline-flex items-center text-gray-500 ml-2">
                             {category}
                         </li>
                         <li>

@@ -123,7 +123,12 @@ class ProductController extends Controller
         $brandId = $request->input('brand.value');
         $categoryId = $request->input('category.value');
         $subcategoryId = $request->input('subcategory.value');
-
+        
+        if($request->type === 'save') {
+            $status = 2; // Set status ke draft
+        } else {
+            $status = 1; // Set status ke publish
+        }
         // Buat produk
         $product = Product::create([
             'name' => $request->input('name'),
@@ -140,6 +145,8 @@ class ProductController extends Controller
             'brand_id' => $brandId,
             'category_id' => $categoryId,
             'subcategory_id' => $subcategoryId,
+            'status' => $status,
+            'user_id' => auth()->id(), // Asumsikan ada user yang sedang login
         ]);
 
         // Simpan relasi warna
@@ -184,7 +191,7 @@ class ProductController extends Controller
             }
         }
 
-
+        
 
         return redirect()->route('product.index')->with('success', 'Product berhasil ditambahkan!');
 
@@ -228,29 +235,31 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        // dd($request->hasFile('images'));
+        $product = Product::where('id', $id)->firstOrFail();
+        // dd($request->input('colors.*.value'));
+        // dd($request->type);
 
         // Validasi semua field (required)
         $validated = $request->validate([
             'name' => 'required|string|max:255',
             'sku' => 'required|string|max:255',
-            'description' => 'required|string',
-            'price' => 'required|numeric',
-            'weight' => 'required|numeric',
-            'fixPrice' => 'required|numeric',
-            'discount' => 'required|numeric',
-            'stock' => 'required|integer',
-            'minStock' => 'required|integer',
-            'minOrder' => 'required|integer',
-            'brand.value' => 'required|integer',
-            'category.value' => 'required|integer',
-            'subcategory.value' => 'required|integer',
+            'description' => 'required',
+            'price' => 'required',
+            'weight' => 'required',
+            'fixPrice' => 'required',
+            'discount' => 'required',
+            'stock' => 'required',
+            'minStock' => 'required',
+            'minOrder' => 'required',
+            'brand.value' => 'required',
+            'category.value' => 'required',
+            'subcategory.value' => 'required',
             'colors' => 'required|array|min:1',
-            'colors.*.value' => 'required|string',
+            'colors.*.value' => 'required',
             'sizes' => 'required|array|min:1',
-            'sizes.*.value' => 'required|string',
+            'sizes.*.value' => 'required',
             // 'images' => 'required|array|min:1',
-            'images.*' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            // 'images.*' => 'nullable|image|max:2048',
         ]);
 
         // Ambil ID dari objek brand/category/subcategory
@@ -258,8 +267,14 @@ class ProductController extends Controller
         $categoryId = $request->input('category.value');
         $subcategoryId = $request->input('subcategory.value');
         
+        // $product->update($validated);
+        if($request->type == 'save'){
+            $status = 2; // Set status ke draft
+        } else {
+            $status = 1; // Set status ke publish
+        }
         // Buat produk
-        $product = Product::create([
+        $product->update([
             'name' => $request->input('name'),
             'slug' => Str::slug($request->input('name')) . '-' . uniqid(),
             'sku' => $request->input('sku'),
@@ -274,6 +289,8 @@ class ProductController extends Controller
             'brand_id' => $brandId,
             'category_id' => $categoryId,
             'subcategory_id' => $subcategoryId,
+            'status' => $status, // Set status ke draft atau publish
+            'user_id' => auth()->id(),
         ]);
 
         // Simpan relasi warna
@@ -284,44 +301,89 @@ class ProductController extends Controller
         $sizeIds = collect($request->input('sizes'))->pluck('value')->toArray();
         $product->sizes()->sync($sizeIds);
 
-        // Simpan dan convert setiap gambar ke .webp
-        $isFirstImage = true;
-
-
-        foreach ($request->file('images') as $img) {
-            $filename = uniqid('product_') . '.webp';
-            $relativePath = 'products/' . $filename;
-            $fullPath = storage_path('app/public/' . $relativePath);
-
-            // Baca file gambar asli
-            $imageResource = null;
-            $mime = $img->getMimeType();
-            if ($mime === 'image/jpeg') {
-                $imageResource = imagecreatefromjpeg($img->getPathname());
-            } elseif ($mime === 'image/png') {
-                $imageResource = imagecreatefrompng($img->getPathname());
-            } elseif ($mime === 'image/webp') {
-                $imageResource = imagecreatefromwebp($img->getPathname());
-            }
-
-            if ($imageResource) {
-                imagewebp($imageResource, $fullPath, 80);
-                imagedestroy($imageResource);
-
-                // Simpan ke database
-                ProductImage::create([
-                    'product_id' => $product->id,
-                    'image' => $relativePath,
-                    'is_primary' => $isFirstImage ? 1 : 0,
-                ]);
-
-                $isFirstImage = false;
+        // Hapus gambar lama jika ada gambar baru diupload
+        if ($request->hasFile('images')) {
+            // Ambil semua gambar lama
+            $oldImages = $product->images;
+            foreach ($oldImages as $oldImg) {
+                // Hapus file fisik jika ada
+                $oldPath = storage_path('app/public/' . $oldImg->image);
+                if (file_exists($oldPath)) {
+                    @unlink($oldPath);
+                }
+                // Hapus record di database
+                $oldImg->delete();
             }
         }
 
+        // Simpan dan convert setiap gambar ke .webp
+        $isFirstImage = true;
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $img) {
+                $filename = uniqid('product_') . '.webp';
+                $relativePath = 'products/' . $filename;
+                $fullPath = storage_path('app/public/' . $relativePath);
+
+                // Baca file gambar asli
+                $imageResource = null;
+                $mime = $img->getMimeType();
+                if ($mime === 'image/jpeg') {
+                    $imageResource = imagecreatefromjpeg($img->getPathname());
+                } elseif ($mime === 'image/png') {
+                    $imageResource = imagecreatefrompng($img->getPathname());
+                } elseif ($mime === 'image/webp') {
+                    $imageResource = imagecreatefromwebp($img->getPathname());
+                }
+
+                if ($imageResource) {
+                    imagewebp($imageResource, $fullPath, 80);
+                    imagedestroy($imageResource);
+
+                    // Simpan ke database
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image' => $relativePath,
+                        'is_primary' => $isFirstImage ? 1 : 0,
+                    ]);
+
+                    $isFirstImage = false;
+                }
+            }
+        }
+
+        
+
+        // dd($status);
+
+        // Siapkan data update
+        $updateData = [
+            'name' => $request->input('name'),
+            'slug' => Str::slug($request->input('name')) . '-' . uniqid(),
+            'sku' => $request->input('sku'),
+            'description' => $request->input('description'),
+            'price' => $request->input('price'),
+            'weight' => $request->input('weight'),
+            'fix_price' => $request->input('fixPrice'),
+            'discount' => $request->input('discount'),
+            'stock' => $request->input('stock'),
+            'minimum_stock' => $request->input('minStock'),
+            'minimum_order' => $request->input('minOrder'),
+            'brand_id' => $brandId,
+            'category_id' => $categoryId,
+            'subcategory_id' => $subcategoryId,
+            'status' => $status, // Set status ke draft atau publish
+            'user_id' => auth()->id(),
+        ];
 
 
-        return redirect()->route('product.index')->with('success', 'Product berhasil ditambahkan!');
+        // dd($updateData);
+
+        // if($product->update($updateData)){
+            return redirect()->route('product.index')->with('success', 'Product berhasil diupdate!');
+        // } else {
+            // return redirect()->back()->with('error', 'Gagal mengupdate produk!');
+        // }
+
 
         // return response()->json([
         //     'message' => 'Produk berhasil disimpan',

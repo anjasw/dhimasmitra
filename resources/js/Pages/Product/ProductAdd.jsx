@@ -120,6 +120,15 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
                         </li>
+                        <li className="inline-flex items-center text-gray-500 ml-2">
+                            My Shop
+                        </li>
+                        <li>
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </li>
+                        
                         <li className="hover:text-blue-600 flex items-center">
                             <Link href={route('product.index')}>
                                 Products
@@ -149,7 +158,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                             <div className="bg-white rounded shadow p-6">
                                 <h3 className="font-semibold mb-4 text-lg">Product Name & Description</h3>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Name</label>
+                                    <label className="block mb-1 font-medium">Product Name<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="name"
@@ -162,7 +171,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                 </div>
                                                                     
                                 <div>
-                                    <label className="block mb-1 font-medium">Description</label>
+                                    <label className="block mb-1 font-medium">Description<span className="text-red-400">*</span></label>
                                     
                                     <div
                                         className="mb-3 border rounded resize-y overflow-hidden h-full"
@@ -189,7 +198,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                             <div className="bg-white rounded shadow p-6">
                                 <h3 className="font-semibold mb-4 text-lg">Category</h3>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Category</label>
+                                    <label className="block mb-1 font-medium">Product Category<span className="text-red-400">*</span></label>
                                     <Select
                                         options={categoryOptions}
                                         value={data.category} // Gunakan data.category
@@ -202,7 +211,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors['category.value'] && <div className="text-red-500 text-sm mt-1">{errors['category.value']}</div>}
                                 </div>
                                 <div>
-                                    <label className="block mb-1 font-medium">Product Sub Category</label>
+                                    <label className="block mb-1 font-medium">Product Sub Category<span className="text-red-400">*</span></label>
                                     <Select
                                         options={subcategoryOptions}
                                         value={data.subcategory} // Gunakan data.subcategory
@@ -215,7 +224,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                             <div className="bg-white rounded shadow p-6">
                                 <h3 className="font-semibold mb-4 text-lg">Manage Stock</h3>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Stock Keeping Unit(SKU)</label>
+                                    <label className="block mb-1 font-medium">Stock Keeping Unit(SKU)<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="sku"
@@ -227,7 +236,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors.sku && <div className="text-red-500 text-sm mt-1">{errors.sku}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Stock</label>
+                                    <label className="block mb-1 font-medium">Product Stock<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="stock"
@@ -239,7 +248,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors.stock && <div className="text-red-500 text-sm mt-1">{errors.stock}</div>}
                                 </div>
                                 <div>
-                                    <label className="block mb-1 font-medium">Minimum Stock</label>
+                                    <label className="block mb-1 font-medium">Minimum Stock<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="minStock"
@@ -259,7 +268,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                             <div className="bg-white rounded shadow p-6">
                                 <h3 className="font-semibold mb-4 text-lg">Product Detail</h3>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Brand Name</label>
+                                    <label className="block mb-1 font-medium">Brand Name<span className="text-red-400">*</span></label>
                                     <Select
                                         options={brandOptions}
                                         value={data.brand} // Gunakan data.brand
@@ -269,7 +278,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors['brand.value'] && <div className="text-red-500 text-sm mt-1">{errors['brand.value']}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Colors</label>
+                                    <label className="block mb-1 font-medium">Product Colors<span className="text-red-400">*</span></label>
                                     <Select
                                         options={colorOptions}
                                         value={data.colors} // Gunakan data.colors
@@ -280,7 +289,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors['colors'] && <div className="text-red-500 text-sm mt-1">{errors['colors']}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Size</label>
+                                    <label className="block mb-1 font-medium">Product Size<span className="text-red-400">*</span></label>
                                     <Select
                                         options={sizeOptions}
                                         value={data.sizes} // Gunakan data.sizes
@@ -292,7 +301,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                 </div>
                                 <div>
                                     <label htmlFor="weight" className="block mb-1 font-medium ">
-                                        Berat Produk (gram)
+                                        Berat Produk (gram)<span className="text-red-400">*</span>
                                     </label>
                                     <input
                                         type="number"
@@ -314,7 +323,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                             <div className="bg-white rounded shadow p-6">
                                 <h3 className="font-semibold mb-4 text-lg">Product Pricing</h3>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Price (IDR)</label>
+                                    <label className="block mb-1 font-medium">Price (IDR)<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="price"
@@ -326,7 +335,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors.price && <div className="text-red-500 text-sm mt-1">{errors.price}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Discount (IDR)</label>
+                                    <label className="block mb-1 font-medium">Discount (IDR)<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="discount"
@@ -338,7 +347,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors.discount && <div className="text-red-500 text-sm mt-1">{errors.discount}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Fix Price (IDR)</label>
+                                    <label className="block mb-1 font-medium">Fix Price (IDR)<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="fixPrice"
@@ -348,7 +357,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     />
                                 </div>
                                 <div>
-                                    <label className="block mb-1 font-medium">Minimum Order</label>
+                                    <label className="block mb-1 font-medium">Minimum Order<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="minOrder"
@@ -363,7 +372,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
 
                             {/* Card 5: Product Images */}
                             <div className="bg-white rounded shadow p-6">
-                                <h3 className="font-semibold mb-4 text-lg">Product Images</h3>
+                                <h3 className="font-semibold mb-4 text-lg">Product Images<span className="text-red-400">*</span></h3>
                                 <div className="flex items-center gap-2 mb-4">
                                     <label
                                         htmlFor="file"

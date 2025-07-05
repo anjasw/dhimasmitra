@@ -2,11 +2,10 @@ import Select from 'react-select';
 import React, { useState, useEffect } from 'react';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react'; // pastikan import router
+// import { c } from 'vite/dist/node/moduleRunnerTransport.d-DJ_mE5sf';
 
 export default function ProductList({ products, limit, flash, search, brands, categories }) {
-    console.log(products)
-    console.log(brands)
-    console.log(categories)
+    console.log(products, 'products')
     const [statusFilter, setStatusFilter] = useState('');
     const [authorFilter, setAuthorFilter] = useState('');
     const [showToast, setShowToast] = useState(!!(flash && (flash.success || flash.error)));
@@ -18,6 +17,7 @@ export default function ProductList({ products, limit, flash, search, brands, ca
     const brandOptions = brands?.map(brand => ({ value: brand.id, label: brand.name })) || [];
     const categoryOptions = categories?.map(category => ({ value: category.id, label: category.name })) || [];
 
+    console.log('Flash message:', flash);
 
     useEffect(() => {
         if (flash && (flash.success || flash.error)) {
@@ -91,6 +91,30 @@ export default function ProductList({ products, limit, flash, search, brands, ca
         setDeleteId(null);
     };
 
+    // State untuk modal galeri gambar
+    const [showGallery, setShowGallery] = useState(false);
+    const [galleryImages, setGalleryImages] = useState([]);
+    const [activeImage, setActiveImage] = useState(null);
+
+    // Handler buka galeri
+    const openGallery = (images) => {
+        setGalleryImages(images || []);
+        if (images && images.length > 0) {
+            const primary = images.find(img => img.is_primary === '1');
+            setActiveImage(primary ? primary.image : images[0].image);
+        } else {
+            setActiveImage(null);
+        }
+        setShowGallery(true);
+    };
+
+    // Handler tutup galeri
+    const closeGallery = () => {
+        setShowGallery(false);
+        setGalleryImages([]);
+        setActiveImage(null);
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -103,6 +127,14 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                                 </svg>
                                 Dashboard
                             </Link>
+                        </li>
+                        <li>
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </li>
+                        <li className="inline-flex items-center text-gray-500 ml-2">
+                            My Shop
                         </li>
                         <li>
                             <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
@@ -227,6 +259,7 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                                         <tr>
                                             <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">No</th>
                                             <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Product Name</th>
+                                            <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Gambar</th>
                                             {/* <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Category</th> */}
                                             {/* <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Brand</th> */}
                                             <th scope="col" className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">SKU</th>
@@ -241,6 +274,15 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                                             <tr key={product.id} className="hover:bg-gray-50">
                                                 <td className="px-2 py-2 whitespace-nowrap">{number++}</td>
                                                 <td className="px-2 py-2 whitespace-nowrap">{product.product_name}</td>
+                                                <td className="px-2 py-2 whitespace-nowrap">
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => openGallery(product.images)}
+                                                        className="px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 text-xs"
+                                                    >
+                                                        Lihat Gambar
+                                                    </button>
+                                                </td>
                                                 {/* <td className="px-2 py-2 whitespace-nowrap">{product.category_name}</td> */}
                                                 {/* <td className="px-2 py-2 whitespace-nowrap">{product.brand_name}</td> */}
                                                 <td className="px-2 py-2 whitespace-nowrap">{product.sku}</td>
@@ -311,6 +353,7 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                                                         </svg>
                                                     </button>
                                                 </td>
+                                                
                                             </tr>
                                         ))}
                                     </tbody>
@@ -371,6 +414,52 @@ export default function ProductList({ products, limit, flash, search, brands, ca
                 </div>
             </div>
 
+            {/* Modal Galeri Gambar */}
+            {showGallery && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+                    <div className="bg-white rounded-lg shadow-lg flex w-full max-w-3xl h-[70vh] relative">
+                        {/* Kiri: Gambar aktif */}
+                        <div className="w-1/2 flex items-center justify-center bg-gray-100 p-4">
+                            {activeImage ? (
+                                <img
+                                    src={`/storage/${activeImage}`}
+                                    alt="Product"
+                                    className="max-h-[55vh] max-w-full object-contain rounded"
+                                />
+                            ) : (
+                                <span className="text-gray-400">Tidak ada gambar</span>
+                            )}
+                        </div>
+                        {/* Kanan: List gambar lain */}
+                        <div className="w-1/2 p-4 ">
+                            <div className="flex gap-2 flex-wrap h-auto overflow-y-auto">
+                                {galleryImages && galleryImages.length > 0 ? (
+                                    galleryImages.map((img, idx) => (
+                                        <img
+                                            key={idx}
+                                            src={`/storage/${img.image}`}
+                                            alt={`Product ${idx + 1}`}
+                                            className={`h-20 w-20 object-cover rounded cursor-pointer border ${activeImage === img.image ? 'border-blue-500' : 'border-gray-200'}`}
+                                            onClick={() => setActiveImage(img.image)}
+                                        />
+                                    ))
+                                ) : (
+                                    <span className="text-gray-400">Tidak ada gambar</span>
+                                )}
+                            </div>
+                        </div>
+                        {/* Tombol Tutup kanan bawah */}
+                        <div className="absolute bottom-4 right-6">
+                            <button
+                                onClick={closeGallery}
+                                className="px-6 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 font-semibold shadow"
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }

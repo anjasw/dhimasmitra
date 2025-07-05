@@ -160,6 +160,14 @@ export default function BrandList({ brands, flash }) {
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
                             </svg>
                         </li>
+                        <li className="inline-flex items-center text-gray-500 ml-2">
+                            My Shop
+                        </li>
+                        <li>
+                            <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </li>
                         <li className="inline-flex items-center text-gray-700 font-semibold ml-2">
                             Brands
                         </li>
@@ -233,7 +241,7 @@ export default function BrandList({ brands, flash }) {
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Nama Brand</th>
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Logo Brand</th>
                                             <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-                                            <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Aksi</th>
+                                            <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ACTIONS</th>
                                         </tr>
                                     </thead>
                                     <tbody className="bg-white divide-y divide-gray-200">
@@ -369,7 +377,7 @@ export default function BrandList({ brands, flash }) {
                         </h3>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Logo Brand</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Logo Brand<span className="text-red-400">*</span></label>
                                 <input
                                     type="file"
                                     name="image"
@@ -387,7 +395,7 @@ export default function BrandList({ brands, flash }) {
 
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Brand</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Nama Brand<span className="text-red-400">*</span></label>
                                 <input
                                     type="text"
                                     name="name"
@@ -399,7 +407,7 @@ export default function BrandList({ brands, flash }) {
                                 {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Slug</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Slug<span className="text-red-400">*</span></label>
                                 <input
                                     type="text"
                                     name="slug"
@@ -411,7 +419,7 @@ export default function BrandList({ brands, flash }) {
                                 {errors.slug && <div className="text-red-500 text-xs mt-1">{errors.slug}</div>}
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">Status<span className="text-red-400">*</span></label>
                                 <select
                                     name="status"
                                     value={form.status}
