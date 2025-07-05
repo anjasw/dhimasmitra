@@ -160,12 +160,11 @@ export default function Navbar() {
                         <div className="hidden md:flex md:items-center md:space-x-6 ms-4">
                             <Link
                                 href="/"
-                                className="text-yellow-400 font-medium"
                             >
                                 Home
                             </Link>
 
-                            <div className="relative group">
+                            <div className="relative group h-16 hover:text-yellow-400 transition">
                                 <button
                                     className="flex items-center gap-1"
                                     type="button"
