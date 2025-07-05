@@ -8,7 +8,7 @@ class KategoriController extends Controller
 {
     public function index()
     {
-        
+
         $categories = collect(range(1, 40))->map(function ($i) {
             return [
                 'name' => "Kategori $i",
@@ -28,6 +28,10 @@ class KategoriController extends Controller
 
         return Inertia::render('Front/Kategori', [
             'categories' => $categories,
+            'breadcrumb' => [
+                ['label' => 'Home', 'href' => route('home')],
+                ['label' => 'Kategori', 'href' => route('kategori.index')],
+            ],
         ]);
     }
 
@@ -68,6 +72,12 @@ class KategoriController extends Controller
             ],
             'sub_selected' => $sub,
             'products' => $filteredProducts,
+            'breadcrumb' => array_filter([
+                ['label' => 'Home', 'href' => route('home')],
+                ['label' => 'Kategori', 'href' => route('kategori.index')],
+                ['label' => $kategoriName, 'href' => "/kategori/$slug"],
+                $sub ? ['label' => $subKategoriTerpilih, 'href' => "/kategori/$slug/$sub"] : null,
+            ]),
         ]);
     }
 }

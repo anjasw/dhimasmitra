@@ -5,10 +5,12 @@ import { useState } from "react";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import MarketplaceSection from "./Components/MarketplaceSection";
+import Breadcrumb from "./Components/Breadcrumb";
 
 export default function Kategori() {
     const { props } = usePage();
     const allCategories = props.categories ?? [];
+    const breadcrumb = props.breadcrumb ?? [];
 
     const [search, setSearch] = useState("");
     const [visibleCount, setVisibleCount] = useState(12);
@@ -24,6 +26,7 @@ export default function Kategori() {
         <div className="bg-gray-100">
             <Head title="Kategori" />
             <Navbar />
+            {breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
 
             <div className="py-10 px-4 min-h-screen">
                 {/* Heading + Search */}

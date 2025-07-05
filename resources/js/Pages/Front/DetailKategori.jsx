@@ -3,15 +3,18 @@ import { Head, Link, usePage } from "@inertiajs/react";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import MarketplaceSection from "./Components/MarketplaceSection";
+import Breadcrumb from "./Components/Breadcrumb";
 
 export default function DetailKategori() {
     const { props } = usePage();
     const { kategori, sub_selected, products } = props;
+    const breadcrumb = props.breadcrumb ?? [];
 
     return (
         <div className="bg-gray-100">
             <Head title={kategori.name} />
             <Navbar />
+            {breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
 
             <div className="bg-gray-100 min-h-screen py-10">
                 <div className="container mx-auto p-4">

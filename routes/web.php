@@ -15,7 +15,7 @@ Route::get('/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion'    => PHP_VERSION,
     ]);
-});
+})->name('home');;
 
 Route::get('/order', function () {
     return Inertia::render('Front/Order');

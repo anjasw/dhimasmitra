@@ -177,8 +177,8 @@ export default function Navbar() {
                                 </button>
 
                                 <div
-                                    className="fixed top-16 left-0 w-screen bg-white text-black shadow-md z-40 py-6
-        opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200"
+                                    className="fixed top-16 left-0 w-screen bg-[#2a2a2a] text-white shadow-md z-40 py-6
+    opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200"
                                 >
                                     <div className="max-w-screen-xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 text-sm">
                                         {categories
@@ -187,7 +187,7 @@ export default function Navbar() {
                                                 <div key={idx}>
                                                     <Link
                                                         href={category.href}
-                                                        className="font-semibold hover:bg-yellow-200 transition px-2 block mb-1"
+                                                        className="font-semibold hover:text-yellow-400 transition px-2 block mb-1"
                                                     >
                                                         {category.name}
                                                     </Link>
@@ -208,7 +208,7 @@ export default function Navbar() {
                                                                             href={
                                                                                 sub.href
                                                                             }
-                                                                            className="hover:bg-gray-600 hover:text-white transition px-2"
+                                                                            className="hover:text-yellow-300 transition px-2"
                                                                         >
                                                                             {
                                                                                 sub.name
@@ -224,7 +224,7 @@ export default function Navbar() {
                                                                     href={
                                                                         category.href
                                                                     }
-                                                                    className="text-yellow-800 hover:bg-yellow-200 transition px-2 font-medium"
+                                                                    className="text-white hover:text-yellow-400 transition px-2 font-medium"
                                                                 >
                                                                     Lihat Semua
                                                                     Subkategori
@@ -237,9 +237,10 @@ export default function Navbar() {
 
                                         {categories.length > 10 && (
                                             <div className="col-span-full text-center mt-4">
+                                                <hr className="mb-4" />
                                                 <Link
                                                     href="/kategori"
-                                                    className="inline-block text-yellow-800 font-semibold hover:bg-yellow-200 transition px-2"
+                                                    className="inline-block text-white font-semibold hover:text-yellow-400 transition px-2"
                                                 >
                                                     Lihat Semua Kategori
                                                 </Link>
