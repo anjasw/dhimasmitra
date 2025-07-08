@@ -9,6 +9,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PagesController;
+use App\Http\Controllers\SliderController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
@@ -93,6 +94,11 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::get('/pages/contact', [PagesController::class, 'contact'])->name('pages.contact');
         Route::post('/pages/contact', [PagesController::class, 'saveContact'])->name('contact.save');
         Route::get('/reporting', [PagesController::class, 'reporting'])->name('reporting.index');
+        
+        Route::get('/pages/slider', [SliderController::class, 'index'])->name('pages.slider');
+        Route::post('/pages/slider/add', [SliderController::class, 'store'])->name('pages.slider.add');
+        Route::post('/pages/slider/update/{slider}', [SliderController::class, 'update'])->name('pages.slider.update');
+        Route::delete('/pages/slider/delete/{slider}', [SliderController::class, 'destroy'])->name('pages.slider.delete');
     });
 });
 

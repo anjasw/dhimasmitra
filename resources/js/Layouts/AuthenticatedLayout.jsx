@@ -39,7 +39,8 @@ export default function AuthenticatedLayout({ header, children }) {
 
         if(
             route().current('pages.about') ||
-            route().current('pages.contact')
+            route().current('pages.contact') ||
+            route().current('pages.slider')
         ){
             setShowPagesDropdown(true)
         }else{
@@ -288,14 +289,15 @@ export default function AuthenticatedLayout({ header, children }) {
                                 className={`flex items-center gap-2 px-4 py-2 rounded transition w-full text-left text-sm
                                     ${
                                         route().current('pages.about') || 
-                                        route().current('pages.contact')
+                                        route().current('pages.contact') ||
+                                        route().current('pages.slider')
                                         ? 'bg-gray-100 text-gray-900 font-semibold'
                                         : 'text-gray-500 hover:bg-gray-50'}
                                 `}
                                 onClick={() => setShowPagesDropdown((v) => !v)}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5
-                                        ${route().current('pages.about') || route().current('pages.contact') ? 'text-gray-700' : 'text-gray-500'}
+                                        ${route().current('pages.about') || route().current('pages.contact') || route().current('pages.slider') ? 'text-gray-700' : 'text-gray-500'}
                                 `} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 7V3a1 1 0 011-1h8a1 1 0 011 1v18a1 1 0 01-1 1H8a1 1 0 01-1-1v-4" />
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M7 7h8M7 11h8M7 15h4" />
@@ -314,6 +316,20 @@ export default function AuthenticatedLayout({ header, children }) {
                                 `}
                             >
                                 <ul className="flex flex-col gap-1 py-0">
+                                    <li
+                                        className={`block pl-10 py-2 text-sm rounded no-underline
+                                            ${route().current('pages.slider')
+                                                ? 'bg-blue-50 text-blue-700 font-semibold'
+                                                : 'text-gray-700 hover:bg-gray-50'}
+                                        `}
+                                    >
+                                        <NavLink
+                                            href={route('pages.slider')}
+                                            className="no-underline block w-full"
+                                        >
+                                            Slider
+                                        </NavLink>
+                                    </li>
                                     <li
                                         className={`block pl-10 py-2 text-sm rounded no-underline
                                             ${route().current('pages.about')

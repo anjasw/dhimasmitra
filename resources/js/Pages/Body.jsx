@@ -6,11 +6,11 @@ import ProductList from "./Front/Components/ProductList";
 import Blog from "./Front/Components/Blog";
 import MarketplaceSection from "./Front/Components/MarketplaceSection";
 
-export default function Body({brands}) {
+export default function Body({brands, sliders}) {
     console.log(brands)
     return (
         <main className="bg-gray-100">
-            <Hero />
+            <Hero sliders={sliders} />
             <Brand brands={brands}/>
             <Category />
             <WhyUs />

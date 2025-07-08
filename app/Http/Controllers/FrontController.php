@@ -22,12 +22,15 @@ class FrontController extends Controller
         $phpVersion = PHP_VERSION;
 
         $brands = Brand::query('status', 1)->limit(18)->get();
+        
+        $sliders = \App\Models\Slider::where('is_active', 1)->orderBy('order')->get();
         // dd($brands);
         return Inertia::render('Welcome', [
             'brands' => $brands,
             'laravelVersion' => $laravelVersion,
             'phpVersion' => $phpVersion,
-            'listKota' => $listKota
+            'listKota' => $listKota,
+            'sliders' => $sliders
         ]);
     }
 }

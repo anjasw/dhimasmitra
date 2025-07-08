@@ -4,14 +4,14 @@ import { useState, useRef } from "react";
 
 import { Link } from "@inertiajs/react";
 
-export default function Hero() {
+export default function Hero({sliders}) {
     useEffect(() => {}, []);
 
-    const images = [
-        { src: "/assets/carousel-3.jpg", href: "/produk-3" },
-        { src: "/assets/carousel-2.jpg", href: "/produk-2" },
-        { src: "/assets/carousel-1.jpg", href: "/produk-1" },
-    ];
+    console.log(sliders);
+    const images = sliders.map(slider => ({
+        src: slider.image,
+        href: slider.link
+    }));
 
     const [current, setCurrent] = useState(0);
     const [isSwiping, setIsSwiping] = useState(false);
@@ -127,7 +127,7 @@ export default function Hero() {
                                             className="block"
                                         >
                                             <img
-                                                src={img.src}
+                                                src={`/storage/${img.src}`}
                                                 alt={`Slide ${idx + 1}`}
                                                 className="w-full h-32 md:h-48 object-cover shadow-md pointer-events-none select-none"
                                                 draggable={false}
