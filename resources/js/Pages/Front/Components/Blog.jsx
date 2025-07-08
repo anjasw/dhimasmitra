@@ -52,7 +52,7 @@ export default function Blog() {
                 {articles.map((article, index) => (
                     <div
                         key={index}
-                        className="bg-white shadow rounded overflow-hidden"
+                        className="bg-white shadow overflow-hidden"
                     >
                         <div className="relative">
                             <img
@@ -60,15 +60,15 @@ export default function Blog() {
                                 alt={article.title}
                                 className="w-full h-32 object-cover"
                             />
-                            <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 font-bold rounded">
+                            <span className="absolute top-2 left-2 bg-red-600 text-white text-xs px-2 py-1 font-bold">
                                 ARTIKEL
                             </span>
                         </div>
                         <div className="p-4 space-y-2">
-                            <h3 className="text-sm font-bold leading-tight">
+                            <h3 className="text-sm font-bold leading-tight line-clamp-1">
                                 {article.title}
                             </h3>
-                            <p className="text-xs text-gray-600">
+                            <p className="text-xs text-gray-600 line-clamp-3">
                                 {article.excerpt}
                             </p>
                             <p className="text-xs text-[#A34716] font-semibold">
