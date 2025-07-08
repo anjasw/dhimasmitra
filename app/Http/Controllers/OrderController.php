@@ -10,4 +10,9 @@ class OrderController extends Controller
     {
         return Inertia::render('Pages/Front/Order');
     }
+
+    public function list()
+    {
+        return Inertia::render('Orders/OrdersList');
+    }
 }

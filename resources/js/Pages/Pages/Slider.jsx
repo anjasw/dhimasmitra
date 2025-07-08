@@ -197,7 +197,7 @@ export default function Slider({ sliders = [], flash }) {
                                 <td className="px-3 py-2 flex gap-2">
                                     <button
                                         onClick={() => openModal(slider)}
-                                        className="px-2 py-1 text-blue-600 rounded hover:bg-yellow-500 text-xs"
+                                        className="px-2 py-1 text-blue-600 rounded hover:text-blue-700 text-xs"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"
@@ -212,7 +212,7 @@ export default function Slider({ sliders = [], flash }) {
                                     </button>
                                     <button
                                         onClick={() => handleDelete(slider.id)}
-                                        className="px-2 py-1 text-red-600 rounded hover:bg-red-700 text-xs"
+                                        className="px-2 py-1 text-red-600 rounded hover:text-red-700 text-xs"
                                     >
                                         <svg
                                             xmlns="http://www.w3.org/2000/svg"

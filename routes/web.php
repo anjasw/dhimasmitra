@@ -10,6 +10,7 @@ use App\Http\Controllers\SubCategoryController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\SliderController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
@@ -99,6 +100,8 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::post('/pages/slider/add', [SliderController::class, 'store'])->name('pages.slider.add');
         Route::post('/pages/slider/update/{slider}', [SliderController::class, 'update'])->name('pages.slider.update');
         Route::delete('/pages/slider/delete/{slider}', [SliderController::class, 'destroy'])->name('pages.slider.delete');
+
+        Route::get('/orders', [OrderController::class, 'list'])->name('orders');
     });
 });
 

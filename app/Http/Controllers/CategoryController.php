@@ -166,6 +166,8 @@ class CategoryController extends Controller
                 // Simpan path ke database (relatif ke public)
                 $validated['image'] = 'category/' . $filename;
             }
+        }else{
+            unset($validated['image']);
         }
 
         $category->update($validated);

@@ -478,12 +478,13 @@ export default function ProductEdit({ brands = [], categories = [], subcategorie
                                 </button>
 
                                 <button
-                                    type="submit" // Penting: type="submit" untuk memicu onSubmit form
+                                    type="submit"
                                     className="px-6 py-1 text-white rounded hover:bg-blue-700 flex"
                                     style={{ backgroundColor: "#3cb69f" }}
-                                    onClick={() => setData('type', 'add')} // Set type saat tombol ini diklik
-                                    disabled={processing} // Nonaktifkan tombol saat processing
+                                    onClick={() => setData('type', 'add')}
+                                    disabled={processing}
                                 >
+                                    {/* Ganti icon di sini */}
                                     <svg
                                         xmlns="http://www.w3.org/2000/svg"
                                         className="h-8 w-8 text-grey"
@@ -492,9 +493,10 @@ export default function ProductEdit({ brands = [], categories = [], subcategorie
                                         stroke="currentColor"
                                         strokeWidth={2}
                                     >
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182l-9.75 9.75a2 2 0 01-.878.513l-4 1a1 1 0 01-1.213-1.213l1-4a2 2 0 01.513-.878l9.75-9.75z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-2-2" />
                                     </svg>
-                                    <span className="my-auto">{processing ? 'Adding...' : 'Add Produk'}</span>
+                                    <span className="my-auto">{processing ? 'Updating...' : 'Update Produk'}</span>
                                 </button>
                             </div>
                             

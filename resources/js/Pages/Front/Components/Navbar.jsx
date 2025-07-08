@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "@inertiajs/react";
 
-export default function Navbar() {
+export default function Navbar({ categories, carts }) {
     const [offcanvasOpen, setOffcanvasOpen] = useState(false);
     const [showSubmenu, setShowSubmenu] = useState(false);
 
@@ -9,152 +9,171 @@ export default function Navbar() {
     const cartRef = useRef(null);
     const cartButtonRef = useRef(null);
 
-    const cartItems = [
-        {
-            id: 1,
-            name: "Produk A",
-            qty: 2,
-            price: 50000,
-            href: "/produk-a",
-            image: "/assets/dummy-image.jpg",
-        },
-        {
-            id: 2,
-            name: "Produk B",
-            qty: 1,
-            price: 75000,
-            href: "/produk-b",
-            image: "/assets/dummy-image.jpg",
-        },
-    ];
 
-    const categories = [
-        {
-            name: "Produk A",
-            href: "/kategori/produk-a",
-            subcategories: [
-                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
-                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
-                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
-                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
-                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
-            ],
-        },
-        {
-            name: "Produk B",
-            href: "/kategori/produk-b",
-            subcategories: [
-                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
-                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
-                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
-            ],
-        },
-        {
-            name: "Produk C",
-            href: "/kategori/produk-c",
-            subcategories: [],
-        },
-        {
-            name: "Produk D",
-            href: "/kategori/produk-a",
-            subcategories: [
-                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
-                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
-                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
-                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
-                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
-            ],
-        },
-        {
-            name: "Produk E",
-            href: "/kategori/produk-b",
-            subcategories: [
-                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
-                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
-                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
-            ],
-        },
-        {
-            name: "Produk F",
-            href: "/kategori/produk-c",
-            subcategories: [],
-        },
-        {
-            name: "Produk G",
-            href: "/kategori/produk-a",
-            subcategories: [
-                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
-                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
-                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
-                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
-                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
-            ],
-        },
-        {
-            name: "Produk H",
-            href: "/kategori/produk-b",
-            subcategories: [
-                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
-                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
-                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
-            ],
-        },
-        {
-            name: "Produk I",
-            href: "/kategori/produk-c",
-            subcategories: [],
-        },
-        {
-            name: "Produk J",
-            href: "/kategori/produk-a",
-            subcategories: [
-                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
-                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
-                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
-                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
-                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
-            ],
-        },
-        {
-            name: "Produk K",
-            href: "/kategori/produk-b",
-            subcategories: [
-                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
-                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
-                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
-            ],
-        },
-        {
-            name: "Produk L",
-            href: "/kategori/produk-c",
-            subcategories: [],
-        },
-        {
-            name: "Produk M",
-            href: "/kategori/produk-a",
-            subcategories: [
-                { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
-                { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
-                { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
-                { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
-                { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
-            ],
-        },
-        {
-            name: "Produk N",
-            href: "/kategori/produk-b",
-            subcategories: [
-                { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
-                { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
-                { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
-            ],
-        },
-        {
-            name: "Produk O",
-            href: "/kategori/produk-c",
-            subcategories: [],
-        },
-    ];
+    const cartItems = carts.map(item => ({
+        id: item.id,
+        name: item.product.name,
+        qty: item.quantity,
+        price: item.product.fix_price_formatted,
+        image: item.product.images[0] ? "/storage/" + item.product.images[0].image : "/assets/dummy-image.jpg",
+    }));
+
+    console.log(cartItems);
+    // const cartItems = [
+    //     {
+    //         id: 1,
+    //         name: "Produk A",
+    //         qty: 2,
+    //         price: 50000,
+    //         href: "/produk-a",
+    //         image: "/assets/dummy-image.jpg",
+    //     },
+    //     {
+    //         id: 2,
+    //         name: "Produk B",
+    //         qty: 1,
+    //         price: 75000,
+    //         href: "/produk-b",
+    //         image: "/assets/dummy-image.jpg",
+    //     },
+    // ];
+
+    const category = categories.map(category => ({
+        name: category.name,
+        href: `/kategori/${category.slug}`,
+        subcategories: category.subcategories.map(subcategory => ({
+            name: subcategory.name,
+            href: `/kategori/${category.slug}/${subcategory.slug}`
+        }))
+    }));
+    
+    // const categories = [
+    //     {
+    //         name: "Produk A",
+    //         href: "/kategori/produk-a",
+    //         subcategories: [
+    //             { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+    //             { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+    //             { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+    //             { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+    //             { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk B",
+    //         href: "/kategori/produk-b",
+    //         subcategories: [
+    //             { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+    //             { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+    //             { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk C",
+    //         href: "/kategori/produk-c",
+    //         subcategories: [],
+    //     },
+    //     {
+    //         name: "Produk D",
+    //         href: "/kategori/produk-a",
+    //         subcategories: [
+    //             { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+    //             { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+    //             { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+    //             { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+    //             { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk E",
+    //         href: "/kategori/produk-b",
+    //         subcategories: [
+    //             { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+    //             { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+    //             { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk F",
+    //         href: "/kategori/produk-c",
+    //         subcategories: [],
+    //     },
+    //     {
+    //         name: "Produk G",
+    //         href: "/kategori/produk-a",
+    //         subcategories: [
+    //             { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+    //             { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+    //             { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+    //             { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+    //             { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk H",
+    //         href: "/kategori/produk-b",
+    //         subcategories: [
+    //             { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+    //             { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+    //             { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk I",
+    //         href: "/kategori/produk-c",
+    //         subcategories: [],
+    //     },
+    //     {
+    //         name: "Produk J",
+    //         href: "/kategori/produk-a",
+    //         subcategories: [
+    //             { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+    //             { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+    //             { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+    //             { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+    //             { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk K",
+    //         href: "/kategori/produk-b",
+    //         subcategories: [
+    //             { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+    //             { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+    //             { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk L",
+    //         href: "/kategori/produk-c",
+    //         subcategories: [],
+    //     },
+    //     {
+    //         name: "Produk M",
+    //         href: "/kategori/produk-a",
+    //         subcategories: [
+    //             { name: "Sub A1", href: "/kategori/produk-a/sub-a1" },
+    //             { name: "Sub A2", href: "/kategori/produk-a/sub-a2" },
+    //             { name: "Sub A3", href: "/kategori/produk-a/sub-a3" },
+    //             { name: "Sub A4", href: "/kategori/produk-a/sub-a4" },
+    //             { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk N",
+    //         href: "/kategori/produk-b",
+    //         subcategories: [
+    //             { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
+    //             { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
+    //             { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
+    //         ],
+    //     },
+    //     {
+    //         name: "Produk O",
+    //         href: "/kategori/produk-c",
+    //         subcategories: [],
+    //     },
+    // ];
 
     useEffect(() => {
         function handleClickOutside(event) {
@@ -241,7 +260,7 @@ export default function Navbar() {
     opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200"
                                 >
                                     <div className="max-w-screen-xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 text-sm">
-                                        {categories
+                                        {category
                                             .slice(0, 10)
                                             .map((category, idx) => (
                                                 <div key={idx}>
@@ -295,7 +314,7 @@ export default function Navbar() {
                                                 </div>
                                             ))}
 
-                                        {categories.length > 10 && (
+                                        {category.length > 10 && (
                                             <div className="col-span-full text-center mt-4">
                                                 <hr className="mb-4 border-t-1 border-gray-600 " />
                                                 <Link
@@ -406,7 +425,6 @@ export default function Navbar() {
                                                                             </div>
                                                                             <div className="text-xs text-gray-600">
                                                                                 Harga:
-                                                                                Rp
                                                                                 {item.price.toLocaleString()}
                                                                             </div>
                                                                         </div>
@@ -469,7 +487,7 @@ export default function Navbar() {
                         >
                             Home
                         </Link>
-                        {categories.slice(0, 10).map((category, index) => {
+                        {category.slice(0, 10).map((category, index) => {
                             const [openSub, setOpenSub] = useState(false);
 
                             return (
@@ -538,7 +556,7 @@ export default function Navbar() {
                             );
                         })}
 
-                        {categories.length > 10 && (
+                        {category.length > 10 && (
                             <Link
                                 href="/kategori"
                                 onClick={() => setOffcanvasOpen(false)}
