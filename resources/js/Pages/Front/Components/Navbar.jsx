@@ -341,9 +341,14 @@ export default function Navbar() {
                                 {cartOpen && (
                                     <div
                                         ref={cartRef}
-                                        className="hidden md:block absolute right-0 mt-2 w-64 bg-white text-black shadow-lg z-50"
+                                        className="hidden md:block absolute right-0 mt-4 w-64 bg-white text-black shadow-lg z-50"
                                     >
-                                        <div className="p-4">
+                                        <div className="p-4 relative">
+                                            <span className="absolute -top-5 -right-1 text-white">
+                                                <span className="material-symbols-outlined text-4xl">
+                                                    arrow_drop_up
+                                                </span>
+                                            </span>
                                             {cartItems.length === 0 ? (
                                                 <div className="text-center text-sm text-gray-500">
                                                     Keranjang kosong.
