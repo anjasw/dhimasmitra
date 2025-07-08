@@ -24,18 +24,19 @@
 .scrollbar-left > * {
   direction: ltr;
 }
-a, a:hover, a:focus {
-  text-decoration: none !important;
-  border-bottom: none !important;
-  box-shadow: none !important;
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
-input[type=text]:focus{
-  box-shadow: none;
-}
-
-body{
-  scroll-behavior: smooth;
-  -webkit-font-smoothing: antialiased;
-  transition: 0.3s;
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
