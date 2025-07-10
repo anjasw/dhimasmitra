@@ -345,7 +345,7 @@ export default function Navbar() {
                                     >
                                         <div className="p-4 relative">
                                             <span className="absolute -top-5 -right-1 text-white">
-                                                <span className="material-symbols-outlined text-4xl">
+                                                <span className="material-symbols-outlined text-4xl cursor-default">
                                                     arrow_drop_up
                                                 </span>
                                             </span>
