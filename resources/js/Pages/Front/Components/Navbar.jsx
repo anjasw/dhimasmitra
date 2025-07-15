@@ -417,13 +417,13 @@ export default function Navbar() {
                                                     </ul>
 
                                                     <Link
-                                                        href="/order"
+                                                        href="/cart"
                                                         onClick={() =>
                                                             setCartOpen(false)
                                                         }
                                                         className="mt-4 block w-full bg-yellow-400 text-center text-black font-bold py-2 hover:bg-yellow-300"
                                                     >
-                                                        Checkout
+                                                        Lihat
                                                     </Link>
                                                 </>
                                             )}
@@ -638,15 +638,15 @@ export default function Navbar() {
                         )}
                     </div>
 
-                    {/* Sticky Checkout Button */}
+                    {/* Sticky Button */}
                     {cartItems.length > 0 && (
                         <div className="mt-4 pt-4 border-t border-gray-700">
                             <Link
-                                href="/order"
+                                href="/cart"
                                 onClick={() => setCartOpen(false)}
                                 className="block bg-yellow-400 text-center text-black font-bold py-2 hover:bg-yellow-300"
                             >
-                                Checkout
+                                Lihat
                             </Link>
                         </div>
                     )}

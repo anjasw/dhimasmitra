@@ -8,7 +8,7 @@ export default function Footer() {
                     {/* Kolom Kiri */}
                     <div className='md:col-span-2'>
                         <div className="flex items-center gap-2 mb-4">
-                            <img src="/logo.png" alt="Logo" className="h-10" />
+                            <img src="/logo-dhimasgroup.png" alt="Logo" className="h-20" />
                         </div>
                         <ul className="space-y-2 text-sm">
                             <li className="flex items-start gap-2">
