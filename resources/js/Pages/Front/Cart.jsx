@@ -107,7 +107,14 @@ export default function Cart() {
     );
 }
 
+import { router } from "@inertiajs/react";
+
 function Ringkasan({ total }) {
+    const handleBeli = () => {
+        // Redirect ke halaman order
+        router.visit('/order');
+    };
+
     return (
         <div className="bg-white p-4">
             <h2 className="text-lg font-semibold mb-2">Ringkasan belanja</h2>
@@ -118,18 +125,13 @@ function Ringkasan({ total }) {
                 </span>
             </div>
 
-            {/* <div className="mb-3">
-                <button className="w-full bg-green-50 border border-green-400 text-green-700 text-sm py-2 rounded-lg flex items-center justify-between px-3">
-                    <span>Pilih barang dulu sebelum pakai promo</span>
-                    <span className="material-symbols-outlined text-base">
-                        chevron_right
-                    </span>
-                </button>
-            </div> */}
-
-            <button className="bg-yellow-400 text-black font-semibold px-10 py-2 shadow hover:bg-yellow-300 transition w-full">
+            <button
+                onClick={handleBeli}
+                className="bg-yellow-400 text-black font-semibold px-10 py-2 shadow hover:bg-yellow-300 transition w-full"
+            >
                 Beli
             </button>
         </div>
     );
 }
+
