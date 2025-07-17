@@ -1,24 +1,26 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "@inertiajs/react";
 
-export default function Navbar({ categories, carts }) {
+export default function Navbar({ category, carts }) {
     const [offcanvasOpen, setOffcanvasOpen] = useState(false);
     const [showSubmenu, setShowSubmenu] = useState(false);
 
+    console.log(carts, 'carts')
     const [cartOpen, setCartOpen] = useState(false);
     const cartRef = useRef(null);
     const cartButtonRef = useRef(null);
 
-
-    const cartItems = carts.map(item => ({
-        id: item.id,
-        name: item.product.name,
-        qty: item.quantity,
-        price: item.product.fix_price_formatted,
-        image: item.product.images[0] ? "/storage/" + item.product.images[0].image : "/assets/dummy-image.jpg",
+    const cartItems = carts.map((cart) => ({
+        id: cart.id,
+        name: cart.name,
+        qty: cart.qty,
+        price: cart.product.fix_price_formatted,
+        href: cart.href,
+        image: cart.product.images[0] ? '/storage/' + cart.product.images[0].image : "/assets/dummy-image.jpg",
     }));
 
-    console.log(cartItems);
+    console.log(cartItems, 'cartItems')
+
     // const cartItems = [
     //     {
     //         id: 1,
@@ -37,16 +39,14 @@ export default function Navbar({ categories, carts }) {
     //         image: "/assets/dummy-image.jpg",
     //     },
     // ];
+    console.log(category);
 
-    const category = categories.map(category => ({
-        name: category.name,
-        href: `/kategori/${category.slug}`,
-        subcategories: category.subcategories.map(subcategory => ({
-            name: subcategory.name,
-            href: `/kategori/${category.slug}/${subcategory.slug}`
-        }))
+    const categories = category.map((cat) => ({
+        name: cat.name,
+        href: cat.href,
+        subcategories: cat.subcategories,
     }));
-    
+
     // const categories = [
     //     {
     //         name: "Produk A",
@@ -162,7 +162,6 @@ export default function Navbar({ categories, carts }) {
     //     {
     //         name: "Produk N",
     //         href: "/kategori/produk-b",
-    //         subcategories: [
     //             { name: "Sub B1", href: "/kategori/produk-b/sub-b1" },
     //             { name: "Sub B2", href: "/kategori/produk-b/sub-b2" },
     //             { name: "Sub B3", href: "/kategori/produk-b/sub-b3" },
@@ -233,11 +232,13 @@ export default function Navbar({ categories, carts }) {
                     <div className="flex items-center justify-between h-16">
                         {/* Logo */}
                         <div className="flex items-center gap-2">
-                            <img
-                                src="/logo.png"
-                                alt="Logo"
-                                className="h-8 w-auto"
-                            />
+                            <Link href="/">
+                                <img
+                                    src="/logo.png"
+                                    alt="Logo"
+                                    className="h-8 w-auto"
+                                />
+                            </Link>
                         </div>
 
                         {/* Desktop Menu */}
@@ -260,7 +261,7 @@ export default function Navbar({ categories, carts }) {
     opacity-0 invisible group-hover:visible group-hover:opacity-100 transition-all duration-200"
                                 >
                                     <div className="max-w-screen-xl mx-auto px-6 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 text-sm">
-                                        {category
+                                        {categories
                                             .slice(0, 10)
                                             .map((category, idx) => (
                                                 <div key={idx}>
@@ -314,7 +315,7 @@ export default function Navbar({ categories, carts }) {
                                                 </div>
                                             ))}
 
-                                        {category.length > 10 && (
+                                        {categories.length > 10 && (
                                             <div className="col-span-full text-center mt-4">
                                                 <hr className="mb-4 border-t-1 border-gray-600 " />
                                                 <Link
@@ -424,8 +425,7 @@ export default function Navbar({ categories, carts }) {
                                                                                 }
                                                                             </div>
                                                                             <div className="text-xs text-gray-600">
-                                                                                Harga:
-                                                                                {item.price.toLocaleString()}
+                                                                                Harga: {item.price}
                                                                             </div>
                                                                         </div>
                                                                     </Link>
@@ -487,7 +487,7 @@ export default function Navbar({ categories, carts }) {
                         >
                             Home
                         </Link>
-                        {category.slice(0, 10).map((category, index) => {
+                        {categories.slice(0, 10).map((category, index) => {
                             const [openSub, setOpenSub] = useState(false);
 
                             return (
@@ -556,7 +556,7 @@ export default function Navbar({ categories, carts }) {
                             );
                         })}
 
-                        {category.length > 10 && (
+                        {categories.length > 10 && (
                             <Link
                                 href="/kategori"
                                 onClick={() => setOffcanvasOpen(false)}
@@ -645,8 +645,7 @@ export default function Navbar({ categories, carts }) {
                                                     Qty: {item.qty}
                                                 </div>
                                                 <div className="text-xs text-gray-400">
-                                                    Harga: Rp
-                                                    {item.price.toLocaleString()}
+                                                    Harga: {item.price}
                                                 </div>
                                             </div>
                                         </Link>

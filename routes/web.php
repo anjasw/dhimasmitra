@@ -11,6 +11,7 @@ use App\Http\Controllers\FrontController;
 use App\Http\Controllers\PagesController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
@@ -18,15 +19,21 @@ use Inertia\Inertia;
 
 Route::get('/', [FrontController::class, 'home'])->name('home');
 
-Route::get('/order', function () {
-    return Inertia::render('Front/Order');
-})->name('order.index');
+Route::get('/order', [FrontController::class, 'order'])->name('order.index');
 
 Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
 Route::get('/kategori/{slug`}', [KategoriController::class, 'show'])->name('kategori.show');
 Route::get('/kategori/{slug}/{sub?}', [KategoriController::class, 'show'])->name('kategori.show');
 
+Route::get('/account/order/success', [FrontController::class, 'AccountOrderSuccess'])->name('account.order.success');
+Route::get('/account/order/fail', [FrontController::class, 'AccountOrderFail'])->name('account.order.fail');
+Route::get('/account/order/error', [FrontController::class, 'AccountOrderError'])->name('account.order.error');
 
+Route::post('/snap/token', [PaymentController::class, 'getSnapToken']);
+
+Route::get('/payment/notification/success', [PaymentController::class, 'handlePaymentMidtrans'])->name('notification.success');
+Route::get('/payment/notification/pay_account', [PaymentController::class, 'handlePayAccount'])->name('notification.pay_account');
+// Route::get('/payment/success', [PaymentController::class, 'PaymentSuccess'])->name('payment.success');
 
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 

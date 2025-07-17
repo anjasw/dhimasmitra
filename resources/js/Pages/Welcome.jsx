@@ -14,7 +14,7 @@ export default function Welcome({ brands, laravelVersion, phpVersion, listKota, 
                 <meta name="description" content="Home page" />
                 
             </Head>
-            <Navbar categories={categories} carts={carts} />
+            <Navbar category={categories} carts={carts} />
             <Body brands={brands} sliders={sliders} />
             <Footer laravelVersion={laravelVersion} phpVersion={phpVersion} />
         </>
