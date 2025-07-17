@@ -19,7 +19,16 @@ use Inertia\Inertia;
 
 Route::get('/', [FrontController::class, 'home'])->name('home');
 
+Route::get('/cart', function () {
+    return Inertia::render('Front/Cart');
+})->name('cart.index');
+
+// Route::get('/order', function () {
+//     return Inertia::render('Front/Order');
+// })->name('order.index');
+
 Route::get('/order', [FrontController::class, 'order'])->name('order.index');
+
 
 Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori.index');
 Route::get('/kategori/{slug`}', [KategoriController::class, 'show'])->name('kategori.show');
