@@ -12,6 +12,8 @@ use App\Http\Controllers\PagesController;
 use App\Http\Controllers\SliderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\ProfileUserController;
+
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 // use App\Http\Middleware\AdminMiddleware;
@@ -51,6 +53,7 @@ Route::middleware(['auth', 'verified'])->group(function (){
     Route::post('/cart/update', [FrontController::class, 'updateCart'])->middleware(['auth', 'verified']);
     
     Route::post('/cart/checkout', [FrontController::class, 'checkoutCart']);
+    Route::get('/profile', [ProfileUserController::class, 'index'])->name('profile');
 });
 
 // Route untuk produk detail berdasarkan slug

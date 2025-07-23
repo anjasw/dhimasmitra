@@ -3,7 +3,7 @@ import { Head } from "@inertiajs/react";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 
-export default function ProfileUser() {
+export default function ProfileUser({ categories, carts, isLoggedIn, role }) {
     const [showModal, setShowModal] = useState(false);
     const [formData, setFormData] = useState({
         name: "aprea kosasih",
@@ -46,7 +46,8 @@ export default function ProfileUser() {
                 <meta name="description" content="Profile page" />
             </Head>
 
-            <Navbar />
+            <Navbar category={categories} carts={carts} isLoggedIn={isLoggedIn} role={role} />
+            
 
             <div className="container mx-auto px-4 py-6">
                 <div className="flex flex-col md:flex-row gap-6">
