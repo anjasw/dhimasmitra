@@ -1,7 +1,40 @@
 import { Head } from "@inertiajs/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-export default function Order({ carts, categories }) {
+export default function Order({ carts, categories, isLoggedIn, role, transaction }) {
+    const [snapToken, setSnapToken] = useState(null);
+
+
+    // useEffect(() => {
+        
+        
+    // }, []);
+    useEffect(() => {
+        console.log(import.meta.env.VITE_MIDTRANS_CLIENT_KEY)
+        if (!window.snap) {
+            const script = document.createElement('script');
+            script.src = "https://app.sandbox.midtrans.com/snap/snap.js";
+            script.setAttribute('data-client-key', import.meta.env.VITE_MIDTRANS_CLIENT_KEY || 'YOUR_CLIENT_KEY');
+            script.async = true;
+            document.body.appendChild(script);
+            return () => {
+                document.body.removeChild(script);
+            };
+        }
+        if (snapToken && window.snap) {
+            window.snap.pay(snapToken, {
+                onSuccess: function(result){
+                    window.location.reload();
+                },
+                onPending: function(result){},
+                onError: function(result){
+                    alert('Pembayaran gagal, silakan coba lagi.');
+                },
+                onClose: function(){}
+            });
+        }
+    }, [snapToken]);
+
     const [showModal, setShowModal] = useState(false);
 
     const [alamat, setAlamat] = useState({
@@ -22,31 +55,29 @@ export default function Order({ carts, categories }) {
         setShowModal(false);
     };
 
-    const products = [
-        {
-            id: 1,
-            name: "CARTRIDGE COIL VAPORESSO XROS 0.8 OHM 2ML",
-            price: 35000,
-            image: "/assets/dummy-image.jpg",
-            shipping: 7000,
-            insurance: 300,
-        },
-        {
-            id: 2,
-            name: "VAPE POD MINI KIT 800MAH",
-            price: 120000,
-            image: "/assets/dummy-image.jpg",
-            shipping: 10000,
-            insurance: 500,
-        },
-    ];
+    // Ambil produk dari transaction.items
+    const products = transaction?.items?.map(item => ({
+        id: item.product_id,
+        name: item.product?.name,
+        price: item.price,
+        image: item.product?.images?.[0]?.image
+            ? '/storage/' + item.product.images[0].image
+            : '/assets/dummy-image.jpg',
+        // shipping: item.shipping ?? 0,
+        // insurance: item.insurance ?? 0,
+        qty: item.quantity,
+    })) || [];
+
+    // const total = products.reduce(
+    //     (sum, p) => sum + (p.price * (p.qty || 1)) + (p.shipping || 0) + (p.insurance || 0),
+    //     0
+    // );
 
     const total = products.reduce(
-        (sum, p) => sum + p.price + p.shipping + p.insurance,
+        (sum, p) => sum + (p.price * (p.qty || 1)),
         0
     );
-
-    const totalShipping = products.reduce((sum, p) => sum + p.shipping, 0);
+    // const totalShipping = products.reduce((sum, p) => sum + (p.shipping || 0), 0);
 
     return (
         <div className="bg-gray-100 min-h-screen">
@@ -111,11 +142,11 @@ export default function Order({ carts, categories }) {
                                             {product.name}
                                         </p>
                                         <p className="text-sm mt-1">
-                                            1 x Rp
+                                            {product.qty} x Rp
                                             {product.price.toLocaleString()}
                                         </p>
 
-                                        <div className="mt-3 text-sm space-y-2">
+                                        {/* <div className="mt-3 text-sm space-y-2">
                                             <div>
                                                 <label className="block font-medium">
                                                     Reguler
@@ -134,7 +165,7 @@ export default function Order({ carts, categories }) {
                                                     )
                                                 </label>
                                             </div>
-                                        </div>
+                                        </div> */}
                                     </div>
                                 </div>
                             ))}
@@ -160,30 +191,33 @@ export default function Order({ carts, categories }) {
                             <h2 className="font-semibold text-sm mb-4">
                                 Metode Pembayaran
                             </h2>
-
-                            <div className="space-y-2 text-sm">
-                                <label className="flex items-center gap-2">
-                                    <input
-                                        type="radio"
-                                        name="payment"
-                                        defaultChecked
-                                    />
-                                    BCA Virtual Account
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input type="radio" name="payment" />
-                                    Alfamart / Alfamidi / Lawson / D+D
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input type="radio" name="payment" />
-                                    Mandiri Virtual Account
-                                </label>
-                                <label className="flex items-center gap-2">
-                                    <input type="radio" name="payment" />
-                                    GoPay Later (Limit: Rp20.000.000)
-                                </label>
-                            </div>
-
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-blue-600">credit_card</span>
+                                    <span>BCA Virtual Account</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-orange-600">store</span>
+                                    <span>Alfamart / Alfamidi / Lawson / D+D</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-yellow-600">credit_card</span>
+                                    <span>Mandiri Virtual Account</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-green-600">payments</span>
+                                    <span>GoPay / GoPay Later</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-purple-600">qr_code_2</span>
+                                    <span>QRIS</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <span className="material-symbols-outlined text-gray-500">more_horiz</span>
+                                    <span>Lainnya</span>
+                                </li>
+                                {/* Tambahkan channel lain sesuai yang aktif di Midtrans */}
+                            </ul>
                             <button className="mt-4 bg-yellow-100 border border-yellow-400 text-yellow-700 text-xs px-3 py-2 w-full">
                                 Pakai promo biar makin hemat!
                             </button>
@@ -203,8 +237,8 @@ export default function Order({ carts, categories }) {
 
                                 <div className="flex justify-between">
                                     <span>Biaya Kirim</span>
-                                    <span>
-                                        Rp{totalShipping.toLocaleString()}
+                                    <span className="font-bold text-green-600 bg-green-100 px-2 py-1 rounded">
+                                        FREE
                                     </span>
                                 </div>
 
@@ -214,7 +248,27 @@ export default function Order({ carts, categories }) {
                                 </div>
                             </div>
 
-                            <button className="mt-4 w-full bg-yellow-400 text-black font-bold py-2 hover:bg-yellow-300">
+                            <button
+                                className="mt-4 w-full bg-yellow-400 text-black font-bold py-2 hover:bg-yellow-300"
+                                onClick={async () => {
+                                    const csrf = document.querySelector('meta[name="csrf-token"]');
+                                    const csrfToken = csrf ? csrf.getAttribute('content') : '';
+                                    const response = await fetch('/snap/token', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            'X-CSRF-TOKEN': csrfToken
+                                        },
+                                        body: JSON.stringify({ transaction_id: transaction.id }),
+                                    });
+                                    const data = await response.json();
+                                    if (data.snap_token) {
+                                        setSnapToken(data.snap_token); // trigger useEffect
+                                    } else {
+                                        alert('Gagal mendapatkan token pembayaran.');
+                                    }
+                                }}
+                            >
                                 Bayar Sekarang
                             </button>
 

@@ -8,6 +8,7 @@ use App\Models\Brand;
 use App\Models\Slider;
 use App\Models\Category;
 use App\Models\Cart;
+use App\Models\Transaction;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Auth;
 
@@ -75,8 +76,50 @@ class FrontController extends Controller
         ]);
     }
 
-    public function order(){
+    public function order(Request $request){
         sleep(1);
+        if (!$request->has('id')) {
+            return redirect()->route('cart.index');
+        }
+        
+        $transactionId = $request->id;
+        // Eager load items, product, dan images
+        $transaction = Transaction::with(['items.product.images'])->find($transactionId);
+
+        // dd($transaction);
+        $auth = Auth::user();
+        $isLoggedIn = $auth ? true : false;
+        $role = $auth ? $auth->role : null;
+
+        $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
+            $q->where('status', 1);
+        }])->get();
+
+        $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
+            ->where('user_id', auth()->id())
+            ->with(['product' => function($q){
+                $q->with(['images']);
+            }, 'user' => function($q){
+                $q->select('id', 'name', 'email');
+            }])
+            ->get()
+            ->map(function($cart) {
+                $cart->product->fix_price_formatted = isset($cart->product->fix_price)
+                    ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
+                    : null;
+                return $cart;
+            });
+
+        return Inertia::render('Front/Order', [
+            'categories' => $categories,
+            'carts' => $carts,
+            'isLoggedIn' => $isLoggedIn,
+            'role' => $role,
+            'transaction' => $transaction, // <-- kirim ke frontend
+        ]);
+    }
+
+    public function AccountOrder(){
         $auth = Auth::user();
         // dd($auth);
         
@@ -108,39 +151,70 @@ class FrontController extends Controller
                     : null;
                 return $cart;
             });
-        return Inertia::render('Front/Order', [
+        // dd($categories);
+        return Inertia::render('Front/Account/Order', [
             'categories' => $categories,
             'carts' => $carts,
             'isLoggedIn' => $isLoggedIn,
-            'role' => $role
+            'role' => $role,
         ]);
     }
 
-    public function AccountOrderSuccess(){
-        $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
-            $q->where('status', 1);
-        }])->get();
+    public function AccountOrderSuccess(Request $request){
 
-        $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
-            ->where('user_id', auth()->id())
-            ->with(['product' => function($q){
-                $q->with(['images']);
-            }, 'user' => function($q){
-                $q->select('id', 'name', 'email');
-            }])
-            ->get()
-            ->map(function($cart) {
-                // Pastikan kolom fix_price ada di relasi product
-                $cart->product->fix_price_formatted = isset($cart->product->fix_price)
-                    ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
-                    : null;
-                return $cart;
-            });
-        // dd($categories);
-        return Inertia::render('Front/Account/OrderSuccess', [
-            'categories' => $categories,
-            'carts' => $carts,
+        // dd($request->all());
+
+        // $request->order_id = 'DMT-175325415642702';
+        $orderId = $request->order_id;
+        $transaction = Transaction::where('invoice_code', $orderId)->first();
+        $transactionId = $transaction->id;
+        $statusCode = $request->status_code;
+        $transaction_status = $request->transaction_status;
+
+        $transaction->update([
+            'status' => $transaction_status == "settlement" ? 'paid' : 'failed',
+            'updated_at' => now()
         ]);
+        
+        $cartIds = \App\Models\TransactionItem::where('transaction_id', $transactionId)
+            ->pluck('cart_id')
+            ->filter() // hilangkan null
+            ->unique()
+            ->toArray();
+
+        // Hapus cart yang id-nya ada di $cartIds
+        if (!empty($cartIds)) {
+            \App\Models\Cart::whereIn('id', $cartIds)
+                ->where('user_id', auth()->id())
+                ->delete();
+        }
+        // exit;
+        return redirect()->route('account.order');
+
+        // $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
+        //     $q->where('status', 1);
+        // }])->get();
+
+        // $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
+        //     ->where('user_id', auth()->id())
+        //     ->with(['product' => function($q){
+        //         $q->with(['images']);
+        //     }, 'user' => function($q){
+        //         $q->select('id', 'name', 'email');
+        //     }])
+        //     ->get()
+        //     ->map(function($cart) {
+        //         // Pastikan kolom fix_price ada di relasi product
+        //         $cart->product->fix_price_formatted = isset($cart->product->fix_price)
+        //             ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
+        //             : null;
+        //         return $cart;
+        //     });
+        // // dd($categories);
+        // return Inertia::render('Front/Account/OrderSuccess', [
+        //     'categories' => $categories,
+        //     'carts' => $carts,
+        // ]);
     }
     public function AccountOrderFail(){
         $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
@@ -274,5 +348,103 @@ class FrontController extends Controller
             'success' => true,
             'cart' => $cart
         ]);
+    }
+
+    public function checkoutCart(Request $request){
+        $userId = auth()->id();
+        $items = $request->items; // array of {id, qty}
+        // dd($request->all());
+        // Ambil semua transaksi pending milik user
+        $existingTransaction = \App\Models\Transaction::where('user_id', $userId)
+            ->where('status', 'pending')
+            ->with(['items'])
+            ->get()
+            ->first(function($trx) use ($items) {
+                // Bandingkan item dan qty satu per satu
+                $trxItems = $trx->items->map(function($item){
+                    return [
+                        'product_id' => $item->product_id,
+                        'quantity' => $item->quantity
+                    ];
+                })->toArray();
+                $requestItems = collect($items)->map(function($item){
+                    return [
+                        'product_id' => \App\Models\Cart::find($item['id'])->product_id ?? null,
+                        'quantity' => $item['qty']
+                    ];
+                })->toArray();
+                // Cek sama persis (jumlah dan urutan)
+                return $trxItems == $requestItems;
+            });
+
+        if ($existingTransaction) {
+            // Jika sudah ada transaksi persis, ambil yang sudah ada
+            return response()->json([
+                'success' => true,
+                'transaction_id' => $existingTransaction->id,
+                'total' => $existingTransaction->total
+            ]);
+        }
+
+        $invoice_code = 'DMT-' . time() . $userId . rand(100,999);
+
+        // Hitung total harga
+        $total_price = 0;
+        foreach ($items as $item) {
+            $cart = \App\Models\Cart::where('id', $item['id'])
+                ->where('user_id', $userId)
+                ->with('product')
+                ->first();
+            if ($cart && isset($cart->product->fix_price)) {
+                $total_price += $cart->product->fix_price * $item['qty'];
+            }
+        }
+
+        $transaction = \App\Models\Transaction::create([
+            'user_id' => $userId,
+            'status' => 'pending',
+            'invoice_code' => $invoice_code,
+            'subtotal' => $total_price,
+            'total' => $total_price,
+        ]);
+
+        foreach ($items as $item) {
+            $cart = \App\Models\Cart::where('id', $item['id'])
+                ->where('user_id', $userId)
+                ->with('product')
+                ->first();
+
+            \App\Models\TransactionItem::create([
+                'transaction_id' => $transaction->id,
+                'cart_id' => $cart ? $cart->id : null,
+                'product_id' => $cart ? $cart->product_id : null,
+                'quantity' => $item['qty'],
+                'price' => $cart && isset($cart->product->fix_price) ? $cart->product->fix_price : 0,
+                'cart_id' => $cart ? $cart->id : null,
+            ]);
+        }
+
+        return response()->json([
+            'success' => true,
+            'transaction_id' => $transaction->id,
+            'total' => $total_price
+        ]);
+    }
+
+
+    public function deleteCart(Request $request)
+    {
+        $cartId = $request->id;
+        $cart = \App\Models\Cart::where('id', $cartId)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        if (!$cart) {
+            return response()->json(['error' => 'Cart not found'], 404);
+        }
+
+        $cart->delete();
+
+        return response()->json(['success' => true]);
     }
 }

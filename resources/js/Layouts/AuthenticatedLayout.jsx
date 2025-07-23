@@ -280,21 +280,20 @@ export default function AuthenticatedLayout({ header, children }) {
                         {/* Order */}
                         <li
                             className={`flex items-center gap-2 px-3 py-2 rounded transition relative text-sm
-                                ${(route().current('post.index') || route().current('post.create') || route().current('post.edit'))
+                                ${route().current('orders')
                                     ? 'bg-gray-100 text-gray-900 font-semibold'
-                                    : 'text-gray-500 hover:bg-gray-50'}
+                                    : 'text-gray-500 hover:bg-gray-100'}
                             `}
                             style={{ textDecoration: 'none' }}
                         >
                             <NavLink
                                 href={route('orders')}
                                 className={` no-underline hover:no-underline flex items-center gap-2 w-full text-sm
-                                    ${(route().current('orders'))
+                                    ${route().current('orders')
                                         ? 'bg-gray-100 text-gray-900 font-semibold'
-                                        : 'text-gray-500 hover:bg-gray-50'}
-    `}
+                                        : 'text-gray-500 hover:bg-gray-100'}
+                                `}
                             >
-                                {/* Ganti icon di sini */}
                                 <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 
                                     ${(route().current('orders'))
                                         ? 'text-gray-700'
@@ -548,11 +547,15 @@ export default function AuthenticatedLayout({ header, children }) {
                                 className="focus:outline-none"
                                 onClick={() => setShowProfileDropdown((v) => !v)}
                             >
-                                <img
-                                    src={user.profile_photo_url || 'https://i.pravatar.cc/40?img=3'}
-                                    alt="Profile"
-                                    className="h-10 w-10 rounded-full object-cover border"
-                                />
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    className="h-20 w-10 object-cover  text-gray-400 "
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.121 17.804A9.001 9.001 0 0112 15c2.21 0 4.21.805 5.879 2.146M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
                             </button>
                             <div
                                 className={`
@@ -560,7 +563,7 @@ export default function AuthenticatedLayout({ header, children }) {
                                     transition-all duration-200
                                     ${showProfileDropdown ? 'opacity-100 visible translate-y-0' : 'opacity-0 invisible -translate-y-2'}
                                 `}
-                                style={{ top: '63px' }} // sejajar bawah topbar
+                                style={{ top: '83px' }} // sejajar bawah topbar
                             >
                                 <div className="px-4 py-2 text-gray-800 font-semibold border-b">{user.name}</div>
                                 <Link

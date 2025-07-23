@@ -1,9 +1,9 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function OrdersList() {
+export default function OrdersList({orders}) {
     // Ambil data orders dari props inertia
-    const { orders = [] } = usePage().props;
+    // const { orders = [] } = usePage().props;
 
     return (
         <AuthenticatedLayout
@@ -45,14 +45,14 @@ export default function OrdersList() {
                     <table className="min-w-full divide-y divide-gray-200 text-sm">
                         <thead className="bg-gray-50">
                             <tr>
-                                <th className="px-3 py-2">#</th>
-                                <th className="px-3 py-2">Nama Pemesan</th>
-                                <th className="px-3 py-2">Produk</th>
-                                <th className="px-3 py-2">Jumlah</th>
-                                <th className="px-3 py-2">Total</th>
-                                <th className="px-3 py-2">Status</th>
-                                <th className="px-3 py-2">Tanggal</th>
-                                <th className="px-3 py-2">Aksi</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">#</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Nama Pemesan</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Produk</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Jumlah</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Total</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Tanggal</th>
+                                <th className="px-2 py-3 text-left font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -84,7 +84,7 @@ export default function OrdersList() {
                                     <td className="px-3 py-2">{order.created_at}</td>
                                     <td className="px-3 py-2">
                                         <Link
-                                            href={route('orders.show', order.id)}
+                                            href={route('orders', order.id)}
                                             className="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
                                         >
                                             Detail

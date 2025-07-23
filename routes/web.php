@@ -44,8 +44,15 @@ Route::get('/payment/notification/pay_account', [PaymentController::class, 'hand
 
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 
+Route::middleware(['auth', 'verified'])->group(function (){
+    Route::delete('/cart', [FrontController::class, 'deleteCart'])->name('cart.delete');
+    Route::get('/account/order', [FrontController::class, 'AccountOrder'])->name('account.order');
 
-Route::post('/cart/update', [FrontController::class, 'updateCart'])->middleware(['auth', 'verified']);
+    Route::post('/cart/update', [FrontController::class, 'updateCart'])->middleware(['auth', 'verified']);
+    
+    Route::post('/cart/checkout', [FrontController::class, 'checkoutCart']);
+});
+
 // Route untuk produk detail berdasarkan slug
 // Route::get('/{slugkategori}/{slugproduct}', function ($slugproduct) {
 //     // Ganti dengan controller produk jika ada
