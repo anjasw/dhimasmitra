@@ -6,7 +6,7 @@ import ProductList from "./Front/Components/ProductList";
 import Blog from "./Front/Components/Blog";
 import MarketplaceSection from "./Front/Components/MarketplaceSection";
 
-export default function Body({brands, sliders}) {
+export default function Body({brands, sliders, isLoggedIn, role}) {
     console.log(brands)
     return (
         <main className="bg-gray-100">

@@ -1,7 +1,7 @@
 import { Head } from "@inertiajs/react";
 import { useState } from "react";
 
-export default function Order() {
+export default function Order({ carts, categories }) {
     const [showModal, setShowModal] = useState(false);
 
     const [alamat, setAlamat] = useState({

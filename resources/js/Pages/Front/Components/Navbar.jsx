@@ -1,14 +1,17 @@
 import { useEffect, useState, useRef } from "react";
 import { Link } from "@inertiajs/react";
 
-export default function Navbar({ category, carts }) {
+export default function Navbar({ category, carts, isLoggedIn, role }) {
     const [offcanvasOpen, setOffcanvasOpen] = useState(false);
     const [showSubmenu, setShowSubmenu] = useState(false);
-
-    console.log(carts, 'carts')
+    const [userMenuOpen, setUserMenuOpen] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
     const cartRef = useRef(null);
     const cartButtonRef = useRef(null);
+    const userMenuRef = useRef(null);
+
+    console.log(isLoggedIn, 'isLoggedIn')
+    console.log(role, 'role')
 
     const cartItems = carts.map((cart) => ({
         id: cart.id,
@@ -213,6 +216,24 @@ export default function Navbar({ category, carts }) {
         };
     }, [cartOpen, offcanvasOpen]);
 
+    // Close dropdown if click outside
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (
+                userMenuRef.current &&
+                !userMenuRef.current.contains(event.target)
+            ) {
+                setUserMenuOpen(false);
+            }
+        }
+        if (userMenuOpen) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [userMenuOpen]);
+
     return (
         <>
             {/* Overlay */}
@@ -336,7 +357,7 @@ export default function Navbar({ category, carts }) {
                             <Link href="/kontak">Kontak</Link>
                         </div>
 
-                        {/* Search + Cart */}
+                        {/* Search + Cart + User */}
                         <div className="flex items-center gap-2 md:gap-4 ml-auto">
                             <input
                                 type="text"
@@ -370,6 +391,8 @@ export default function Navbar({ category, carts }) {
                                                 </span>
                                             </span>
                                             {cartItems.length === 0 ? (
+                                                <>
+                                                {isLoggedIn ? (
                                                 <div className="text-center text-sm text-gray-500">
                                                     Keranjang kosong.
                                                     <Link
@@ -382,6 +405,22 @@ export default function Navbar({ category, carts }) {
                                                         Lihat Produk
                                                     </Link>
                                                 </div>
+
+                                                ) : (
+                                                    <div className="text-center text-sm text-gray-500">
+                                                        Harap Login.
+                                                        <Link
+                                                            href="/login"
+                                                            className="block mt-2 text-blue-500 font-medium"
+                                                            onClick={() =>
+                                                                setCartOpen(false)
+                                                            }
+                                                        >
+                                                            Login
+                                                        </Link>
+                                                    </div>
+                                                )}
+                                                </>
                                             ) : (
                                                 <>
                                                     <ul className="space-y-3 max-h-40 overflow-y-auto">
@@ -449,6 +488,71 @@ export default function Navbar({ category, carts }) {
                                     </div>
                                 )}
                             </div>
+
+                            {/* User Menu */}
+                            {isLoggedIn && (
+                                <div className="relative" ref={userMenuRef}>
+                                    
+                                    <button
+                                        onClick={() => setUserMenuOpen((v) => !v)}
+                                        className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-700 transition"
+                                    >
+                                        <span className="material-symbols-outlined text-[24px] text-white">
+                                            person
+                                        </span>
+                                    </button>
+                                    {userMenuOpen && (
+                                        <div
+                                            className="absolute right-0 mt-3 w-64 bg-white text-black shadow-lg z-50"
+                                            style={{ minWidth: 180 }}
+                                        >
+                                            <span className="absolute -top-5 -right-1 text-white">
+                                                <span className="material-symbols-outlined text-4xl cursor-default">
+                                                    arrow_drop_up
+                                                </span>
+                                            </span>
+                                            <div className="p-4">
+                                                <ul className="space-y-2">
+                                                    <li>
+                                                        <Link
+                                                            href="/profile"
+                                                            className="block px-2 py-2 rounded hover:bg-gray-100 transition"
+                                                            onClick={() =>
+                                                                setUserMenuOpen(
+                                                                    false
+                                                                )
+                                                            }
+                                                        >
+                                                            <span className="material-symbols-outlined align-middle mr-2 text-base text-gray-600">
+                                                                account_circle
+                                                            </span>
+                                                            Profile
+                                                        </Link>
+                                                    </li>
+                                                    <li>
+                                                        <Link
+                                                            href="/logout"
+                                                            method="post"
+                                                            as="button"
+                                                            className="block w-full text-left px-2 py-2 rounded hover:bg-gray-100 transition"
+                                                            onClick={() =>
+                                                                setUserMenuOpen(
+                                                                    false
+                                                                )
+                                                            }
+                                                        >
+                                                            <span className="material-symbols-outlined align-middle mr-2 text-base text-gray-600">
+                                                                logout
+                                                            </span>
+                                                            Logout
+                                                        </Link>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
 
                             {/* Toggle Offcanvas */}
                             <button

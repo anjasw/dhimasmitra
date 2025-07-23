@@ -19,9 +19,7 @@ use Inertia\Inertia;
 
 Route::get('/', [FrontController::class, 'home'])->name('home');
 
-Route::get('/cart', function () {
-    return Inertia::render('Front/Cart');
-})->name('cart.index');
+Route::get('/cart', [FrontController::class, 'cart'])->name('cart.index');
 
 // Route::get('/order', function () {
 //     return Inertia::render('Front/Order');
@@ -46,6 +44,8 @@ Route::get('/payment/notification/pay_account', [PaymentController::class, 'hand
 
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 
+
+Route::post('/cart/update', [FrontController::class, 'updateCart'])->middleware(['auth', 'verified']);
 // Route untuk produk detail berdasarkan slug
 // Route::get('/{slugkategori}/{slugproduct}', function ($slugproduct) {
 //     // Ganti dengan controller produk jika ada

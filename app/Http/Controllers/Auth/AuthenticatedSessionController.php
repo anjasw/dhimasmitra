@@ -31,10 +31,19 @@ class AuthenticatedSessionController extends Controller
     {
         $request->authenticate();
 
+        $auth = Auth::user();
         $request->session()->regenerate();
-        $request->session()->put('role', Auth::user()->role);
+        $request->session()->put('role', $auth->role);
 
-        return redirect()->intended(route('dashboard', absolute: false));
+
+        if( $auth->role === 'admin' ) {
+            return redirect()->route('dashboard');
+        } elseif ($auth->role === 'user') {
+            // return redirect()->route('user.dashboard')
+            return redirect()->intended(route('home', absolute: false));
+            
+        }
+        return redirect()->intended(route('home', absolute: false));
     }
 
     /**
