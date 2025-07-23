@@ -29,6 +29,7 @@ export default function ProfileUser() {
             label: "Rumah - Aprea",
             detail: "Perumahan Tamansari Riverside Blok E2 No.24, Tamansari, Kab. Bogor, Jawa Barat",
             phone: "62877770211186",
+            lokasi: "https://maps.google.com/?q=-6.234567,106.789123",
         },
     ]);
 
@@ -38,6 +39,47 @@ export default function ProfileUser() {
         detail: "",
         phone: "",
     });
+
+    const [daftarRekening, setDaftarRekening] = useState([
+        {
+            id: 1,
+            logo: "https://seeklogo.com/images/B/Bank_Central_Asia-logo-6E99B07F2C-seeklogo.com.png",
+            namaBank: "BCA",
+            noRekening: "1234567890",
+            atasNama: "Aprea Kosasih",
+        },
+    ]);
+
+    const [showRekeningModal, setShowRekeningModal] = useState(false);
+    const [rekeningBaru, setRekeningBaru] = useState({
+        logo: "",
+        namaBank: "",
+        noRekening: "",
+        atasNama: "",
+    });
+
+    const daftarBankTersedia = [
+        {
+            kode: "bca",
+            nama: "BCA",
+            logo: "https://seeklogo.com/images/B/Bank_Central_Asia-logo-6E99B07F2C-seeklogo.com.png",
+        },
+        {
+            kode: "bri",
+            nama: "BRI",
+            logo: "https://seeklogo.com/images/B/bank-bri-logo-18DE570D4E-seeklogo.com.png",
+        },
+        {
+            kode: "bni",
+            nama: "BNI",
+            logo: "https://seeklogo.com/images/B/bni-bank-logo-659A14A3CB-seeklogo.com.png",
+        },
+        {
+            kode: "mandiri",
+            nama: "Mandiri",
+            logo: "https://seeklogo.com/images/B/bank-mandiri-logo-F2D4DADB1E-seeklogo.com.png",
+        },
+    ];
 
     return (
         <div className="bg-gray-100 min-h-screen">
@@ -133,14 +175,14 @@ export default function ProfileUser() {
                     </aside>
 
                     {/* Main Content */}
-                    <div className="flex-1 bg-white p-6 shadow-sm">
+                    <div className="flex-1 bg-white p-6 shadow-sm min-h-[calc(100vh-160px)]">
                         {/* Tabs */}
                         <div className="border-b border-gray-200 mb-6">
                             <ul className="flex flex-wrap gap-4 text-sm font-medium">
                                 {[
                                     "Biodata Diri",
                                     "Daftar Alamat",
-                                    "Pembayaran",
+                                    "Rekening Bank",
                                 ].map((tab) => (
                                     <li
                                         key={tab}
@@ -311,6 +353,19 @@ export default function ProfileUser() {
                                                     <p className="text-sm mt-1">
                                                         {alamat.phone}
                                                     </p>
+                                                    {alamat.lokasi && (
+                                                        <a
+                                                            href={alamat.lokasi}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="text-sm text-gray-700 flex items-center gap-1 hover:text-yellow-600 transition mt-1"
+                                                        >
+                                                            <span className="material-symbols-outlined text-base">
+                                                                location_on
+                                                            </span>
+                                                            Lihat Lokasi di Maps
+                                                        </a>
+                                                    )}
                                                 </div>
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <button
@@ -342,6 +397,102 @@ export default function ProfileUser() {
                                                             )
                                                         }
                                                         className="text-red-600 hover:text-red-800 transition"
+                                                        title="Hapus"
+                                                    >
+                                                        <span className="material-symbols-outlined text-base">
+                                                            delete
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {activeTab === "Rekening Bank" && (
+                            <div className="space-y-6">
+                                <div className="flex justify-between items-center">
+                                    <h3 className="font-semibold text-lg">
+                                        Rekening Bank
+                                    </h3>
+                                    <button
+                                        className="bg-yellow-400 hover:bg-yellow-500 px-4 py-2 text-sm"
+                                        onClick={() => {
+                                            setRekeningBaru({
+                                                logo: "",
+                                                namaBank: "",
+                                                noRekening: "",
+                                                atasNama: "",
+                                            });
+                                            setShowRekeningModal(true);
+                                        }}
+                                    >
+                                        Tambah Rekening
+                                    </button>
+                                </div>
+
+                                {daftarRekening.length === 0 ? (
+                                    <p className="text-sm text-gray-500">
+                                        Belum ada rekening tersimpan.
+                                    </p>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {daftarRekening.map((rek) => (
+                                            <div
+                                                key={rek.id}
+                                                className="border p-4 flex flex-col md:flex-row justify-between gap-4 items-start md:items-center"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <img
+                                                        src={rek.logo}
+                                                        alt={rek.namaBank}
+                                                        className="w-12 h-12 object-contain"
+                                                    />
+                                                    <div className="text-sm">
+                                                        <p className="font-semibold">
+                                                            {rek.namaBank}
+                                                        </p>
+                                                        <p>
+                                                            No. Rekening:{" "}
+                                                            {rek.noRekening}
+                                                        </p>
+                                                        <p>
+                                                            Atas Nama:{" "}
+                                                            {rek.atasNama}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-2 text-sm">
+                                                    <button
+                                                        onClick={() => {
+                                                            setRekeningBaru(
+                                                                rek
+                                                            );
+                                                            setShowRekeningModal(
+                                                                true
+                                                            );
+                                                        }}
+                                                        className="text-gray-600 hover:text-gray-800"
+                                                        title="Edit"
+                                                    >
+                                                        <span className="material-symbols-outlined text-base">
+                                                            edit
+                                                        </span>
+                                                    </button>
+                                                    <button
+                                                        onClick={() =>
+                                                            setDaftarRekening(
+                                                                (prev) =>
+                                                                    prev.filter(
+                                                                        (r) =>
+                                                                            r.id !==
+                                                                            rek.id
+                                                                    )
+                                                            )
+                                                        }
+                                                        className="text-red-600 hover:text-red-800"
                                                         title="Hapus"
                                                     >
                                                         <span className="material-symbols-outlined text-base">
@@ -503,17 +654,30 @@ export default function ProfileUser() {
                             className="space-y-4"
                         >
                             {/* Input File */}
-                            <div>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) =>
-                                        setSelectedImage(
-                                            e.target.files && e.target.files[0]
-                                        )
-                                    }
-                                    className="block w-full text-sm"
-                                />
+                            <div className="w-full">
+                                <label
+                                    htmlFor="upload-foto"
+                                    className="cursor-pointer flex items-center gap-3 px-4 py-3 border border-dashed border-gray-300 rounded hover:border-yellow-400 transition"
+                                >
+                                    <span className="material-symbols-outlined text-3xl text-blue-500">
+                                        image
+                                    </span>
+                                    <span className="text-sm text-gray-600">
+                                        Klik icon untuk tambah gambar
+                                    </span>
+                                    <input
+                                        id="upload-foto"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) =>
+                                            setSelectedImage(
+                                                e.target.files &&
+                                                    e.target.files[0]
+                                            )
+                                        }
+                                        className="hidden"
+                                    />
+                                </label>
                             </div>
 
                             {/* Preview */}
@@ -639,6 +803,24 @@ export default function ProfileUser() {
                                 />
                             </div>
 
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Link Lokasi Google Maps
+                                </label>
+                                <input
+                                    type="url"
+                                    placeholder="https://maps.google.com/..."
+                                    value={alamatBaru.lokasi}
+                                    onChange={(e) =>
+                                        setAlamatBaru({
+                                            ...alamatBaru,
+                                            lokasi: e.target.value,
+                                        })
+                                    }
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                />
+                            </div>
+
                             <div className="flex justify-end gap-2 mt-6">
                                 <button
                                     type="button"
@@ -648,6 +830,159 @@ export default function ProfileUser() {
                                             label: "",
                                             detail: "",
                                             phone: "",
+                                            lokasi: "",
+                                        });
+                                    }}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="bg-yellow-400 text-black px-4 py-2 hover:bg-yellow-300"
+                                >
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Tambah & Edit Rekening */}
+
+            {showRekeningModal && (
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+                    <div className="bg-white p-6 w-full max-w-md shadow-lg rounded relative">
+                        <h2 className="text-lg font-semibold mb-4">
+                            {rekeningBaru.id
+                                ? "Edit Rekening"
+                                : "Tambah Rekening"}
+                        </h2>
+
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+
+                                if (rekeningBaru.id) {
+                                    setDaftarRekening((prev) =>
+                                        prev.map((r) =>
+                                            r.id === rekeningBaru.id
+                                                ? rekeningBaru
+                                                : r
+                                        )
+                                    );
+                                } else {
+                                    setDaftarRekening((prev) => [
+                                        ...prev,
+                                        { ...rekeningBaru, id: Date.now() },
+                                    ]);
+                                }
+
+                                setShowRekeningModal(false);
+                                setRekeningBaru({
+                                    id: null,
+                                    namaBank: "",
+                                    logo: "",
+                                    noRekening: "",
+                                    atasNama: "",
+                                });
+                            }}
+                            className="space-y-4"
+                        >
+                            {/* Pilih Bank */}
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Pilih Bank
+                                </label>
+                                <select
+                                    value={rekeningBaru.namaBank}
+                                    onChange={(e) => {
+                                        const selected =
+                                            daftarBankTersedia.find(
+                                                (b) => b.nama === e.target.value
+                                            );
+                                        if (selected) {
+                                            setRekeningBaru((prev) => ({
+                                                ...prev,
+                                                namaBank: selected.nama,
+                                                logo: selected.logo,
+                                            }));
+                                        }
+                                    }}
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                >
+                                    <option value="">-- Pilih Bank --</option>
+                                    {daftarBankTersedia.map((bank) => (
+                                        <option
+                                            key={bank.kode}
+                                            value={bank.nama}
+                                        >
+                                            {bank.nama}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {/* Logo Preview */}
+                                {rekeningBaru.logo && (
+                                    <div className="mt-2">
+                                        <img
+                                            src={rekeningBaru.logo}
+                                            alt={rekeningBaru.namaBank}
+                                            className="w-20 h-10 object-contain"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* No Rekening */}
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    No. Rekening
+                                </label>
+                                <input
+                                    type="text"
+                                    value={rekeningBaru.noRekening}
+                                    onChange={(e) =>
+                                        setRekeningBaru({
+                                            ...rekeningBaru,
+                                            noRekening: e.target.value,
+                                        })
+                                    }
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                />
+                            </div>
+
+                            {/* Atas Nama */}
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Atas Nama
+                                </label>
+                                <input
+                                    type="text"
+                                    value={rekeningBaru.atasNama}
+                                    onChange={(e) =>
+                                        setRekeningBaru({
+                                            ...rekeningBaru,
+                                            atasNama: e.target.value,
+                                        })
+                                    }
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                />
+                            </div>
+
+                            {/* Tombol */}
+                            <div className="flex justify-end gap-2 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowRekeningModal(false);
+                                        setRekeningBaru({
+                                            id: null,
+                                            namaBank: "",
+                                            logo: "",
+                                            noRekening: "",
+                                            atasNama: "",
                                         });
                                     }}
                                     className="px-4 py-2 text-gray-600 hover:text-gray-800"
