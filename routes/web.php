@@ -104,6 +104,9 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::get('/orders', [OrderController::class, 'list'])->name('orders');
     });
 });
+
+require __DIR__ . '/auth.php';
+
 Route::get('/', [FrontController::class, 'home'])->name('home');
 
 Route::get('/cart', [FrontController::class, 'cart'])->name('cart.index');
@@ -127,4 +130,3 @@ Route::get('/payment/notification/pay_account', [PaymentController::class, 'hand
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 Route::get('/{slug}', [FrontController::class, 'show'])->name('product.show');
 
-require __DIR__ . '/auth.php';
