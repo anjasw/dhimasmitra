@@ -1,7 +1,7 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, usePage } from '@inertiajs/react';
 
-export default function OrdersList({orders}) {
+export default function OrdersList({ orders }) {
     // Ambil data orders dari props inertia
     // const { orders = [] } = usePage().props;
 
@@ -56,16 +56,18 @@ export default function OrdersList({orders}) {
                             </tr>
                         </thead>
                         <tbody>
-                            {orders.length === 0 && (
+                            {orders.data.length === 0 && (
                                 <tr>
                                     <td colSpan={8} className="text-center py-6 text-gray-400">
                                         Belum ada orderan masuk.
                                     </td>
                                 </tr>
                             )}
-                            {orders.map((order, idx) => (
+                            {orders.data.map((order, idx) => (
                                 <tr key={order.id} className="hover:bg-gray-50">
-                                    <td className="px-3 py-2">{idx + 1}</td>
+                                    <td className="px-3 py-2">
+                                        {(orders.current_page - 1) * orders.per_page + idx + 1}
+                                    </td>
                                     <td className="px-3 py-2">{order.customer_name}</td>
                                     <td className="px-3 py-2">{order.product_name}</td>
                                     <td className="px-3 py-2">{order.qty}</td>
@@ -94,6 +96,23 @@ export default function OrdersList({orders}) {
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Pagination */}
+                <div className="flex justify-end mt-4 gap-1">
+                    {orders.links && orders.links.map((link, i) => (
+                        <Link
+                            key={i}
+                            href={link.url || '#'}
+                            preserveScroll
+                            className={`px-3 py-1 rounded border text-sm
+                                ${link.active ? 'bg-blue-600 text-white' : 'bg-white text-gray-700 hover:bg-blue-50'}
+                                ${!link.url ? 'opacity-50 cursor-not-allowed' : ''}
+                            `}
+                            dangerouslySetInnerHTML={{ __html: link.label }}
+                            disabled={!link.url}
+                        />
+                    ))}
                 </div>
             </div>
         </AuthenticatedLayout>

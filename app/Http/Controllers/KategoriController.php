@@ -8,27 +8,29 @@ class KategoriController extends Controller
 {
     public function index()
     {
-
-        $categories = collect(range(1, 40))->map(function ($i) {
+        $categories = \App\Models\Category::with(['subcategories' => function($q){
+            $q->where('status', 1);
+        }])
+        ->where('status', '!=', 2)
+        ->get()
+        ->map(function ($cat) {
             return [
-                'name' => "Kategori $i",
-                'image' => "assets/dummy-image.jpg",
-                'href' => "/kategori/kategori-$i",
-                'subcategories' => $i % 2 === 0
-                    ? collect(range(1, $i % 3 === 0 ? 12 : 6))->map(function ($j) use ($i) {
-                        return [
-                            'name' => "Sub $i.$j",
-                            'href' => "/kategori/kategori-$i/sub-$j",
-                            'slug' => "sub-$j",
-                        ];
-                    })
-                    : [],
+                'name' => $cat->name,
+                'image' => $cat->image ? asset('storage/' . $cat->image) : asset('assets/dummy-image.jpg'),
+                'href' => "/kategori/" . ($cat->slug ?? $cat->id),
+                'subcategories' => $cat->subcategories->map(function ($sub) use ($cat) {
+                    return [
+                        'name' => $sub->name,
+                        'href' => "/kategori/" . ($cat->slug ?? $cat->id) . "/" . ($sub->slug ?? $sub->id),
+                        'slug' => $sub->slug ?? $sub->id,
+                    ];
+                }),
             ];
         });
 
         return Inertia::render('Front/Kategori', [
             'categories' => $categories,
-            'breadcrumb' => [
+            'breadcrumbs' => [
                 ['label' => 'Home', 'href' => route('home')],
                 ['label' => 'Kategori', 'href' => route('kategori.index')],
             ],
@@ -38,45 +40,55 @@ class KategoriController extends Controller
 
     public function show($slug, $sub = null)
     {
-        $kategoriName = ucwords(str_replace('-', ' ', $slug));
-        $subKategoriTerpilih = $sub ? ucwords(str_replace('-', ' ', $sub)) : null;
+        // Ambil kategori berdasarkan slug
+        $kategori = \App\Models\Category::where('slug', $slug)->where('status', '!=', 2)->firstOrFail();
 
-        $subcategories = collect(range(1, 6))->map(function ($i) use ($slug) {
+        // Ambil subcategories aktif
+        $subcategories = $kategori->subcategories()->where('status', 1)->get()->map(function ($subcat) use ($kategori) {
+            // dd($subcat);
             return [
-                'name' => "Subkategori $i",
-                'slug' => "sub-$i",
-                'href' => "/kategori/$slug/sub-$i",
+                'name' => $subcat->name,
+                'slug' => $subcat->slug ?? $subcat->id,
+                'href' => "/kategori/$kategori->slug/$subcat->slug",
             ];
         });
 
-        // Dummy produk
-        $allProducts = collect(range(1, 12))->map(function ($i) use ($slug) {
+        // Jika subkategori dipilih, ambil subkategori
+        $subSelected = null;
+        if ($sub) {
+            $subSelected = $kategori->subcategories()->where('slug', $sub)->where('status', 1)->first();
+        }
+        
+        // Ambil produk berdasarkan kategori dan (jika ada) subkategori
+        $productsQuery = \App\Models\Product::where('category_id', $kategori->id)->where('status', 1);
+        if ($subSelected) {
+            $productsQuery->where('subcategory_id', $subSelected->id);
+        }
+        $products = $productsQuery->get()->map(function ($product) {
+            // dd($product->images->first());
             return [
-                'name' => "Produk $i",
-                'subcategory' => "sub-" . (($i % 6) + 1),
-                'image' => "/img/produk-$i.jpg",
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'image' => $product->images ? asset('storage/' . $product->images->first()->image) : asset('assets/dummy-image.jpg'),
+                'subcategory' => $product->subcategory_id,
             ];
         });
 
-        // Filter berdasarkan subkategori (jika ada)
-        $filteredProducts = $sub
-            ? $allProducts->where('subcategory', $sub)->values()
-            : $allProducts;
-
+        // dd($products);
         return Inertia::render('Front/DetailKategori', [
             'kategori' => [
-                'name' => $kategoriName,
-                'slug' => $slug,
-                'image' => "/img/kategori.jpg",
+                'name' => $kategori->name,
+                'slug' => $kategori->slug,
+                'image' => $kategori->image ? asset('storage/' . $kategori->image) : asset('assets/dummy-image.jpg'),
                 'subcategories' => $subcategories,
             ],
-            'sub_selected' => $sub,
-            'products' => $filteredProducts,
+            'sub_selected' => $subSelected ? $subSelected->slug : null,
+            'products' => $products,
             'breadcrumb' => array_filter([
                 ['label' => 'Home', 'href' => route('home')],
                 ['label' => 'Kategori', 'href' => route('kategori.index')],
-                ['label' => $kategoriName, 'href' => "/kategori/$slug"],
-                $sub ? ['label' => $subKategoriTerpilih, 'href' => "/kategori/$slug/$sub"] : null,
+                ['label' => $kategori->name, 'href' => "/kategori/{$kategori->slug}"],
+                $subSelected ? ['label' => $subSelected->name, 'href' => "/kategori/{$kategori->slug}/{$subSelected->slug}"] : null,
             ]),
         ]);
     }

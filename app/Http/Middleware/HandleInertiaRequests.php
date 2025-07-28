@@ -5,6 +5,9 @@ namespace App\Http\Middleware;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 use Tighten\Ziggy\Ziggy;
+use Inertia\Inertia;
+use App\Models\Category;
+use App\Models\Cart;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -30,8 +33,34 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        return [
-            ...parent::share($request),
+        $categories = Category::query()->where('status','!=', 2)
+            ->with(['subcategories' => function($q){
+                $q->where('status', 1);
+            }])->get();
+
+        $auth = $request->user();
+        $isLoggedIn = $auth ? true : false;
+        $role = $auth ? $auth->role : null;
+
+        $carts = [];
+        if ($auth) {
+            $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
+                ->where('user_id', $auth->id)
+                ->with(['product.images', 'user:id,name,email'])
+                ->get()
+                ->map(function($cart) {
+                    $cart->product->fix_price_formatted = isset($cart->product->fix_price)
+                        ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
+                        : null;
+                    return $cart;
+                });
+        }
+
+        return array_merge(parent::share($request), [
+            'category' => $categories,
+            'carts' => $carts,
+            'isLoggedIn' => $isLoggedIn,
+            'role' => $role,
             'auth' => [
                 'user' => $request->user(),
             ],
@@ -43,6 +72,6 @@ class HandleInertiaRequests extends Middleware
                 ...(new Ziggy)->toArray(),
                 'location' => $request->url(),
             ],
-        ];
+        ]);
     }
 }

@@ -25,9 +25,18 @@ class AdminMiddleware
             // redirect('/login');
         }else{
             // dd($roles);
-            if (!in_array($user->role, $roles)) {
+            // if (!in_array($user->role, $roles)) {
+            //     abort(403, 'Unauthorized');
+            // }
+            if($user->role === 'admin') {
+                // dd($user->role);
+                return $next($request);
+            } elseif($user->role === 'user') {
+                return redirect()->route('home');
+            }else{
                 abort(403, 'Unauthorized');
             }
+            // dd($user->role);
         }
 
         

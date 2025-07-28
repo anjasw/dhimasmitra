@@ -60,19 +60,20 @@ export default function DetailKategori() {
                     <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 gap-4">
                         {products.length > 0 ? (
                             products.map((product, i) => (
-                                <div
-                                    key={i}
-                                    className="bg-white p-3 shadow text-center hover:shadow-md transition"
-                                >
-                                    <img
-                                        src={product.image}
-                                        alt={product.name}
-                                        className="h-32 w-full object-contain mb-3"
-                                    />
-                                    <div className="text-sm font-medium text-gray-800 line-clamp-2">
-                                        {product.name}
+                                <Link href={`/${product.slug}`} key={i}>
+                                    <div
+                                        className="bg-white p-3 shadow text-center hover:shadow-md transition"
+                                    >
+                                        <img
+                                            src={product.image}
+                                            alt={product.name}
+                                            className="h-32 w-full object-contain mb-3"
+                                        />
+                                        <div className="text-sm font-medium text-gray-800 line-clamp-2">
+                                            {product.name}
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             ))
                         ) : (
                             <p className="col-span-full text-gray-500 text-center">

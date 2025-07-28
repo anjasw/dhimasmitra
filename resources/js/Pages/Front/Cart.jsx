@@ -3,7 +3,7 @@ import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import { useState } from "react";
 
-export default function Cart({ categories, carts, isLoggedIn, role }) {
+export default function Cart({ carts }) {
     const [selectedIds, setSelectedIds] = useState([]);
     const [cartItems, setCartItems] = useState(
         carts.map((cart) => ({
@@ -90,7 +90,7 @@ export default function Cart({ categories, carts, isLoggedIn, role }) {
                 <meta name="description" content="Cart page" />
             </Head>
 
-            <Navbar category={categories} carts={carts} isLoggedIn={isLoggedIn} role={role} />
+            <Navbar />
 
             <div className="container mx-auto px-4 py-6">
                 <div className="flex flex-col md:flex-row gap-6 my-4">

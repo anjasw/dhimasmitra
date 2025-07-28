@@ -1,7 +1,10 @@
 import { useEffect, useState, useRef } from "react";
-import { Link } from "@inertiajs/react";
+import { Link,usePage } from "@inertiajs/react";
 
-export default function Navbar({ category, carts, isLoggedIn, role }) {
+export default function Navbar() {
+
+    const { category, carts, isLoggedIn, role } = usePage().props;
+    console.log(usePage().props, 'usePage props')
     const [offcanvasOpen, setOffcanvasOpen] = useState(false);
     const [showSubmenu, setShowSubmenu] = useState(false);
     const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -22,6 +25,8 @@ export default function Navbar({ category, carts, isLoggedIn, role }) {
         image: cart.product.images[0] ? '/storage/' + cart.product.images[0].image : "/assets/dummy-image.jpg",
     }));
 
+    // const { cate } = usePage().props;
+    // console.log(cate, 'cate')
     console.log(cartItems, 'cartItems')
 
     // const cartItems = [
@@ -42,13 +47,16 @@ export default function Navbar({ category, carts, isLoggedIn, role }) {
     //         image: "/assets/dummy-image.jpg",
     //     },
     // ];
-    console.log(category);
 
     const categories = category.map((cat) => ({
         name: cat.name,
-        href: cat.href,
-        subcategories: cat.subcategories,
+        href: `/kategori/${cat.slug}`,
+        subcategories: (cat.subcategories || []).map(sub => ({
+            name: sub.name,
+            href: `/kategori/${cat.slug}/sub-${sub.slug}`,
+        })),
     }));
+    console.log(categories, 'categories');
 
     // const categories = [
     //     {
@@ -62,6 +70,7 @@ export default function Navbar({ category, carts, isLoggedIn, role }) {
     //             { name: "Sub A5", href: "/kategori/produk-a/sub-a5" },
     //         ],
     //     },
+    // ];
     //     {
     //         name: "Produk B",
     //         href: "/kategori/produk-b",

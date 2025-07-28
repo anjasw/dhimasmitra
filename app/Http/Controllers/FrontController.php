@@ -21,21 +21,8 @@ class FrontController extends Controller
     public function home(){
 
 
-        $auth = Auth::user();
-        // dd($auth);
-        
-        $isLoggedIn = false;
-        $role = null;
-        if ($auth) {
-            $isLoggedIn = true;
-            $role = $auth->role;
-        } else {
-            $isLoggedIn = false;
-            $role = null;
-        }
-
-        $rjc = new RajaOngkirController;
-        $listKota = $rjc->getKota();
+        // $rjc = new RajaOngkirController;
+        // $listKota = $rjc->getKota();
 
         $laravelVersion = Application::VERSION;
         $phpVersion = PHP_VERSION;
@@ -43,36 +30,13 @@ class FrontController extends Controller
         $brands = Brand::query('status', 1)->limit(18)->get();
 
         $sliders = Slider::where('is_active', 1)->orderBy('order')->get();
-        $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
-            $q->where('status', 1);
-        }])->get();
-
-        $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
-            ->where('user_id', auth()->id())
-            ->with(['product' => function($q){
-                $q->with(['images']);
-            }, 'user' => function($q){
-                $q->select('id', 'name', 'email');
-            }])
-            ->get()
-            ->map(function($cart) {
-                // Pastikan kolom fix_price ada di relasi product
-                $cart->product->fix_price_formatted = isset($cart->product->fix_price)
-                    ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
-                    : null;
-                return $cart;
-            });
-        // dd($carts);
+        
         return Inertia::render('Welcome', [
             'brands' => $brands,
             'laravelVersion' => $laravelVersion,
             'phpVersion' => $phpVersion,
-            'listKota' => $listKota,
+            // 'listKota' => $listKota,
             'sliders' => $sliders,
-            'categories' => $categories,
-            'carts' => $carts,
-            'isLoggedIn' => $isLoggedIn,
-            'role' => $role
         ]);
     }
 
@@ -172,7 +136,7 @@ class FrontController extends Controller
         $transaction_status = $request->transaction_status;
 
         $transaction->update([
-            'status' => $transaction_status == "settlement" ? 'paid' : 'failed',
+            'status' => $transaction_status == "settlement" ? 'paid' : $transaction_status,
             'updated_at' => now()
         ]);
         
@@ -183,13 +147,14 @@ class FrontController extends Controller
             ->toArray();
 
         // Hapus cart yang id-nya ada di $cartIds
-        if (!empty($cartIds)) {
+        if (!empty($cartIds) && $transaction_status == "settlement") {
             \App\Models\Cart::whereIn('id', $cartIds)
                 ->where('user_id', auth()->id())
                 ->delete();
         }
         // exit;
-        return redirect()->route('account.order');
+        return response()->json(['message' => 'Payment handled successfully']);
+        // return redirect()->route('account.order');
 
         // $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
         //     $q->where('status', 1);
@@ -446,5 +411,19 @@ class FrontController extends Controller
         $cart->delete();
 
         return response()->json(['success' => true]);
+    }
+
+
+    public function show($slug)
+    {
+        $product = \App\Models\Product::where('slug', $slug)->where('status', 1)->firstOrFail();
+        $product->fix_price_formatted = isset($product->fix_price)
+            ? 'Rp ' . number_format($product->fix_price, 0, ',', '.')
+            : null;
+        $product->image = $product->images->first() ? asset('storage/' . $product->images->first()->image) : asset('assets/dummy-image.jpg');
+
+        return Inertia::render('Front/DetailProduk', [
+            'product' => $product
+        ]);
     }
 }

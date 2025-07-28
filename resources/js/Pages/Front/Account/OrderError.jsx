@@ -3,9 +3,8 @@ import { Head } from "@inertiajs/react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
-export default function OrderError({ categories, carts }) {
+export default function OrderError() {
 
-    console.log(categories, carts);
     return (
         
         <div>
@@ -15,7 +14,7 @@ export default function OrderError({ categories, carts }) {
             </Head>
                         
                         
-            <Navbar category={categories} carts={carts} />
+            <Navbar />
 
             <h1>Order Success Page</h1>
             <p>This is the order success page where you can manage your orders.</p>

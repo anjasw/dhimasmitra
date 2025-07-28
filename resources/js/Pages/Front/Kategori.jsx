@@ -1,5 +1,5 @@
 import { Head } from "@inertiajs/react";
-import { usePage } from "@inertiajs/react";
+import { Link } from "@inertiajs/react";
 import { useState } from "react";
 
 import Navbar from "./Components/Navbar";
@@ -7,10 +7,10 @@ import Footer from "./Components/Footer";
 import MarketplaceSection from "./Components/MarketplaceSection";
 import Breadcrumb from "./Components/Breadcrumb";
 
-export default function Kategori() {
-    const { props } = usePage();
-    const allCategories = props.categories ?? [];
-    const breadcrumb = props.breadcrumb ?? [];
+export default function Kategori({categories, breadcrumbs}) {
+    // const { props } = usePage();
+    const allCategories = categories ?? [];
+    const breadcrumb = breadcrumbs ?? [];
 
     const [search, setSearch] = useState("");
     const [visibleCount, setVisibleCount] = useState(12);
@@ -21,7 +21,7 @@ export default function Kategori() {
     const visibleCategories = filteredCategories.slice(0, visibleCount);
 
     const loadMore = () => setVisibleCount((prev) => prev + 12);
-
+    console.log(categories, 'listr')
     return (
         <div className="bg-gray-100">
             <Head title="Kategori" />
@@ -59,7 +59,7 @@ export default function Kategori() {
                                     className="flex overflow-hidden shadow-sm hover:shadow-md transition"
                                 >
                                     {/* Kiri: Gambar + Nama Kategori */}
-                                    <a
+                                    <Link
                                         href={cat.href}
                                         className="flex-1 bg-gray-300 flex flex-col items-center justify-center p-4 text-center hover:bg-gray-400 transition"
                                     >
@@ -71,7 +71,7 @@ export default function Kategori() {
                                         <div className="text-sm font-semibold text-gray-800">
                                             {cat.name}
                                         </div>
-                                    </a>
+                                    </Link>
 
                                     {/* Kanan: Subkategori Scrollable */}
                                     {cat.subcategories.length > 0 && (
@@ -80,12 +80,12 @@ export default function Kategori() {
                                                 {cat.subcategories.map(
                                                     (sub, idx) => (
                                                         <li key={idx}>
-                                                            <a
+                                                            <Link
                                                                 href={sub.href}
                                                                 className="hover:text-yellow-600 transition block"
                                                             >
                                                                 {sub.name}
-                                                            </a>
+                                                            </Link>
                                                         </li>
                                                     )
                                                 )}

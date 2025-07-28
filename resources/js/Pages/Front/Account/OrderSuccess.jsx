@@ -3,9 +3,8 @@ import { Head } from "@inertiajs/react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
-export default function OrderSuccess({ categories, carts }) {
+export default function OrderSuccess() {
     
-    console.log(categories, carts);
     return (
         
         <div>

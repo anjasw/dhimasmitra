@@ -1,7 +1,7 @@
-import { Head } from "@inertiajs/react";
+import { Head, router } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
-export default function Order({ carts, categories, isLoggedIn, role, transaction }) {
+export default function Order({ transaction }) {
     const [snapToken, setSnapToken] = useState(null);
 
 
@@ -23,14 +23,30 @@ export default function Order({ carts, categories, isLoggedIn, role, transaction
         }
         if (snapToken && window.snap) {
             window.snap.pay(snapToken, {
-                onSuccess: function(result){
-                    window.location.reload();
+                onSuccess: async function(result){
+                    if(result.status_code === '200') {
+                        const csrf = document.querySelector('meta[name="csrf-token"]');
+                        const csrfToken = csrf ? csrf.getAttribute('content') : '';
+                        const update = await fetch('/account/order/success', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                            body: JSON.stringify({ order_id: result.order_id, transaction_id: result.transaction_id, transaction_status: result.transaction_status }),
+                        });
+                        console.log(result, 'res success');
+                        console.log(update, 'update order success');
+                    }
                 },
-                onPending: function(result){},
+                onPending: function(result){
+                    console.log(result,'res pending')
+                    return
+                },
                 onError: function(result){
-                    alert('Pembayaran gagal, silakan coba lagi.');
+                    console.log(result, 'res error')
+                    return
                 },
-                onClose: function(){}
+                onClose: function(){
+                    return
+                }
             });
         }
     }, [snapToken]);
@@ -261,6 +277,13 @@ export default function Order({ carts, categories, isLoggedIn, role, transaction
                                         },
                                         body: JSON.stringify({ transaction_id: transaction.id }),
                                     });
+
+                                    if (response.status === 419) {
+                                        // alert('Sesi Anda telah berakhir. Halaman akan direfresh.');
+                                        window.location.reload();
+                                        return;
+                                    }
+
                                     const data = await response.json();
                                     if (data.snap_token) {
                                         setSnapToken(data.snap_token); // trigger useEffect

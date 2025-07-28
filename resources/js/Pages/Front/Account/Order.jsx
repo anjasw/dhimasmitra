@@ -3,9 +3,7 @@ import { Head } from "@inertiajs/react";
 import Navbar from "../Components/Navbar";
 import Footer from "../Components/Footer";
 
-export default function Order({ categories, carts }) {
-
-    console.log(categories, carts);
+export default function Order() {
     return (
         
         <div>
@@ -15,7 +13,7 @@ export default function Order({ categories, carts }) {
             </Head>
                         
                         
-            <Navbar category={categories} carts={carts} />
+            <Navbar />
 
             <h1>Order</h1>
             <p>This is the order where you can manage your orders.</p>
