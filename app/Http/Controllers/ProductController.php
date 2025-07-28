@@ -2,89 +2,29 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\Product;
-
+use Inertia\Inertia;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function show($slug)
     {
-        sleep(1); // Simulate a delay for demonstration purposes
-        $limit = request('limit', 10); // default 10 jika tidak ada
-        return Inertia::render('Product/ListProduct', [
-            'products' => Product::query()
-                ->with(['user'])
-                ->orderByDesc('created_at')
-                ->paginate($limit)
-                ->withQueryString()
-                ->through(fn ($product) => [
-                    'id' => $post->id,
-                    'thumbnail' => $post->thumbnail,
-                    'title' => $post->title,
-                    'content' => $post->content,
-                    'user_id' => $post->user_id,
-                    'meta_description' => $post->meta_description,
-                    'slug' => $post->slug,
-                    'view_count' => $post->view_count,
-                    'tags' => $post->tags,
-                    'status' => $post->status,
-                    'language' => $post->language,
-                    'created_at' => $post->created_at,
-                    'updated_at' => $post->updated_at,
-                ]),
-            'limit' => (int) $limit,
+        $product = [
+            'name' => ucwords(str_replace('-', ' ', $slug)),
+            'slug' => $slug,
+            'price' => 2926300,
+            'stock' => 14,
+            'image_url' => 'https://dummyimage.com/600x600/000/fff&text=Gambar+Utama',
+            'description' => "1. BMS intelligent chip enables 65W (Max) fast charging.\n2. Top-class LG battery cells ensure safety and performance.\n3. Lightweight integrated design.\n4. Multiple interfaces: USB-A, USB-C, 8V-OUT, 12V-OUT.",
+            'gallery' => [
+                'https://dummyimage.com/600x600/000/fff&text=Gambar+Utama',
+                'https://dummyimage.com/600x600/333/fff&text=Side+View',
+                'https://dummyimage.com/600x600/555/fff&text=Back+View',
+                'https://dummyimage.com/600x600/777/fff&text=Packaging',
+            ],
+        ];
+
+        return Inertia::render('Front/ProductDetail', [
+            'product' => $product,
         ]);
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
     }
 }
