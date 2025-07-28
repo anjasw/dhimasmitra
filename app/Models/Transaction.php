@@ -13,6 +13,9 @@ class Transaction extends Model
         'subtotal',
         'total',
         'status',
+        'phone',
+        'destination',
+        'note',
     ];
     public function user() {
         return $this->belongsTo(User::class);

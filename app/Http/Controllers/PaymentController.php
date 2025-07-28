@@ -13,8 +13,13 @@ class PaymentController extends Controller
         $transaction = Transaction::find($request->transaction_id);
         // Buat parameter sesuai kebutuhan Midtrans
         $invoice_code = 'DMT-' . time() . $userId . rand(100,999);
-
-         Transaction::where('id', $request->transaction_id)->update(['invoice_code' => $invoice_code]);
+        // dd($request);
+         Transaction::where('id', $request->transaction_id)->update([
+            'invoice_code' => $invoice_code,
+            'phone' => $request['alamat']['phone'],
+            'destination' => $request['alamat']['detail'],
+            'note' => $request['note'],
+        ]);
         // $transaction;
 
         $params = [
@@ -25,14 +30,14 @@ class PaymentController extends Controller
             'customer_details' => [
                 'first_name' => $transaction->user->name,
                 'email' => $transaction->user->email,
-                'phone' => '+628232362462',
+                'phone' => $request['alamat']['phone'],
                 'shipping_address' => [
                     'first_name' => $transaction->user->name,
                     'email' => $transaction->user->email,
-                    'phone' => '+628232362462',
-                    'address' => $transaction->alamat ?? 'Alamat belum diisi',
-                    'city' => 'Jakarta',
-                    'postal_code' => '12345',
+                    'phone' => $request['alamat']['phone'],
+                    'address' => $request['alamat']['detail'] ?? 'Alamat belum diisi',
+                    'city' => '-',
+                    'postal_code' => '-',
                     'country_code' => 'IDN'
                 ],
                 // Jika ingin billing address juga:

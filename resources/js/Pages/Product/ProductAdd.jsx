@@ -18,11 +18,11 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
         price: '',
         discount: '',
         fixPrice: '',
-        minOrder: '',
+        minOrder: 1,
         images: [],
-        sku: '',
+        sku: 'DMT-',
         stock: '',
-        minStock: '',
+        minStock: 1,
         weight: '',
         type: '', // Untuk menandakan save atau add
     });
@@ -278,7 +278,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors['brand.value'] && <div className="text-red-500 text-sm mt-1">{errors['brand.value']}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Colors<span className="text-red-400">*</span></label>
+                                    <label className="block mb-1 font-medium">Product Colors</label>
                                     <Select
                                         options={colorOptions}
                                         value={data.colors} // Gunakan data.colors
@@ -289,7 +289,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors['colors'] && <div className="text-red-500 text-sm mt-1">{errors['colors']}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Product Size<span className="text-red-400">*</span></label>
+                                    <label className="block mb-1 font-medium">Product Size</label>
                                     <Select
                                         options={sizeOptions}
                                         value={data.sizes} // Gunakan data.sizes
@@ -335,14 +335,14 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     {errors.price && <div className="text-red-500 text-sm mt-1">{errors.price}</div>}
                                 </div>
                                 <div className="mb-4">
-                                    <label className="block mb-1 font-medium">Discount (IDR)<span className="text-red-400">*</span></label>
+                                    <label className="block mb-1 font-medium">Discount (%)<span className="text-red-400">*</span></label>
                                     <input
                                         type="text"
                                         name="discount"
                                         value={data.discount} // Gunakan data.discount
                                         onChange={handleDiscountChange}
                                         className="w-full border rounded px-3 py-2 border-gray-300"
-                                        placeholder="Diskon (contoh: 10000)"
+                                        placeholder="Diskon (contoh: 10)"
                                     />
                                     {errors.discount && <div className="text-red-500 text-sm mt-1">{errors.discount}</div>}
                                 </div>

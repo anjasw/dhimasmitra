@@ -13,6 +13,7 @@ use App\Http\Controllers\SliderController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileUserController;
+use App\Http\Controllers\ShopController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +29,19 @@ Route::middleware(['auth', 'verified'])->group(function (){
     
     Route::post('/cart/checkout', [FrontController::class, 'checkoutCart']);
     Route::get('/profile', [ProfileUserController::class, 'index'])->name('profile');
+    Route::post('/profile/update', [ProfileUserController::class, 'updateProfile']);
+    Route::post('/profile/avatar', [ProfileUserController::class, 'updateAvatar']);
+
+    Route::post('/profile/address/store', [ProfileUserController::class, 'storeAddress']);
+    Route::post('/profile/address/{id}/update', [ProfileUserController::class, 'updateAddress']);
+    Route::post('/profile/address/{id}/delete', [ProfileUserController::class, 'deleteAddress']);
+
+    Route::post('/profile/bank/store', [ProfileUserController::class, 'storeBank']);
+    Route::post('/profile/bank/{id}/update', [ProfileUserController::class, 'updateBank']);
+    Route::post('/profile/bank/{id}/delete', [ProfileUserController::class, 'deleteBank']);
+    Route::post('/profile/password', [ProfileUserController::class, 'updatePassword']);
+
+    Route::post('cart/add', [FrontController::class, 'addToCart'])->name('cart.add');
 });
 
 // Route untuk produk detail berdasarkan slug
@@ -126,7 +140,7 @@ Route::post('/snap/token', [PaymentController::class, 'getSnapToken']);
 
 Route::get('/payment/notification/success', [PaymentController::class, 'handlePaymentMidtrans'])->name('notification.success');
 Route::get('/payment/notification/pay_account', [PaymentController::class, 'handlePayAccount'])->name('notification.pay_account');
-
+Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
 Route::get('/{slug}', [FrontController::class, 'show'])->name('product.show');
 

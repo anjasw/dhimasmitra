@@ -50,36 +50,12 @@ class FrontController extends Controller
         // Eager load items, product, dan images
         $transaction = Transaction::with(['items.product.images'])->find($transactionId);
 
-        // dd($transaction);
-        $auth = Auth::user();
-        $isLoggedIn = $auth ? true : false;
-        $role = $auth ? $auth->role : null;
 
-        $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
-            $q->where('status', 1);
-        }])->get();
-
-        $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
-            ->where('user_id', auth()->id())
-            ->with(['product' => function($q){
-                $q->with(['images']);
-            }, 'user' => function($q){
-                $q->select('id', 'name', 'email');
-            }])
-            ->get()
-            ->map(function($cart) {
-                $cart->product->fix_price_formatted = isset($cart->product->fix_price)
-                    ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
-                    : null;
-                return $cart;
-            });
+        $addresses = \App\Models\Address::where('user_id', auth()->id())->get();
 
         return Inertia::render('Front/Order', [
-            'categories' => $categories,
-            'carts' => $carts,
-            'isLoggedIn' => $isLoggedIn,
-            'role' => $role,
-            'transaction' => $transaction, // <-- kirim ke frontend
+            'transaction' => $transaction,
+            'addresses' => $addresses, // <-- kirim ke frontend
         ]);
     }
 
@@ -378,6 +354,7 @@ class FrontController extends Controller
                 ->where('user_id', $userId)
                 ->with('product')
                 ->first();
+            // dd($userId);
 
             \App\Models\TransactionItem::create([
                 'transaction_id' => $transaction->id,
@@ -416,14 +393,99 @@ class FrontController extends Controller
 
     public function show($slug)
     {
-        $product = \App\Models\Product::where('slug', $slug)->where('status', 1)->firstOrFail();
-        $product->fix_price_formatted = isset($product->fix_price)
-            ? 'Rp ' . number_format($product->fix_price, 0, ',', '.')
-            : null;
-        $product->image = $product->images->first() ? asset('storage/' . $product->images->first()->image) : asset('assets/dummy-image.jpg');
+        sleep(1);
+        // $product = \App\Models\Product::where('slug', $slug)->where('status', 1)->firstOrFail();
+        // $product->fix_price_formatted = isset($product->fix_price)
+        //     ? 'Rp ' . number_format($product->fix_price, 0, ',', '.')
+        //     : null;
+        // $product->image = $product->images->first() ? asset('storage/' . $product->images->first()->image) : asset('assets/dummy-image.jpg');
 
-        return Inertia::render('Front/DetailProduk', [
-            'product' => $product
+        // return Inertia::render('Front/DetailProduk', [
+        //     'product' => $product
+        // ]);
+
+        // $product = [
+        //     'name' => ucwords(str_replace('-', ' ', $slug)),
+        //     'slug' => $slug,
+        //     'price' => 2926300,
+        //     'stock' => 14,
+        //     'image_url' => 'https://dummyimage.com/600x600/000/fff&text=Gambar+Utama',
+        //     'description' => "1. BMS intelligent chip enables 65W (Max) fast charging.\n2. Top-class LG battery cells ensure safety and performance.\n3. Lightweight integrated design.\n4. Multiple interfaces: USB-A, USB-C, 8V-OUT, 12V-OUT.",
+        //     'gallery' => [
+        //         'https://dummyimage.com/600x600/000/fff&text=Gambar+Utama',
+        //         'https://dummyimage.com/600x600/333/fff&text=Side+View',
+        //         'https://dummyimage.com/600x600/555/fff&text=Back+View',
+        //         'https://dummyimage.com/600x600/777/fff&text=Packaging',
+        //     ],
+        // ];
+        // return Inertia::render('Front/ProductDetail', [
+        //     'product' => $product,
+        // ]);
+        $product = \App\Models\Product::with('images')->where('slug', $slug)->where('status', 1)->firstOrFail();
+
+        $mainImage = $product->images->first()
+            ? asset('storage/' . $product->images->first()->image)
+            : asset('assets/dummy-image.jpg');
+
+        $gallery = $product->images->map(function($img) {
+            return asset('storage/' . $img->image);
+        })->toArray();
+
+        return Inertia::render('Front/ProductDetail', [
+            'product' => [
+                'id' => $product->id,
+                'name' => $product->name,
+                'slug' => $product->slug,
+                'price' => $product->fix_price,
+                'stock' => $product->stock,
+                'image_url' => $mainImage,
+                'description' => $product->description,
+                'gallery' => $gallery,
+            ],
+        ]);
+    }
+
+    public function addToCart(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'quantity' => 'required|integer|min:1',
+        ]);
+
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $product = \App\Models\Product::find($request->product_id);
+
+        // Cek apakah produk sudah ada di keranjang user
+        $cart = \App\Models\Cart::where('user_id', $user->id)
+            ->where('product_id', $request->product_id)
+            ->first();
+
+        if ($cart) {
+            // Jika sudah ada, update quantity dan price
+            $cart->quantity += $request->quantity;
+            $cart->price = $product->fix_price * $cart->quantity;
+            $cart->weight = 0;
+            $cart->save();
+            $cartId = $cart->id;
+        } else {
+            // Jika belum ada, buat baru
+            $newCart = \App\Models\Cart::create([
+                'user_id' => $user->id,
+                'product_id' => $request->product_id,
+                'quantity' => $request->quantity,
+                'price' => $product->fix_price * $request->quantity,
+                'weight' => 0,
+            ]);
+            $cartId = $newCart->id;
+        }
+
+        return response()->json([
+            'success' => true,
+            'cart_id' => $cartId
         ]);
     }
 }

@@ -112,9 +112,9 @@ class ProductController extends Controller
             'category.value' => 'required|integer',
             'subcategory.value' => 'required|integer',
             'colors' => 'required|array|min:1',
-            'colors.*.value' => 'required|string',
+            // 'colors.*.value' => 'required|string',
             'sizes' => 'required|array|min:1',
-            'sizes.*.value' => 'required|string',
+            // 'sizes.*.value' => 'required|string',
             'images' => 'required|array|min:1',
             'images.*' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);

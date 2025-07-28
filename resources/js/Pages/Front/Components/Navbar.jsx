@@ -19,7 +19,7 @@ export default function Navbar() {
     const cartItems = carts.map((cart) => ({
         id: cart.id,
         name: cart.name,
-        qty: cart.qty,
+        qty: cart.quantity,
         price: cart.product.fix_price_formatted,
         href: cart.href,
         image: cart.product.images[0] ? '/storage/' + cart.product.images[0].image : "/assets/dummy-image.jpg",

@@ -1,7 +1,7 @@
 import { Head, router } from "@inertiajs/react";
 import { useState, useEffect } from "react";
 
-export default function Order({ transaction }) {
+export default function Order({ transaction, addresses }) {
     const [snapToken, setSnapToken] = useState(null);
 
 
@@ -32,6 +32,10 @@ export default function Order({ transaction }) {
                             headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                             body: JSON.stringify({ order_id: result.order_id, transaction_id: result.transaction_id, transaction_status: result.transaction_status }),
                         });
+                        router.visit('/profile?tab=transaksi', {
+                            preserveState: true,
+                            preserveScroll: true,
+                        });
                         console.log(result, 'res success');
                         console.log(update, 'update order success');
                     }
@@ -53,16 +57,17 @@ export default function Order({ transaction }) {
 
     const [showModal, setShowModal] = useState(false);
 
-    const [alamat, setAlamat] = useState({
-        label: "Rumah - Aprea",
-        detail: "Perumahan Tamansari Riverside Blok E2 No.24, Tamansari, Kab. Bogor, Jawa Barat",
-        phone: "62877770211186",
-    });
-
+    const [alamat, setAlamat] = useState(
+        addresses?.[0] || {
+            label: "",
+            detail: "",
+            phone: "",
+        }
+    );
     const [tempAlamat, setTempAlamat] = useState(alamat);
 
     const openModal = () => {
-        setTempAlamat(alamat); // reset temp data
+        setTempAlamat(alamat);
         setShowModal(true);
     };
 
@@ -95,6 +100,9 @@ export default function Order({ transaction }) {
     );
     // const totalShipping = products.reduce((sum, p) => sum + (p.shipping || 0), 0);
 
+    // Tambahkan state untuk catatan
+    const [note, setNote] = useState("");
+
     return (
         <div className="bg-gray-100 min-h-screen">
             <Head title="Checkout" />
@@ -121,20 +129,31 @@ export default function Order({ transaction }) {
                             <h2 className="font-semibold text-sm mb-2 text-gray-500">
                                 ALAMAT PENGIRIMAN
                             </h2>
-                            <p className="font-medium">
-                                <span className="text-yellow-600 font-semibold">
-                                    {alamat.label}
-                                </span>
-                                <br />
-                                {alamat.detail} <br />
-                                {alamat.phone}
-                            </p>
-                            <button
-                                onClick={openModal}
-                                className="bg-yellow-400 px-4 py-2 text-black text-sm mt-2 hover:bg-yellow-300 transition"
-                            >
-                                Ganti
-                            </button>
+                            {alamat.label || alamat.detail || alamat.phone ? (
+                                <>
+                                    <p className="font-medium">
+                                        <span className="text-yellow-600 font-semibold">
+                                            {alamat.label}
+                                        </span>
+                                        <br />
+                                        {alamat.detail} <br />
+                                        {alamat.phone}
+                                    </p>
+                                    <button
+                                        onClick={openModal}
+                                        className="bg-yellow-400 px-4 py-2 text-black text-sm mt-2 hover:bg-yellow-300 transition"
+                                    >
+                                        Ganti
+                                    </button>
+                                </>
+                            ) : (
+                                <a
+                                    href="/profile?tab=alamat"
+                                    className="bg-yellow-400 px-4 py-2 text-black text-sm mt-2 hover:bg-yellow-300 transition inline-block rounded"
+                                >
+                                    Tambah Alamat Pengiriman
+                                </a>
+                            )}
                         </div>
 
                         {/* Produk */}
@@ -196,6 +215,8 @@ export default function Order({ transaction }) {
                                     rows={1}
                                     maxLength={200}
                                     placeholder="Opsional"
+                                    value={note}
+                                    onChange={e => setNote(e.target.value)}
                                 ></textarea>
                             </div>
                         </div>
@@ -213,26 +234,13 @@ export default function Order({ transaction }) {
                                     <span>BCA Virtual Account</span>
                                 </li>
                                 <li className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-orange-600">store</span>
-                                    <span>Alfamart / Alfamidi / Lawson / D+D</span>
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-yellow-600">credit_card</span>
-                                    <span>Mandiri Virtual Account</span>
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-green-600">payments</span>
-                                    <span>GoPay / GoPay Later</span>
+                                    <span className="material-symbols-outlined text-blue-600">credit_card</span>
+                                    <span>Danamon Virtual Account</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <span className="material-symbols-outlined text-purple-600">qr_code_2</span>
                                     <span>QRIS</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <span className="material-symbols-outlined text-gray-500">more_horiz</span>
-                                    <span>Lainnya</span>
-                                </li>
-                                {/* Tambahkan channel lain sesuai yang aktif di Midtrans */}
                             </ul>
                             <button className="mt-4 bg-yellow-100 border border-yellow-400 text-yellow-700 text-xs px-3 py-2 w-full">
                                 Pakai promo biar makin hemat!
@@ -275,18 +283,26 @@ export default function Order({ transaction }) {
                                             'Content-Type': 'application/json',
                                             'X-CSRF-TOKEN': csrfToken
                                         },
-                                        body: JSON.stringify({ transaction_id: transaction.id }),
+                                        body: JSON.stringify({
+                                            transaction_id: transaction.id,
+                                            alamat: {
+                                                id: alamat.id,
+                                                label: alamat.label,
+                                                detail: alamat.detail,
+                                                phone: alamat.phone,
+                                            },
+                                            note: note // <-- kirim catatan
+                                        }),
                                     });
 
                                     if (response.status === 419) {
-                                        // alert('Sesi Anda telah berakhir. Halaman akan direfresh.');
                                         window.location.reload();
                                         return;
                                     }
 
                                     const data = await response.json();
                                     if (data.snap_token) {
-                                        setSnapToken(data.snap_token); // trigger useEffect
+                                        setSnapToken(data.snap_token);
                                     } else {
                                         alert('Gagal mendapatkan token pembayaran.');
                                     }
@@ -316,68 +332,49 @@ export default function Order({ transaction }) {
                 <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white shadow-lg w-full max-w-md p-6 relative">
                         <h2 className="text-lg font-semibold mb-4">
-                            Ubah Alamat
+                            Pilih Alamat Pengiriman
                         </h2>
-
-                        <label className="block text-sm font-medium mb-2">
-                            Label Alamat
-                        </label>
-                        <input
-                            type="text"
-                            value={tempAlamat.label}
-                            onChange={(e) =>
-                                setTempAlamat({
-                                    ...tempAlamat,
-                                    label: e.target.value,
-                                })
-                            }
-                            className="w-full border p-2 mb-3"
-                        />
-
-                        <label className="block text-sm font-medium mb-2">
-                            Alamat Lengkap
-                        </label>
-                        <textarea
-                            value={tempAlamat.detail}
-                            onChange={(e) =>
-                                setTempAlamat({
-                                    ...tempAlamat,
-                                    detail: e.target.value,
-                                })
-                            }
-                            rows={3}
-                            className="w-full border p-2 mb-3"
-                        />
-
-                        <label className="block text-sm font-medium mb-2">
-                            Nomor HP Penerima
-                        </label>
-                        <input
-                            type="text"
-                            value={tempAlamat.phone}
-                            onChange={(e) =>
-                                setTempAlamat({
-                                    ...tempAlamat,
-                                    phone: e.target.value,
-                                })
-                            }
-                            className="w-full border p-2 mb-4"
-                        />
-
-                        <div className="flex justify-end gap-2">
-                            <button
-                                onClick={() => setShowModal(false)}
-                                className="px-4 py-2 text-gray-600 hover:text-gray-800"
-                            >
-                                Batal
-                            </button>
-                            <button
-                                onClick={saveAlamat}
-                                className="bg-yellow-400 text-black px-4 py-2 hover:bg-yellow-300"
-                            >
-                                Simpan
-                            </button>
-                        </div>
+                        <form
+                            onSubmit={e => {
+                                e.preventDefault();
+                                setAlamat(tempAlamat);
+                                setShowModal(false);
+                            }}
+                        >
+                            <div className="space-y-4">
+                                {(addresses || []).map((alamatItem, idx) => (
+                                    <label key={alamatItem.id || idx} className="flex items-start gap-3 cursor-pointer border p-3 rounded hover:bg-yellow-50">
+                                        <input
+                                            type="radio"
+                                            name="alamat"
+                                            checked={tempAlamat.id === alamatItem.id}
+                                            onChange={() => setTempAlamat(alamatItem)}
+                                            className="mt-1"
+                                        />
+                                        <div>
+                                            <span className="font-semibold text-yellow-600">{alamatItem.label}</span>
+                                            <div className="text-sm text-gray-700">{alamatItem.detail}</div>
+                                            <div className="text-sm text-gray-700">{alamatItem.phone}</div>
+                                        </div>
+                                    </label>
+                                ))}
+                            </div>
+                            <div className="flex justify-end gap-2 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowModal(false)}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="bg-yellow-400 text-black px-4 py-2 hover:bg-yellow-300"
+                                >
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
