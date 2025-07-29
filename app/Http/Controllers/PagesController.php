@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\TentangKami;
 use App\Models\Contact;
+use App\Models\Transaction;
+use Maatwebsite\Excel\Facades\Excel; // Tambahkan di bagian atas file
+use App\Exports\OrdersExport;        // Tambahkan di bagian atas file
 
 class PagesController extends Controller
 {
@@ -41,14 +44,62 @@ class PagesController extends Controller
     // }
     
 
-    public function reporting()
+    public function reporting(Request $request)
     {
+        $query = Transaction::query();
+
+        // Filter status
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        // Filter tanggal
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->get()->map(function ($order) {
+            return [
+                'id' => $order->id,
+                'created_at' => $order->created_at->format('Y-m-d'),
+                'invoice_code' => $order->invoice_code,
+                'customer_name' => $order->user->name ?? '-',
+                'status' => $order->status,
+                'total' => $order->total,
+            ];
+        });
+
         return Inertia::render('Reporting/List', [
-            'flash' => [
-                'success' => session('success'),
-                'error' => session('error'),
+            'orders' => $orders,
+            'filters' => [
+                'status' => $request->status,
+                'date_from' => $request->date_from,
+                'date_to' => $request->date_to,
             ],
         ]);
+    }
+
+    // Export ke Excel
+    public function exportReporting(Request $request)
+    {
+        $query = \App\Models\Transaction::query();
+
+        if ($request->filled('status')) {
+            $query->where('status', $request->status);
+        }
+        if ($request->filled('date_from')) {
+            $query->whereDate('created_at', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('created_at', '<=', $request->date_to);
+        }
+
+        $orders = $query->orderBy('created_at', 'desc')->get();
+
+        // Export ke Excel menggunakan Laravel Excel
+        return Excel::download(new OrdersExport($orders), 'orders_' . now()->format('Ymd_His') . '.xlsx');
     }
 
 

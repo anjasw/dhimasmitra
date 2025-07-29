@@ -426,6 +426,7 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
 
                             {/* Tombol Simpan */}
                             <div className="flex justify-between mt-3">
+                                <Link href="/sysadmin/product" className="px-6 py-2 text-gray-700 rounded bg-yellow-100 hover:bg-yellow-200">Kembali</Link>
                                 <button
                                     type="submit" // Penting: type="submit" untuk memicu onSubmit form
                                     className="px-6 py-1 text-gray-700 rounded bg-gray-200 hover:bg-gray-300 flex"

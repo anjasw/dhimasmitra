@@ -14,6 +14,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileUserController;
 use App\Http\Controllers\ShopController;
+use App\Http\Controllers\DashboardController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -53,8 +54,9 @@ Route::middleware(['auth', 'verified'])->group(function (){
 // })->name('product.detail');
 
 Route::middleware(['auth', 'verified','is_admin'])->group(function () {
-    Route::get('/sysadmin/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
+    // Route::get('/sysadmin/dashboard', fn() => Inertia::render('Dashboard'))->name('dashboard');
 
+    Route::get('/sysadmin/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::prefix('sysadmin')->group(function () {
         // Profile
         Route::get('/', function () {
@@ -117,8 +119,11 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::delete('/pages/slider/delete/{slider}', [SliderController::class, 'destroy'])->name('pages.slider.delete');
 
         Route::get('/orders', [OrderController::class, 'list'])->name('orders');
+        Route::get('/orders/{id}/detail', [OrderController::class, 'detail'])->name('orders.detail');
 
-
+        // Route::get('/reporting', [PagesController::class, 'reporting'])->name('reporting.index');
+        Route::get('/reporting/export', [PagesController::class, 'exportReporting'])->name('reporting.export');
+        
         // Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
         Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
         Route::post('/pages/about/update', [PagesController::class, 'aboutUpdate'])->name('pages.about.update');

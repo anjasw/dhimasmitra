@@ -1,9 +1,23 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head, Link, usePage } from '@inertiajs/react';
+import { Head, Link } from '@inertiajs/react';
+import { useState } from 'react';
 
 export default function OrdersList({ orders }) {
-    // Ambil data orders dari props inertia
-    // const { orders = [] } = usePage().props;
+    const [showModal, setShowModal] = useState(false);
+    const [selectedOrder, setSelectedOrder] = useState(null);
+
+    const handleShowDetail = async (order) => {
+        // Fetch detail dari backend
+        const res = await fetch(route('orders.detail', order.id));
+        const data = await res.json();
+        setSelectedOrder(data);
+        setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+        setShowModal(false);
+        setSelectedOrder(null);
+    };
 
     return (
         <AuthenticatedLayout
@@ -85,12 +99,13 @@ export default function OrdersList({ orders }) {
                                     </td>
                                     <td className="px-3 py-2">{order.created_at}</td>
                                     <td className="px-3 py-2">
-                                        <Link
-                                            href={route('orders', order.id)}
+                                        <button
+                                            type="button"
+                                            onClick={() => handleShowDetail(order)}
                                             className="px-2 py-1 bg-blue-600 text-white rounded text-xs hover:bg-blue-700"
                                         >
                                             Detail
-                                        </Link>
+                                        </button>
                                     </td>
                                 </tr>
                             ))}
@@ -115,6 +130,60 @@ export default function OrdersList({ orders }) {
                     ))}
                 </div>
             </div>
+
+            {/* Modal Detail */}
+            {showModal && selectedOrder && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+                    <div className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative">
+                        <button
+                            className="absolute top-2 right-2 text-gray-400 hover:text-gray-700"
+                            onClick={handleCloseModal}
+                        >
+                            &times;
+                        </button>
+                        <h2 className="text-lg font-bold mb-4">Detail Order</h2>
+                        <div className="mb-2"><b>Nama Pemesan:</b> {selectedOrder.customer_name}</div>
+                        <div className="mb-2"><b>Status:</b> {selectedOrder.status}</div>
+                        <div className="mb-2"><b>Tanggal:</b> {selectedOrder.created_at}</div>
+                        <div className="mb-2"><b>Total:</b> Rp {selectedOrder.total?.toLocaleString()}</div>
+                        <div className="mb-2"><b>Produk:</b></div>
+                        <div>
+                            {selectedOrder.items && selectedOrder.items.length > 0 ? (
+                                <table className="min-w-full text-sm border">
+                                    <thead>
+                                        <tr>
+                                            <th className="px-2 py-1 border">Nama Produk</th>
+                                            <th className="px-2 py-1 border">Jumlah</th>
+                                            <th className="px-2 py-1 border">Harga</th>
+                                            <th className="px-2 py-1 border">Subtotal</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {selectedOrder.items.map((item, idx) => (
+                                            <tr key={idx}>
+                                                <td className="px-2 py-1 border">{item.product_name}</td>
+                                                <td className="px-2 py-1 border">{item.qty}</td>
+                                                <td className="px-2 py-1 border">Rp {item.price?.toLocaleString()}</td>
+                                                <td className="px-2 py-1 border">Rp {(item.qty * item.price)?.toLocaleString()}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            ) : (
+                                <div className="text-gray-500">Tidak ada item.</div>
+                            )}
+                        </div>
+                        <div className="flex justify-end mt-4">
+                            <button
+                                className="bg-gray-300 px-4 py-2 rounded hover:bg-gray-400"
+                                onClick={handleCloseModal}
+                            >
+                                Tutup
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }

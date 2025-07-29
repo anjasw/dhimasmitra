@@ -19,24 +19,46 @@ class OrderController extends Controller
         // Map data orders
         $orders->getCollection()->transform(function ($order) {
             $waktu = $order->updated_at ?? $order->created_at;
-            if($order->status !== "paid"){
-                $isExpired = now()->diffInMinutes($waktu) < -10;
-            }else{
-                $isExpired = false;
-            }
+            // if($order->status !== "paid"){
+            //     $isExpired = now()->diffInMinutes($waktu) < -10;
+            // }else{
+            //     $isExpired = false;
+            // }
             return [
                 'id' => $order->id,
                 'customer_name' => $order->user->name ?? '-',
                 'product_name' => $order->items->pluck('cart.product.name')->implode(', '),
                 'qty' => $order->items->sum('quantity'),
                 'total' => $order->total,
-                'status' => $isExpired ? 'canceled' : $order->status,
+                'status' => $order->status,
                 'created_at' => $waktu->format('Y-m-d H:i'),
             ];
         });
 
         return inertia('Orders/OrdersList', [
             'orders' => $orders,
+        ]);
+    }
+    
+    public function detail($id)
+    {
+        $order = \App\Models\Transaction::with(['user', 'items.cart.product'])->findOrFail($id);
+
+        $items = $order->items->map(function ($item) {
+            return [
+                'product_name' => $item->cart && $item->cart->product ? $item->cart->product->name : '-',
+                'qty' => $item->quantity,
+                'price' => $item->price,
+            ];
+        });
+
+        return response()->json([
+            'id' => $order->id,
+            'customer_name' => $order->user->name ?? '-',
+            'status' => $order->status,
+            'created_at' => ($order->updated_at ?? $order->created_at)->format('Y-m-d H:i'),
+            'total' => $order->total,
+            'items' => $items,
         ]);
     }
 }
