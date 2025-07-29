@@ -312,7 +312,7 @@ export default function Navbar() {
 
                             <Link href="/shop">Shop</Link>
                             <Link href="/tentang">Tentang Kami</Link>
-                            <Link href="/blog">Blog</Link>
+                            <Link href="/artikel">Blog</Link>
                             <Link href="/kontak">Kontak</Link>
                         </div>
 
@@ -561,7 +561,7 @@ export default function Navbar() {
                             Tentang Kami
                         </Link>
                         <Link
-                            href="/blog"
+                            href="/artikel"
                             onClick={() => setOffcanvasOpen(false)}
                         >
                             Blog

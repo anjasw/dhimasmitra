@@ -26,34 +26,32 @@ export default function Shop() {
             <Navbar />
             {breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
 
-            <div className="max-w-7xl mx-auto px-4 py-10 flex gap-8">
+            <div className="max-w-7xl mx-auto px-4 py-10 flex flex-col lg:flex-row gap-8">
                 {/* Sidebar Filter Kategori */}
-                <aside className="w-1/5 bg-white p-4 shadow-sm sticky top-0 h-screen overflow-y-auto direction-rtl scrollbar-left">
-                    <div className="direction-ltr">
-                        <h3 className="font-semibold text-gray-700 mb-3">Filter</h3>
-                        <ul className="space-y-2 text-sm">
-                            {categories.map((category) => (
-                                <li key={category.id}>
-                                    <Link
-                                        href={route("shop.index", {
-                                            kategori: category.slug,
-                                        })}
-                                        className={`block px-2 py-1 ${
-                                            selectedCategory === category.slug
-                                                ? "bg-yellow-400 text-black font-semibold"
-                                                : "hover:bg-gray-100"
-                                        }`}
-                                    >
-                                        {category.name}
-                                    </Link>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
+                <aside className="bg-white p-4 shadow-sm w-full lg:w-1/5 lg:sticky lg:top-0 lg:h-screen lg:overflow-y-auto">
+                    <h3 className="font-semibold text-gray-700 mb-3">Filter</h3>
+                    <ul className="flex lg:block overflow-x-auto lg:overflow-visible gap-2 lg:gap-0 whitespace-nowrap pb-2 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent">
+                        {categories.map((category) => (
+                            <li key={category.id} className="flex-shrink-0">
+                                <Link
+                                    href={route("shop.index", {
+                                        kategori: category.slug,
+                                    })}
+                                    className={`block px-3 py-1 border border-gray-200 rounded-full lg:rounded-none lg:border-0 ${
+                                        selectedCategory === category.slug
+                                            ? "bg-yellow-400 text-black font-semibold"
+                                            : "hover:bg-gray-100"
+                                    }`}
+                                >
+                                    {category.name}
+                                </Link>
+                            </li>
+                        ))}
+                    </ul>
                 </aside>
 
                 {/* Produk Grid */}
-                <main className="w-4/5">
+                <main className="lg:w-4/5">
                     {visibleProducts.length > 0 ? (
                         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                             {visibleProducts.map((product) => (
@@ -76,7 +74,9 @@ export default function Shop() {
                         </div>
                     ) : (
                         <div className="text-center text-gray-500 py-20">
-                            <p className="text-lg font-semibold">Produk tidak ditemukan</p>
+                            <p className="text-lg font-semibold">
+                                Produk tidak ditemukan
+                            </p>
                         </div>
                     )}
 
