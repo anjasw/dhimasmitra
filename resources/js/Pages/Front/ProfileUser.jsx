@@ -1021,6 +1021,24 @@ export default function ProfileUser() {
                                 />
                             </div>
 
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Link Lokasi Google Maps
+                                </label>
+                                <input
+                                    type="url"
+                                    placeholder="https://maps.google.com/..."
+                                    value={alamatBaru.lokasi}
+                                    onChange={(e) =>
+                                        setAlamatBaru({
+                                            ...alamatBaru,
+                                            lokasi: e.target.value,
+                                        })
+                                    }
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                />
+                            </div>
+
                             <div className="flex justify-end gap-2 mt-6">
                                 <button
                                     type="button"
@@ -1030,6 +1048,159 @@ export default function ProfileUser() {
                                             label: "",
                                             detail: "",
                                             phone: "",
+                                            lokasi: "",
+                                        });
+                                    }}
+                                    className="px-4 py-2 text-gray-600 hover:text-gray-800"
+                                >
+                                    Batal
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="bg-yellow-400 text-black px-4 py-2 hover:bg-yellow-300"
+                                >
+                                    Simpan
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Modal Tambah & Edit Rekening */}
+
+            {showRekeningModal && (
+                <div className="fixed inset-0 z-50 bg-black bg-opacity-40 flex items-center justify-center">
+                    <div className="bg-white p-6 w-full max-w-md shadow-lg rounded relative">
+                        <h2 className="text-lg font-semibold mb-4">
+                            {rekeningBaru.id
+                                ? "Edit Rekening"
+                                : "Tambah Rekening"}
+                        </h2>
+
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+
+                                if (rekeningBaru.id) {
+                                    setDaftarRekening((prev) =>
+                                        prev.map((r) =>
+                                            r.id === rekeningBaru.id
+                                                ? rekeningBaru
+                                                : r
+                                        )
+                                    );
+                                } else {
+                                    setDaftarRekening((prev) => [
+                                        ...prev,
+                                        { ...rekeningBaru, id: Date.now() },
+                                    ]);
+                                }
+
+                                setShowRekeningModal(false);
+                                setRekeningBaru({
+                                    id: null,
+                                    namaBank: "",
+                                    logo: "",
+                                    noRekening: "",
+                                    atasNama: "",
+                                });
+                            }}
+                            className="space-y-4"
+                        >
+                            {/* Pilih Bank */}
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Pilih Bank
+                                </label>
+                                <select
+                                    value={rekeningBaru.namaBank}
+                                    onChange={(e) => {
+                                        const selected =
+                                            daftarBankTersedia.find(
+                                                (b) => b.nama === e.target.value
+                                            );
+                                        if (selected) {
+                                            setRekeningBaru((prev) => ({
+                                                ...prev,
+                                                namaBank: selected.nama,
+                                                logo: selected.logo,
+                                            }));
+                                        }
+                                    }}
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                >
+                                    <option value="">-- Pilih Bank --</option>
+                                    {daftarBankTersedia.map((bank) => (
+                                        <option
+                                            key={bank.kode}
+                                            value={bank.nama}
+                                        >
+                                            {bank.nama}
+                                        </option>
+                                    ))}
+                                </select>
+
+                                {/* Logo Preview */}
+                                {rekeningBaru.logo && (
+                                    <div className="mt-2">
+                                        <img
+                                            src={rekeningBaru.logo}
+                                            alt={rekeningBaru.namaBank}
+                                            className="w-20 h-10 object-contain"
+                                        />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* No Rekening */}
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    No. Rekening
+                                </label>
+                                <input
+                                    type="text"
+                                    value={rekeningBaru.noRekening}
+                                    onChange={(e) =>
+                                        setRekeningBaru({
+                                            ...rekeningBaru,
+                                            noRekening: e.target.value,
+                                        })
+                                    }
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                />
+                            </div>
+
+                            {/* Atas Nama */}
+                            <div>
+                                <label className="block text-sm font-medium">
+                                    Atas Nama
+                                </label>
+                                <input
+                                    type="text"
+                                    value={rekeningBaru.atasNama}
+                                    onChange={(e) =>
+                                        setRekeningBaru({
+                                            ...rekeningBaru,
+                                            atasNama: e.target.value,
+                                        })
+                                    }
+                                    className="mt-1 w-full border px-3 py-2 text-sm"
+                                />
+                            </div>
+
+                            {/* Tombol */}
+                            <div className="flex justify-end gap-2 mt-6">
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        setShowRekeningModal(false);
+                                        setRekeningBaru({
+                                            id: null,
+                                            namaBank: "",
+                                            logo: "",
+                                            noRekening: "",
+                                            atasNama: "",
                                         });
                                     }}
                                     className="px-4 py-2 text-gray-600 hover:text-gray-800"
