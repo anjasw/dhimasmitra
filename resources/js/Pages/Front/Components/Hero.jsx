@@ -2,11 +2,13 @@
 import { useEffect } from "react";
 import { useState, useRef } from "react";
 
-import { Link } from "@inertiajs/react";
+import { Link, usePage } from "@inertiajs/react";
 
 export default function Hero({sliders}) {
     useEffect(() => {}, []);
 
+    const contact = usePage().props.contact;
+    const alamat = contact.address || "Jl. Tanah Pasir, Ruko No. 45 G Penjaringan Jakarta-Utara";
     console.log(sliders);
     const images = sliders.map(slider => ({
         src: slider.image,
@@ -70,15 +72,13 @@ export default function Hero({sliders}) {
                         {/* Text */}
                         <div className="w-full md:w-1/2 text-white space-y-6">
                             <h1 className="text-3xl md:text-5xl font-bold leading-tight">
-                                Manufaktur Importir &<br /> Distributor Rubber
-                                Industri
+                                Manufaktur Importir & Distributor Rubber Industri
                             </h1>
                             <p className="flex items-center text-sm md:text-base gap-2 pb-4">
                                 <span className="material-symbols-outlined">
                                     location_on
                                 </span>
-                                Jl. Tanah Pasir, Ruko No. 45 G Penjaringan
-                                Jakarta-Utara
+                                {alamat}
                             </p>
                             <Link href="/shop">
                                 <button className="bg-yellow-400 text-black font-semibold px-10 py-2 shadow hover:bg-yellow-300 transition">

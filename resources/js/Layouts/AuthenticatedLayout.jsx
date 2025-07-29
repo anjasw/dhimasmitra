@@ -65,27 +65,27 @@ export default function AuthenticatedLayout({ header, children }) {
     }, []);
 
     const notifProducts = [
-        {
-            id: 1,
-            name: 'Anjas Wicaksana',
-            product: 'Gayung',
-            image: '/storage/thumbnails/0TvAJqk1ZIizOzEiZffBZRpOfdxdnWwJlm7rb2p6.png',
-            qty: 2,
-        },
-        {
-            id: 2,
-            name: 'Kiyotaka Mori',
-            product: 'Ember',
-            image: '/storage/thumbnails/0TvAJqk1ZIizOzEiZffBZRpOfdxdnWwJlm7rb2p6.png',
-            qty: 1,
-        },
-        {
-            id: 3,
-            name: 'Widyo Santoso',
-            product: 'Sikat Gigi',
-            image: '/storage/thumbnails/0TvAJqk1ZIizOzEiZffBZRpOfdxdnWwJlm7rb2p6.png',
-            qty: 4,
-        },
+        // {
+        //     id: 1,
+        //     name: 'Anjas Wicaksana',
+        //     product: 'Gayung',
+        //     image: '/storage/thumbnails/0TvAJqk1ZIizOzEiZffBZRpOfdxdnWwJlm7rb2p6.png',
+        //     qty: 2,
+        // },
+        // {
+        //     id: 2,
+        //     name: 'Kiyotaka Mori',
+        //     product: 'Ember',
+        //     image: '/storage/thumbnails/0TvAJqk1ZIizOzEiZffBZRpOfdxdnWwJlm7rb2p6.png',
+        //     qty: 1,
+        // },
+        // {
+        //     id: 3,
+        //     name: 'Widyo Santoso',
+        //     product: 'Sikat Gigi',
+        //     image: '/storage/thumbnails/0TvAJqk1ZIizOzEiZffBZRpOfdxdnWwJlm7rb2p6.png',
+        //     qty: 4,
+        // },
     ];
 
     return (

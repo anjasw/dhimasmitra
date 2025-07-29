@@ -143,99 +143,102 @@ export default function Slider({ sliders = [], flash }) {
             }
         >
             <Head title="Slider Management" />
+            <div className="bg-white rounded shadow p-4 mt-4">
 
-            <div className="flex justify-between items-center mb-4">
-                <h1 className="text-xl font-bold">Slider List</h1>
-                <button
-                    onClick={handleShowAdd}
-                    className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                >
-                    + Tambah Slider
-                </button>
-            </div>
+                <div className="flex justify-between items-center mb-4">
+                    <h1 className="text-xl font-bold">Slider Home</h1>
+                    <button
+                        onClick={handleShowAdd}
+                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                    >
+                        + Tambah Slider
+                    </button>
+                </div>
 
-            <div className="overflow-x-auto bg-white rounded shadow">
-                <table className="min-w-full divide-y divide-gray-200 text-sm">
-                    <thead className="bg-gray-50">
-                        <tr>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">#</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Gambar</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Judul</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Subjudul</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Link</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Urutan</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
-                            <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ACTIONS</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sliders.map((slider, idx) => (
-                            <tr key={slider.id} className="hover:bg-gray-50">
-                                <td className="px-3 py-2 text-center">{idx + 1}</td>
-                                <td className="px-3 py-2 text-center">
-                                    <button
-                                        className="px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs"
-                                        onClick={() => {
-                                            setImagePreview(`/storage/${slider.image}`);
-                                            setShowImageModal(true);
-                                        }}
-                                    >
-                                        Lihat Gambar
-                                    </button>
-                                </td>
-                                <td className="px-3 py-2">{slider.title}</td>
-                                <td className="px-3 py-2">{slider.subtitle}</td>
-                                <td className="px-3 py-2">{slider.link}</td>
-                                <td className="px-3 py-2 text-center">{slider.order}</td>
-                                <td className="px-3 py-2 align-center">
-                                    {slider.is_active ? (
-                                        <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Aktif</span>
-                                    ) : (
-                                        <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Nonaktif</span>
-                                    )}
-                                </td>
-                                <td className="px-3 py-2 flex gap-2">
-                                    <button
-                                        onClick={() => openModal(slider)}
-                                        className="px-2 py-1 text-blue-600 rounded hover:text-blue-700 text-xs"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5 mr-1"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={2}
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L7.5 19.213l-4 1 1-4 12.362-12.726z" />
-                                        </svg>
-                                    </button>
-                                    <button
-                                        onClick={() => handleDelete(slider.id)}
-                                        className="px-2 py-1 text-red-600 rounded hover:text-red-700 text-xs"
-                                    >
-                                        <svg
-                                            xmlns="http://www.w3.org/2000/svg"
-                                            className="h-5 w-5"
-                                            fill="none"
-                                            viewBox="0 0 24 24"
-                                            stroke="currentColor"
-                                            strokeWidth={2}
-                                        >
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m-7 0h10" />
-                                        </svg>
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                        {sliders.length === 0 && (
+                <div className="overflow-x-auto bg-white rounded shadow">
+                    <table className="min-w-full divide-y divide-gray-200 text-sm">
+                        <thead className="bg-gray-50">
                             <tr>
-                                <td colSpan={8} className="text-center py-6 text-gray-400">Belum ada slider</td>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">#</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Gambar</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Judul</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Subjudul</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Link</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Urutan</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">Status</th>
+                                <th className="px-3 py-2 font-medium text-gray-500 uppercase tracking-wider whitespace-nowrap">ACTIONS</th>
                             </tr>
-                        )}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {sliders.map((slider, idx) => (
+                                <tr key={slider.id} className="hover:bg-gray-50">
+                                    <td className="px-3 py-2 text-center">{idx + 1}</td>
+                                    <td className="px-3 py-2 text-center">
+                                        <button
+                                            className="px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 text-xs"
+                                            onClick={() => {
+                                                setImagePreview(`/storage/${slider.image}`);
+                                                setShowImageModal(true);
+                                            }}
+                                        >
+                                            Lihat Gambar
+                                        </button>
+                                    </td>
+                                    <td className="px-3 py-2">{slider.title}</td>
+                                    <td className="px-3 py-2">{slider.subtitle}</td>
+                                    <td className="px-3 py-2">{slider.link}</td>
+                                    <td className="px-3 py-2 text-center">{slider.order}</td>
+                                    <td className="px-3 py-2 align-center">
+                                        {slider.is_active ? (
+                                            <span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs">Aktif</span>
+                                        ) : (
+                                            <span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs">Nonaktif</span>
+                                        )}
+                                    </td>
+                                    <td className="px-3 py-2 flex gap-2">
+                                        <button
+                                            onClick={() => openModal(slider)}
+                                            className="px-2 py-1 text-blue-600 rounded hover:text-blue-700 text-xs"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-5 w-5 mr-1"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                strokeWidth={2}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M16.862 3.487a2.25 2.25 0 113.182 3.182L7.5 19.213l-4 1 1-4 12.362-12.726z" />
+                                            </svg>
+                                        </button>
+                                        <button
+                                            onClick={() => handleDelete(slider.id)}
+                                            className="px-2 py-1 text-red-600 rounded hover:text-red-700 text-xs"
+                                        >
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-5 w-5"
+                                                fill="none"
+                                                viewBox="0 0 24 24"
+                                                stroke="currentColor"
+                                                strokeWidth={2}
+                                            >
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6M9 7V4a1 1 0 011-1h4a1 1 0 011 1v3m-7 0h10" />
+                                            </svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                            {sliders.length === 0 && (
+                                <tr>
+                                    <td colSpan={8} className="text-center py-6 text-gray-400">Belum ada slider</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                </div>
             </div>
+
 
             {/* Modal Form */}
             {showModal && (

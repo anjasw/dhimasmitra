@@ -1,6 +1,8 @@
-import { Link } from '@inertiajs/react';
+import { Link, usePage } from '@inertiajs/react';
 
 export default function Footer() {
+    const contact = usePage().props.contact;
+    const alamat = contact.address || "Jl. Tanah Pasir, Ruko No. 45 G Penjaringan Jakarta-Utara";
     return (
         <footer className="bg-[#A55C37] text-white pt-24 md:pt-12">
             <div className="container mx-auto p-4">
@@ -13,15 +15,15 @@ export default function Footer() {
                         <ul className="space-y-2 text-sm">
                             <li className="flex items-start gap-2">
                                 <span className="material-symbols-outlined">location_on</span>
-                                <span>Jl. Tanah Pasir, Ruko No. 45 G Penjaringan Jakarta-Utara</span>
+                                <span>{alamat}</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <span className="material-symbols-outlined">call</span>
-                                <span>021-123456</span>
+                                <span>{contact.phone || "021-123456"}</span>
                             </li>
                             <li className="flex items-center gap-2">
                                 <span className="material-symbols-outlined">mail</span>
-                                <span>perusahaan@email.com</span>
+                                <span>{contact.email || "perusahaan@email.com"}</span>
                             </li>
                         </ul>
                     </div>

@@ -100,11 +100,8 @@ class FrontController extends Controller
         ]);
     }
 
-    public function AccountOrderSuccess(Request $request){
-
-        // dd($request->all());
-
-        // $request->order_id = 'DMT-175325415642702';
+    public function AccountOrderSuccess(Request $request)
+    {
         $orderId = $request->order_id;
         $transaction = Transaction::where('invoice_code', $orderId)->first();
         $transactionId = $transaction->id;
@@ -118,7 +115,7 @@ class FrontController extends Controller
         
         $cartIds = \App\Models\TransactionItem::where('transaction_id', $transactionId)
             ->pluck('cart_id')
-            ->filter() // hilangkan null
+            ->filter()
             ->unique()
             ->toArray();
 
@@ -127,35 +124,19 @@ class FrontController extends Controller
             \App\Models\Cart::whereIn('id', $cartIds)
                 ->where('user_id', auth()->id())
                 ->delete();
+
+            // Kurangi stok produk
+            $items = \App\Models\TransactionItem::where('transaction_id', $transactionId)->get();
+            foreach ($items as $item) {
+                $product = \App\Models\Product::find($item->product_id);
+                if ($product) {
+                    $product->stock = max(0, $product->stock - $item->quantity);
+                    $product->save();
+                }
+            }
         }
-        // exit;
+
         return response()->json(['message' => 'Payment handled successfully']);
-        // return redirect()->route('account.order');
-
-        // $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){
-        //     $q->where('status', 1);
-        // }])->get();
-
-        // $carts = Cart::select('id', 'user_id', 'product_id', 'quantity')
-        //     ->where('user_id', auth()->id())
-        //     ->with(['product' => function($q){
-        //         $q->with(['images']);
-        //     }, 'user' => function($q){
-        //         $q->select('id', 'name', 'email');
-        //     }])
-        //     ->get()
-        //     ->map(function($cart) {
-        //         // Pastikan kolom fix_price ada di relasi product
-        //         $cart->product->fix_price_formatted = isset($cart->product->fix_price)
-        //             ? 'Rp ' . number_format($cart->product->fix_price, 0, ',', '.')
-        //             : null;
-        //         return $cart;
-        //     });
-        // // dd($categories);
-        // return Inertia::render('Front/Account/OrderSuccess', [
-        //     'categories' => $categories,
-        //     'carts' => $carts,
-        // ]);
     }
     public function AccountOrderFail(){
         $categories = Category::query()->where('status','!=', 2)->with(['subcategories' => function($q){

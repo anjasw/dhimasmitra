@@ -8,6 +8,7 @@ use Tighten\Ziggy\Ziggy;
 use Inertia\Inertia;
 use App\Models\Category;
 use App\Models\Cart;
+use App\Models\Contact;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -55,8 +56,10 @@ class HandleInertiaRequests extends Middleware
                     return $cart;
                 });
         }
-
+        $contact = Contact::first();
+        
         return array_merge(parent::share($request), [
+            'contact' => $contact,
             'category' => $categories,
             'carts' => $carts,
             'isLoggedIn' => $isLoggedIn,

@@ -11,6 +11,18 @@ class PaymentController extends Controller
     public function getSnapToken(Request $request){
         $userId = auth()->id();
         $transaction = Transaction::find($request->transaction_id);
+
+        foreach ($transaction->items as $item) {
+            $product = $item->product;
+            // dd($product);
+            // echo $product->stock.'<br>';
+            if (!$product || $product->stock < $item->quantity) {
+                return response()->json([
+                    'error' => "Stok produk '{$product->name}' tidak mencukupi."
+                ], 422);
+            }
+        }
+        // exit;
         // Buat parameter sesuai kebutuhan Midtrans
         $invoice_code = 'DMT-' . time() . $userId . rand(100,999);
         // dd($request);

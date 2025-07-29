@@ -1,6 +1,43 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, router } from '@inertiajs/react';
-export default function About(){
+import { useState, useEffect } from 'react';
+
+export default function About({ tentangKami, success }) {
+    const [visi, setVisi] = useState(tentangKami?.visi || "");
+    const [misi, setMisi] = useState(tentangKami?.misi || "");
+    const [image, setImage] = useState(null);
+    const [showToast, setShowToast] = useState(false);
+
+    useEffect(() => {
+        if (success) {
+            setShowToast(true);
+            setTimeout(() => setShowToast(false), 3000);
+        }
+    }, [success]);
+
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            setImage(file);
+        }
+    };
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        const formData = new FormData();
+        formData.append('visi', visi);
+        formData.append('misi', misi);
+        if (image) {
+            formData.append('image', image);
+        }
+        router.post(route('pages.about.update'), formData, {
+            onSuccess: () => {
+                setShowToast(true);
+                setTimeout(() => setShowToast(false), 3000);
+            }
+        });
+    };
+
     return (
         <AuthenticatedLayout
             header={
@@ -35,6 +72,65 @@ export default function About(){
             }
         >
             <Head title="Pages - About" />
+
+            <section className="py-16 bg-white">
+                <form onSubmit={handleSubmit}>
+                    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+                        <div>
+                            <label htmlFor="about-image" className="cursor-pointer">
+                                <img
+                                    src={image ? URL.createObjectURL(image) : (tentangKami?.image ? `/storage/${tentangKami.image}` : "https://dummyimage.com/600x400/ccc/000&text=Tentang+Kami")}
+                                    alt="Tentang Kami"
+                                    className="shadow-lg w-full h-auto object-cover"
+                                />
+                            </label>
+                            <input
+                                type="file"
+                                id="about-image"
+                                className="hidden"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                            />
+                        </div>
+                        <div>
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Misi Kami</h2>
+                            <textarea
+                                className="border rounded px-3 py-2 w-full text-gray-700 mb-4"
+                                rows={4}
+                                value={misi}
+                                onChange={e => setMisi(e.target.value)}
+                                placeholder="Masukkan misi perusahaan"
+                                required
+                            />
+                            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Visi Kami</h2>
+                            <textarea
+                                className="border rounded px-3 py-2 w-full text-gray-700"
+                                rows={4}
+                                value={visi}
+                                onChange={e => setVisi(e.target.value)}
+                                placeholder="Masukkan visi perusahaan"
+                                required
+                            />
+                            <div className="flex justify-end pt-4">
+                                <button
+                                    type="submit"
+                                    className="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 transition"
+                                >
+                                    Simpan
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            {showToast && (
+                <div className="fixed top-16 right-6 z-50 px-6 py-3 rounded transition-all duration-200">
+                    <div className="bg-green-100 text-green-800 px-6 py-3 rounded shadow-lg flex items-center gap-2">
+                        <span className="material-symbols-outlined">check_circle</span>
+                        Data berhasil disimpan!
+                    </div>
+                </div>
+            )}
         </AuthenticatedLayout>
     );
 }

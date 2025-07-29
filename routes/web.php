@@ -60,6 +60,7 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::get('/', function () {
             return redirect('/sysadmin/dashboard');
         });
+
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -104,10 +105,10 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::post('/brand/{id}', [BrandController::class, 'update'])->name('brand.update');
 
 
-        Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
-        Route::post('/pages/about', [PagesController::class, 'saveAbout'])->name('about.save');
-        Route::get('/pages/contact', [PagesController::class, 'contact'])->name('pages.contact');
-        Route::post('/pages/contact', [PagesController::class, 'saveContact'])->name('contact.save');
+        // Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
+        // Route::post('/pages/about', [PagesController::class, 'saveAbout'])->name('about.save');
+        // Route::get('/pages/contact', [PagesController::class, 'contact'])->name('pages.contact');
+        // Route::post('/pages/contact', [PagesController::class, 'saveContact'])->name('contact.save');
         Route::get('/reporting', [PagesController::class, 'reporting'])->name('reporting.index');
         
         Route::get('/pages/slider', [SliderController::class, 'index'])->name('pages.slider');
@@ -116,6 +117,14 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
         Route::delete('/pages/slider/delete/{slider}', [SliderController::class, 'destroy'])->name('pages.slider.delete');
 
         Route::get('/orders', [OrderController::class, 'list'])->name('orders');
+
+
+        // Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
+        Route::get('/pages/about', [PagesController::class, 'about'])->name('pages.about');
+        Route::post('/pages/about/update', [PagesController::class, 'aboutUpdate'])->name('pages.about.update');
+
+        Route::get('/pages/contact', [PagesController::class, 'contact'])->name('pages.contact');
+        Route::post('/pages/contact', [PagesController::class, 'contactStore'])->name('pages.contact.store');
     });
 });
 
@@ -137,6 +146,10 @@ Route::get('/account/order/fail', [FrontController::class, 'AccountOrderFail'])-
 Route::get('/account/order/error', [FrontController::class, 'AccountOrderError'])->name('account.order.error');
 
 Route::post('/snap/token', [PaymentController::class, 'getSnapToken']);
+
+Route::get('/tentang', [PagesController::class, 'tentangKami'])->name('tentang.index');
+
+Route::get('/kontak', [PagesController::class, 'kontakKami'])->name('kontak.index');
 
 Route::get('/payment/notification/success', [PaymentController::class, 'handlePaymentMidtrans'])->name('notification.success');
 Route::get('/payment/notification/pay_account', [PaymentController::class, 'handlePayAccount'])->name('notification.pay_account');
