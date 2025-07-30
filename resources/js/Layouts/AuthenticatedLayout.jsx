@@ -474,6 +474,30 @@ export default function AuthenticatedLayout({ header, children }) {
                                     Contact Message
                                 </NavLink>
                             </li>
+                        <li
+                            className={`flex items-center gap-2 px-3 py-2 rounded transition relative text-sm
+                                ${route().current('contact-social-link.index')
+                                    ? 'bg-gray-100 text-gray-900 font-semibold'
+                                    : 'text-gray-500 hover:bg-gray-100'}
+                            `}
+                            style={{ textDecoration: 'none' }}
+                        >
+                            <NavLink
+                                href={route('contact-social-link.index')}
+                                className={` no-underline hover:no-underline flex items-center gap-2 w-full text-sm
+                                    ${route().current('contact-social-link.index')
+                                        ? 'bg-gray-100 text-gray-900 font-semibold'
+                                        : 'text-gray-500 hover:bg-gray-100'}
+                                `}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" className={`h-5 w-5 
+                                    ${route().current('contact-social-link.index') ? 'text-gray-700' : 'text-gray-500'}
+                                `} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M17 8h2a2 2 0 012 2v8a2 2 0 01-2 2H5a2 2 0 01-2-2v-8a2 2 0 012-2h2M12 12v.01M12 16h.01M8 16h.01M16 16h.01M12 8v.01M8 8h.01M16 8h.01" />
+                                </svg>
+                                Social Links
+                            </NavLink>
+                        </li>
                     </ul>
                 </nav>
                 <div className="mt-auto border-t px-4 py-4">

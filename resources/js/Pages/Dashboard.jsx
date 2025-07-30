@@ -72,10 +72,10 @@ export default function Dashboard({ chartData, chartLabels, paidTransactions, us
                 <div className="mx-auto max-w-7xl sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Chart Bar Transaksi */}
                     <div className="col-span-2 bg-white shadow-sm sm:rounded-lg p-6">
-                        <div className="flex items-center justify-between mb-4">
+                        <div className="flex flex-col gap-4 mb-4">
                             <h3 className="text-lg font-semibold text-gray-700">Statistik Transaksi</h3>
                             <form
-                                className="flex gap-2"
+                                className="flex flex-col sm:flex-row sm:items-center gap-2 w-full"
                                 method="get"
                                 action={route('dashboard')}
                                 onSubmit={e => {
@@ -85,26 +85,28 @@ export default function Dashboard({ chartData, chartLabels, paidTransactions, us
                                     }
                                 }}
                             >
-                                <input
-                                    type="date"
-                                    value={dateFrom}
-                                    onChange={e => setDateFrom(e.target.value)}
-                                    name="date_from"
-                                    className="border rounded px-2 py-1"
-                                    max={dateTo || undefined}
-                                />
-                                <span className="mx-1">-</span>
-                                <input
-                                    type="date"
-                                    value={dateTo}
-                                    onChange={e => setDateTo(e.target.value)}
-                                    name="date_to"
-                                    className="border rounded px-2 py-1"
-                                    min={dateFrom || undefined}
-                                />
+                                <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                                    <input
+                                        type="date"
+                                        value={dateFrom}
+                                        onChange={e => setDateFrom(e.target.value)}
+                                        name="date_from"
+                                        className="border rounded px-2 py-1 w-full sm:w-auto"
+                                        max={dateTo || undefined}
+                                    />
+                                    <span className="mx-1 hidden sm:inline">-</span>
+                                    <input
+                                        type="date"
+                                        value={dateTo}
+                                        onChange={e => setDateTo(e.target.value)}
+                                        name="date_to"
+                                        className="border rounded px-2 py-1 w-full sm:w-auto"
+                                        min={dateFrom || undefined}
+                                    />
+                                </div>
                                 <button
                                     type="submit"
-                                    className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition"
+                                    className="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700 transition w-full sm:w-auto"
                                 >
                                     Filter
                                 </button>

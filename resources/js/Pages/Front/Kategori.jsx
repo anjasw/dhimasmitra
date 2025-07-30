@@ -33,7 +33,7 @@ export default function Kategori({categories, breadcrumbs}) {
                 <div className="max-w-7xl mx-auto mb-6 px-4">
                     <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 text-center md:text-left">
                         <h2 className="text-lg text-gray-700">
-                            <strong className="text-black">13.000+</strong>{" "}
+                            <strong className="text-black">{visibleCategories.length}</strong>{" "}
                             kategori
                         </h2>
                         <input

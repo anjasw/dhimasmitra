@@ -17,6 +17,7 @@ use App\Http\Controllers\ShopController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ArtikelController;
 use App\Http\Controllers\ContactMessageController;
+use App\Http\Controllers\ContactSocialLinkController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -135,6 +136,11 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
 
         Route::get('/pages/contact', [PagesController::class, 'contact'])->name('pages.contact');
         Route::post('/pages/contact', [PagesController::class, 'contactStore'])->name('pages.contact.store');
+
+        // Tambahkan resource route untuk ContactSocialLink
+        Route::resource('contact-social-link', ContactSocialLinkController::class)
+            ->except(['show'])
+            ->names('contact-social-link');
     });
 });
 
