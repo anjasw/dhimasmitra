@@ -11,7 +11,7 @@ class KategoriController extends Controller
         $categories = \App\Models\Category::with(['subcategories' => function($q){
             $q->where('status', 1);
         }])
-        ->where('status', '!=', 2)
+        ->where('status', 1)
         ->get()
         ->map(function ($cat) {
             return [

@@ -114,14 +114,14 @@ export default function Hero({sliders}) {
                                         <div
                                             onMouseUp={(e) => {
                                                 if (!isSwiping) {
-                                                    window.location.href =
-                                                        img.href;
+                                                    // window.location.href =
+                                                    //     img.href;
                                                 }
                                             }}
                                             onTouchEnd={(e) => {
                                                 if (!isSwiping) {
-                                                    window.location.href =
-                                                        img.href;
+                                                    // window.location.href =
+                                                    //     img.href;
                                                 }
                                             }}
                                             className="block"
@@ -129,8 +129,11 @@ export default function Hero({sliders}) {
                                             <img
                                                 src={`/storage/${img.src}`}
                                                 alt={`Slide ${idx + 1}`}
+                                                width={800} // ganti sesuai ukuran asli
+                                                height={300}
                                                 className="w-full h-32 md:h-48 object-cover shadow-md pointer-events-none select-none"
                                                 draggable={false}
+                                                loading={idx === current ? "eager" : "lazy"} // Prioritaskan gambar aktif
                                             />
                                         </div>
                                     </div>

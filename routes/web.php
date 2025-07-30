@@ -15,6 +15,8 @@ use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ProfileUserController;
 use App\Http\Controllers\ShopController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\ArtikelController;
+use App\Http\Controllers\ContactMessageController;
 
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -63,6 +65,9 @@ Route::middleware(['auth', 'verified','is_admin'])->group(function () {
             return redirect('/sysadmin/dashboard');
         });
 
+        Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-message.index');
+        
+        Route::post('/contact-message', [ContactMessageController::class, 'store'])->name('contact-message.store');
         Route::get('profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -160,5 +165,6 @@ Route::get('/payment/notification/success', [PaymentController::class, 'handlePa
 Route::get('/payment/notification/pay_account', [PaymentController::class, 'handlePayAccount'])->name('notification.pay_account');
 Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
 Route::get('/blog/{slug}', [PostController::class, 'showBlog'])->name('blog.detail');
+Route::get('/artikel', [ArtikelController::class, 'index'])->name('artikel.index');
+Route::get('/artikel/{slug}', [ArtikelController::class, 'show'])->name('artikel.show');
 Route::get('/{slug}', [FrontController::class, 'show'])->name('product.show');
-

@@ -34,7 +34,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
-        $categories = Category::query()->where('status','!=', 2)
+        $categories = Category::query()->where('status', 1)
             ->with(['subcategories' => function($q){
                 $q->where('status', 1);
             }])->get();

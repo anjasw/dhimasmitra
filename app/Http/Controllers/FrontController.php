@@ -31,17 +31,86 @@ class FrontController extends Controller
 
         $sliders = Slider::where('is_active', 1)->orderBy('order')->get();
         
+        $products = \App\Models\Product::where('status', 1)
+            ->orderByDesc('created_at')
+            ->take(8)
+            ->get()
+            ->map(function($product) {
+                $mainImage = $product->images->first()
+                    ? asset('storage/' . $product->images->first()->image)
+                    : asset('assets/dummy-image.jpg');
+                return [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'slug' => $product->slug,
+                    'price' => $product->fix_price,
+                    'image_url' => $mainImage,
+                ];
+            });
+        
+        
+        $categories = \App\Models\Category::where('status', 1)
+        ->withCount(['products' => function($q) {
+            $q->where('status', 1);
+        }])
+        ->get()
+        ->sort(function($a, $b) {
+            // Urutkan: kategori tanpa produk ke bawah, jika semua ada produk urut abjad
+            if ($a->products_count == 0 && $b->products_count > 0) {
+                return 1;
+            }
+            if ($a->products_count > 0 && $b->products_count == 0) {
+                return -1;
+            }
+            // Jika sama-sama ada produk atau sama-sama kosong, urut abjad
+            return strcasecmp($a->name, $b->name);
+        })
+        ->values()
+        ->map(function($cat) {
+            return [
+                'id' => $cat->id,
+                'name' => $cat->name,
+                'slug' => $cat->slug,
+                'image_url' => $cat->image ? asset('storage/' . $cat->image) : asset('assets/dummy-image.jpg'),
+                'products_count' => $cat->products_count,
+            ];
+        });
+
+        // dd(\App\Models\Category::where('status', 1)->get());
+        
+        $articles = \App\Models\Post::where('status', 'published')
+            ->orderByDesc('created_at')
+            ->take(4)
+            ->get()
+            ->map(function($post) {
+                // Jika sudah url penuh (http/https), pakai langsung. Jika tidak, ambil dari storage.
+                $isFullUrl = preg_match('/^https?:\/\//', $post->thumbnail);
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'slug' => $post->slug,
+                    'content' => $post->content,
+                    'tags' => implode(',', json_decode($post->tags)),
+                    'thumbnail_url' => $isFullUrl
+                        ? $post->thumbnail
+                        : ($post->thumbnail ? asset('storage/' . $post->thumbnail) : asset('assets/dummy-image.jpg')),
+                    'date' => $post->created_at->format('d M Y'),
+                ];
+            });
+        
         return Inertia::render('Welcome', [
             'brands' => $brands,
             'laravelVersion' => $laravelVersion,
             'phpVersion' => $phpVersion,
-            // 'listKota' => $listKota,
             'sliders' => $sliders,
+            'products' => $products,
+            'categories' => $categories,
+            'articles' => $articles,
         ]);
     }
 
     public function order(Request $request){
-        sleep(1);
+        // sleep(1);
         if (!$request->has('id')) {
             return redirect()->route('cart.index');
         }
@@ -374,7 +443,7 @@ class FrontController extends Controller
 
     public function show($slug)
     {
-        sleep(1);
+        // sleep(1);
         // $product = \App\Models\Product::where('slug', $slug)->where('status', 1)->firstOrFail();
         // $product->fix_price_formatted = isset($product->fix_price)
         //     ? 'Rp ' . number_format($product->fix_price, 0, ',', '.')

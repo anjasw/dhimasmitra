@@ -8,7 +8,12 @@ export default function DetailArtikel() {
 
     return (
         <div className="bg-gray-100">
-            <Head title={article.title} />
+            <Head>
+                <title>{article.title}</title>
+                {article.meta_description && (
+                    <meta name="description" content={article.meta_description} />
+                )}
+            </Head>
             <Navbar />
 
             <main className="max-w-7xl mx-auto px-4 py-10">
@@ -39,22 +44,18 @@ export default function DetailArtikel() {
                             />
                         )}
 
-                        {article.meta_description && (
-                            <p className="text-gray-700 italic mb-6 text-base">
-                                {article.meta_description}
-                            </p>
-                        )}
+                        <div
+                            className="text-gray-800 text-base leading-relaxed whitespace-pre-line mb-8"
+                            dangerouslySetInnerHTML={{ __html: article.content }}
+                        />
 
-                        <div className="text-gray-800 text-base leading-relaxed whitespace-pre-line mb-8">
-                            {article.content}
-                        </div>
-
-                        {article.tags && (
-                            <div className="text-sm text-gray-600 mt-4">
-                                <span className="font-semibold">Tags:</span>{" "}
-                                {Array.isArray(article.tags)
-                                    ? article.tags.join(", ")
-                                    : article.tags}
+                        {article.tags && article.tags.length > 0 && (
+                            <div className="text-sm text-gray-600 mt-4 flex flex-wrap gap-1">
+                                {article.tags.map((tag, idx) => (
+                                    <span key={idx} className="text-[10px] text-gray-500 italic">
+                                        #{String(tag).replace(/['"]/g, '').trim()}
+                                    </span>
+                                ))}
                             </div>
                         )}
                     </div>
@@ -62,7 +63,7 @@ export default function DetailArtikel() {
                     {/* Sidebar Rekomendasi Artikel */}
                     {relatedArticles.length > 0 && (
                         <aside className="w-full lg:w-1/3">
-                            <div className="bg-white shadow p-4">
+                            <div className="bg-white shadow p-4 lg:sticky lg:top-20">
                                 <h2 className="text-lg font-bold text-gray-800 mb-4">
                                     Artikel Lainnya
                                 </h2>
@@ -73,11 +74,13 @@ export default function DetailArtikel() {
                                             key={item.id}
                                             className="flex gap-4 items-start hover:bg-gray-50 p-2 transition"
                                         >
-                                            <img
-                                                src={item.thumbnail_url}
-                                                alt={item.title}
-                                                className="w-20 h-20 object-cover"
-                                            />
+                                            {item.thumbnail_url && (
+                                                <img
+                                                    src={item.thumbnail_url}
+                                                    alt={item.title}
+                                                    className="w-20 h-20 object-cover"
+                                                />
+                                            )}
                                             <div className="flex-1">
                                                 <h3 className="text-sm font-semibold text-gray-800 line-clamp-2">
                                                     {item.title}

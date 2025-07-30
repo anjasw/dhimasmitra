@@ -5,7 +5,7 @@ import Navbar from "./Front/Components/Navbar";
 import Footer from "./Front/Components/Footer";
 import Body from "./Body";
 
-export default function Welcome({ brands, laravelVersion, phpVersion, sliders  }) {
+export default function Welcome({ brands, laravelVersion, phpVersion, sliders, products, categories, articles  }) {
     // console.log(categories)
     return (
         <>
@@ -15,7 +15,7 @@ export default function Welcome({ brands, laravelVersion, phpVersion, sliders  }
                 
             </Head>
             <Navbar />
-            <Body brands={brands} sliders={sliders} />
+            <Body brands={brands} sliders={sliders} products={products} categories={categories} articles={articles} />
             <Footer laravelVersion={laravelVersion} phpVersion={phpVersion} />
         </>
     );

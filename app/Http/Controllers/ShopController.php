@@ -10,7 +10,7 @@ class ShopController extends Controller
 {
     public function index(Request $request)
     {
-        sleep(1);
+        // sleep(1);
         // Ambil kategori dari database dan hitung jumlah produk per kategori
         $categories = \App\Models\Category::where('status', 1)
             ->withCount(['products' => function($q) {

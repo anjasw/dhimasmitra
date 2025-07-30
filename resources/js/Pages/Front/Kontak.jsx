@@ -1,17 +1,33 @@
-import { Head } from "@inertiajs/react";
+import { Head, useForm } from "@inertiajs/react";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import { useState } from 'react';
 
 export default function Kontak({contacts}) {
+    const [success, setSuccess] = useState(false);
+    const { data, setData, post, processing, errors, reset } = useForm({
+        name: "",
+        email: "",
+        message: "",
+    });
 
-    console.log(contacts,"contacts.address")
     const [contact, setContact] = useState({
-            address: contacts?.address || "Jl. Tanah Pasir, Ruko No. 45 G Penjaringan Jakarta-Utara",
-            email: contacts?.email || "kontak@ptdhimas.co.id",
-            phone: contacts?.phone || "+62 21 1234 5678",
-            operating_hours: contacts?.operating_hours || "Senin - Jumat, 08.00 - 17.00 WIB"
+        address: contacts?.address || "Jl. Tanah Pasir, Ruko No. 45 G Penjaringan Jakarta-Utara",
+        email: contacts?.email || "kontak@ptdhimas.co.id",
+        phone: contacts?.phone || "+62 21 1234 5678",
+        operating_hours: contacts?.operating_hours || "Senin - Jumat, 08.00 - 17.00 WIB"
+    });
+
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        post(route('contact-message.store'), {
+            onSuccess: () => {
+                setSuccess(true);
+                reset();
+            },
         });
+    };
+
     return (
         <div className="bg-gray-100 min-h-screen flex flex-col">
             <Head>
@@ -89,7 +105,12 @@ export default function Kontak({contacts}) {
                         <h2 className="text-2xl font-semibold mb-6 text-gray-700">
                             Formulir Kontak
                         </h2>
-                        <form className="space-y-6">
+                        {success && (
+                            <div className="mb-4 p-3 bg-green-100 text-green-700 rounded">
+                                Pesan Anda berhasil dikirim!
+                            </div>
+                        )}
+                        <form className="space-y-6" onSubmit={handleSubmit}>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
                                     Nama Lengkap
@@ -99,7 +120,10 @@ export default function Kontak({contacts}) {
                                     className="mt-1 block w-full border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="Masukkan nama Anda"
                                     required
+                                    value={data.name}
+                                    onChange={e => setData('name', e.target.value)}
                                 />
+                                {errors.name && <div className="text-red-500 text-xs mt-1">{errors.name}</div>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
@@ -110,7 +134,10 @@ export default function Kontak({contacts}) {
                                     className="mt-1 block w-full border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                     placeholder="nama@email.com"
                                     required
+                                    value={data.email}
+                                    onChange={e => setData('email', e.target.value)}
                                 />
+                                {errors.email && <div className="text-red-500 text-xs mt-1">{errors.email}</div>}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700">
@@ -121,14 +148,18 @@ export default function Kontak({contacts}) {
                                     rows="5"
                                     placeholder="Tulis pesan Anda di sini..."
                                     required
+                                    value={data.message}
+                                    onChange={e => setData('message', e.target.value)}
                                 ></textarea>
+                                {errors.message && <div className="text-red-500 text-xs mt-1">{errors.message}</div>}
                             </div>
                             <div>
                                 <button
                                     type="submit"
                                     className="w-full bg-yellow-400 py-3 hover:bg-yellow-300 transition"
+                                    disabled={processing}
                                 >
-                                    Kirim Pesan
+                                    {processing ? "Mengirim..." : "Kirim Pesan"}
                                 </button>
                             </div>
                         </form>

@@ -1,61 +1,13 @@
 import { useState } from "react";
 import { Link } from "@inertiajs/react";
 
-export default function Category() {
-    const categories = [
-        {
-            name: "Karet Rubber bumper Loading Dock",
-            items: 20,
-            image: "/assets/dummy-image.jpg",
-            link: "/kategori/loading-dock",
-        },
-        {
-            name: "Bollard",
-            items: 20,
-            image: "/assets/categories/bollard.jpg",
-            link: "/kategori/bollard",
-        },
-        {
-            name: "Bollard 2",
-            items: 20,
-            image: "/assets/categories/bollard-2.jpg",
-            link: "/kategori/bollard-2",
-        },
-        {
-            name: "Penutup Gorong Gorong",
-            items: 20,
-            image: "/assets/categories/gorong.jpg",
-            link: "/kategori/gorong",
-        },
-        {
-            name: "PVC Foam Board",
-            items: 20,
-            image: "/assets/categories/pvc.jpg",
-            link: "/kategori/pvc",
-        },
-        {
-            name: "Rubber Fender Type Cell",
-            items: 20,
-            image: "/assets/categories/cell.jpg",
-            link: "/kategori/fender-cell",
-        },
-        {
-            name: "Rubber Fender Type V",
-            items: 20,
-            image: "/assets/categories/fender-v.jpg",
-            link: "/kategori/fender-v",
-        },
-        {
-            name: "Stir Nahkoda Kapal (Custom)",
-            items: 20,
-            image: "/assets/categories/stir.jpg",
-            link: "/kategori/stir",
-        },
-    ];
-
+export default function Category({ categories = [] }) {
+    // categories: array of { id, name, slug, image_url, products_count }
     const [activeIndex, setActiveIndex] = useState(0);
-    const activeCategory = categories[activeIndex];
+    const activeCategory = categories[activeIndex] || {};
 
+
+    console.log("Category rendered with categories:", categories);
     return (
         <div className="container mx-auto px-6 py-16">
             {/* Heading */}
@@ -78,7 +30,7 @@ export default function Category() {
                     <div className="direction-ltr">
                         {categories.map((cat, index) => (
                             <button
-                                key={index}
+                                key={cat.id}
                                 onClick={() => setActiveIndex(index)}
                                 className={`w-full text-left px-4 py-2 md:py-3 border-b ${
                                     index === activeIndex
@@ -90,7 +42,7 @@ export default function Category() {
                                     <div>
                                         <div>{cat.name}</div>
                                         <div className="text-sm text-gray-500">
-                                            {cat.items} item
+                                            {cat.products_count} item
                                         </div>
                                     </div>
                                     {index === activeIndex && (
@@ -107,13 +59,15 @@ export default function Category() {
                 {/* Kanan: Gambar Aktif */}
                 <div className="relative flex items-center justify-center p-2">
                     <div className="w-full h-full max-h-[384px] overflow-hidden shadow-md relative">
-                        <img
-                            src={activeCategory.image}
-                            alt={activeCategory.name}
-                            className="w-full h-full object-cover"
-                        />
+                        {activeCategory.image_url && (
+                            <img
+                                src={activeCategory.image_url}
+                                alt={activeCategory.name}
+                                className="w-full h-full object-cover"
+                            />
+                        )}
                         {/* Overlay Box */}
-                        <Link href={activeCategory.link}>
+                        <Link href={`/kategori/${activeCategory.slug}`}>
                             <div className="absolute bottom-0 left-0 right-0 bg-yellow-400 p-3 flex justify-between items-center">
                                 <div className="text-sm font-medium text-black">
                                     {activeCategory.name}

@@ -139,6 +139,13 @@ class PostController extends Controller
                 $imageResource = imagecreatefromjpeg($img->getPathname());
             } elseif ($mime === 'image/png') {
                 $imageResource = imagecreatefrompng($img->getPathname());
+                // Konversi ke true color jika palette
+                if (!imageistruecolor($imageResource)) {
+                    $trueColor = imagecreatetruecolor(imagesx($imageResource), imagesy($imageResource));
+                    imagecopy($trueColor, $imageResource, 0, 0, 0, 0, imagesx($imageResource), imagesy($imageResource));
+                    imagedestroy($imageResource);
+                    $imageResource = $trueColor;
+                }
             } elseif ($mime === 'image/webp') {
                 $imageResource = imagecreatefromwebp($img->getPathname());
             }
@@ -236,6 +243,13 @@ class PostController extends Controller
                 $imageResource = imagecreatefromjpeg($img->getPathname());
             } elseif ($mime === 'image/png') {
                 $imageResource = imagecreatefrompng($img->getPathname());
+                // Konversi ke true color jika palette
+                if (!imageistruecolor($imageResource)) {
+                    $trueColor = imagecreatetruecolor(imagesx($imageResource), imagesy($imageResource));
+                    imagecopy($trueColor, $imageResource, 0, 0, 0, 0, imagesx($imageResource), imagesy($imageResource));
+                    imagedestroy($imageResource);
+                    $imageResource = $trueColor;
+                }
             } elseif ($mime === 'image/webp') {
                 $imageResource = imagecreatefromwebp($img->getPathname());
             }
