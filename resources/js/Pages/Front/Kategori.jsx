@@ -25,7 +25,7 @@ export default function Kategori({categories, breadcrumbs}) {
     return (
         <div className="bg-gray-100">
             <Head title="Kategori" />
-            <Navbar />
+            <Navbar /> 
             {breadcrumb.length > 0 && <Breadcrumb items={breadcrumb} />}
 
             <div className="px-4 min-h-screen">

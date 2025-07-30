@@ -65,6 +65,7 @@
     <link rel="preload" as="image" href="/assets/carousel-1.jpg" />
     <link rel="preload" as="image" href="/assets/carousel-2.jpg" />
     <link rel="preload" as="image" href="/assets/carousel-3.jpg" />
+    <link rel="shortcut icon" href="/logo-dhimasgroup.png" type="image/x-icon">
     <!-- Scripts -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
     @routes

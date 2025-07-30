@@ -108,9 +108,9 @@ export default function AuthenticatedLayout({ header, children }) {
                 ${showSidebar ? 'translate-x-0' : '-translate-x-full'}
                 sm:translate-x-0 sm:fixed sm:static sm:w-64
             `}>
-                <div className="flex items-center justify-between px-4 py-4 border-b" style={{ height: "80px" }}>
+                <div className="flex items-center justify-center px-4 py-4 border-b" style={{ height: "80px" }}>
                     <Link href="/">
-                        <ApplicationLogo className="block h-9 w-full !w-full fill-current text-gray-800" />
+                        <ApplicationLogo className="block h-9 w-full !w-full fill-current text-gray-800" style={{height: "70px"}} />
                     </Link>
                     {/* <button
                         className="sm:hidden text-gray-500"

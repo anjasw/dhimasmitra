@@ -9,6 +9,7 @@ use Inertia\Inertia;
 use App\Models\Category;
 use App\Models\Cart;
 use App\Models\Contact;
+use App\Models\ContactSocialLink;
 
 class HandleInertiaRequests extends Middleware
 {
@@ -57,8 +58,10 @@ class HandleInertiaRequests extends Middleware
                 });
         }
         $contact = Contact::first();
+        $contactSocialLink = contactSocialLink::first();
         
         return array_merge(parent::share($request), [
+            'contactSocialLink' => $contactSocialLink,
             'contact' => $contact,
             'category' => $categories,
             'carts' => $carts,
