@@ -48,15 +48,20 @@ class ArtikelController extends Controller
     public function show($slug)
     {
         $article = Post::where('slug', $slug)->firstOrFail();
+        $isFullUrl = preg_match('/^https?:\/\//', $article->thumbnail);
+        $article->thumbnail = $isFullUrl ? $article->thumbnail : ($article->thumbnail ? asset('storage/' . $article->thumbnail) : asset('assets/dummy-image.jpg'));
 
+        
+        // dd($article->id);
         // Related articles: ambil 3 artikel lain yang published dan bukan artikel ini
-        $relatedArticles = Post::where('status', 'Published')
+        $relatedArticles = Post::where('status', 'published')
             ->where('id', '!=', $article->id)
             ->orderByDesc('created_at')
             ->take(3)
             ->get()
             ->map(function ($item) {
-                $isFullUrl = preg_match('/^https?:\/\//', $post->thumbnail);
+                $isFullUrl = preg_match('/^https?:\/\//', $item->thumbnail);
+                // dd(asset('storage/' . $item->thumbnail));
                 return [
                     'id' => $item->id,
                     'title' => $item->title,
@@ -69,6 +74,8 @@ class ArtikelController extends Controller
                     'date' => $item->created_at->format('d M Y'),
                 ];
             });
+
+        // dd($relatedArticles);
 
         return Inertia::render('Front/DetailArtikel', [
             'article' => [
