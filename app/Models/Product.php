@@ -13,7 +13,7 @@ class Product extends Model
     protected $fillable = [
         'name', 'slug', 'sku', 'description',
         'price', 'fix_price', 'discount', 'stock',
-        'minimum_stock', 'minimum_order', 'brand_id', 'category_id', 'subcategory_id','weight',
+        'minimum_stock', 'minimum_order', 'brand_id', 'category_id', 'subcategory_id', 'colors', 'sizes', 'weight',
         'user_id', 'status'
     ];
 
@@ -40,4 +40,21 @@ class Product extends Model
         return $this->belongsToMany(Size::class);
     }
 
+    // (Opsional) accessor & mutator untuk array <-> json
+    public function setColorsAttribute($value)
+    {
+        $this->attributes['colors'] = is_array($value) ? json_encode($value) : $value;
+    }
+    public function getColorsAttribute($value)
+    {
+        return $value ? json_decode($value, true) : [];
+    }
+    public function setSizesAttribute($value)
+    {
+        $this->attributes['sizes'] = is_array($value) ? json_encode($value) : $value;
+    }
+    public function getSizesAttribute($value)
+    {
+        return $value ? json_decode($value, true) : [];
+    }
 }

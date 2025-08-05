@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'; // Import useEffect jika diperlukan untuk handle side effects dari useForm
+import React, { useEffect, useState } from 'react'; // Import useEffect jika diperlukan untuk handle side effects dari useForm
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 import { Head, Link, useForm } from '@inertiajs/react'; // Import useForm
 import ReactQuill from 'react-quill';
@@ -33,8 +33,8 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
 
     // Options (dummy, replace with props/data from backend)
     const brandOptions = brands.map(b => ({ value: b.id, label: b.name }));
-    const colorOptions = colors.map(c => ({ value: c.id, label: c.name }));
-    const sizeOptions = sizes.map(c => ({ value: c.id, label: c.name }));
+    // const colorOptions = colors.map(c => ({ value: c.id, label: c.name }));
+    // const sizeOptions = sizes.map(c => ({ value: c.id, label: c.name }));
     // const colorOptions = [
     //     { value: 'red', label: 'Red' }, { value: 'blue', label: 'Blue' }, { value: 'green', label: 'Green' }
     // ];
@@ -99,6 +99,36 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
             setData('fixPrice', calculatedFixPrice);
         }
     }, [data.price, data.discount]);
+
+
+    // State untuk input sementara
+    const [colorInput, setColorInput] = useState('');
+    const [sizeInput, setSizeInput] = useState('');
+
+    // Handler untuk input array (colors & sizes) via input biasa
+    const handleArrayInput = (name, value) => {
+        if (name === 'colors') setColorInput(value);
+        if (name === 'sizes') setSizeInput(value);
+        // Tidak perlu split koma, hanya update input sementara
+    };
+
+    // Handler saat tekan Enter di input
+    const handleArrayKeyDown = (e, name) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const value = name === 'colors' ? colorInput : sizeInput;
+            if (!value.trim()) return;
+            const arr = (data[name] || []);
+            // Tambahkan value baru ke array, pastikan unik
+            const merged = [...arr, value.trim()].filter((v, i, a) => a.indexOf(v) === i);
+            setData(name, merged);
+            if (name === 'colors') setColorInput('');
+            if (name === 'sizes') setSizeInput('');
+        }
+    };
+
+    // Untuk preview, gabungkan array jadi string
+    const getArrayString = (arr) => (arr && arr.length ? arr.join(', ') : '');
 
 
     // Render
@@ -277,28 +307,68 @@ export default function ProductAdd({ brands = [], categories = [], subcategories
                                     />
                                     {errors['brand.value'] && <div className="text-red-500 text-sm mt-1">{errors['brand.value']}</div>}
                                 </div>
+                                {/* Product Colors */}
                                 <div className="mb-4">
                                     <label className="block mb-1 font-medium">Product Colors</label>
-                                    <Select
-                                        options={colorOptions}
-                                        value={data.colors} // Gunakan data.colors
-                                        onChange={val => handleSelect('colors', val)}
-                                        isMulti
-                                        placeholder="Pilih Warna"
+                                    <input
+                                        type="text"
+                                        name="colors"
+                                        value={colorInput}
+                                        onChange={e => handleArrayInput('colors', e.target.value)}
+                                        onKeyDown={e => handleArrayKeyDown(e, 'colors')}
+                                        className="w-full border rounded px-3 py-2 border-gray-300"
+                                        placeholder="Tekan Enter untuk tambah warna"
                                     />
                                     {errors['colors'] && <div className="text-red-500 text-sm mt-1">{errors['colors']}</div>}
+                                    {/* Preview */}
+                                    {data.colors && data.colors.length > 0 && (
+                                        <div className="mt-1 text-xs text-gray-500">
+                                            <span>Preview: </span>
+                                            {data.colors.map((color, idx) => (
+                                                <span
+                                                    key={idx}
+                                                    className="inline-block bg-gray-100 px-2 py-1 rounded mr-1 cursor-pointer"
+                                                    title="Double klik untuk hapus"
+                                                    onDoubleClick={() => setData('colors', data.colors.filter((_, i) => i !== idx))}
+                                                >
+                                                    {color}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
+
+                                {/* Product Size */}
                                 <div className="mb-4">
                                     <label className="block mb-1 font-medium">Product Size</label>
-                                    <Select
-                                        options={sizeOptions}
-                                        value={data.sizes} // Gunakan data.sizes
-                                        onChange={val => handleSelect('sizes', val)}
-                                        isMulti
-                                        placeholder="Pilih Ukuran"
+                                    <input
+                                        type="text"
+                                        name="sizes"
+                                        value={sizeInput}
+                                        onChange={e => handleArrayInput('sizes', e.target.value)}
+                                        onKeyDown={e => handleArrayKeyDown(e, 'sizes')}
+                                        className="w-full border rounded px-3 py-2 border-gray-300"
+                                        placeholder="Tekan Enter untuk tambah size"
                                     />
                                     {errors['sizes'] && <div className="text-red-500 text-sm mt-1">{errors['sizes']}</div>}
+                                    {/* Preview */}
+                                    {data.sizes && data.sizes.length > 0 && (
+                                        <div className="mt-1 text-xs text-gray-500">
+                                            <span>Preview: </span>
+                                            {data.sizes.map((size, idx) => (
+                                                <span
+                                                    key={idx}
+                                                    className="inline-block bg-gray-100 px-2 py-1 rounded mr-1 cursor-pointer"
+                                                    title="Double klik untuk hapus"
+                                                    onDoubleClick={() => setData('sizes', data.sizes.filter((_, i) => i !== idx))}
+                                                >
+                                                    {size}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
+
                                 <div>
                                     <label htmlFor="weight" className="block mb-1 font-medium ">
                                         Berat Produk (gram)<span className="text-red-400">*</span>

@@ -147,15 +147,13 @@ class ProductController extends Controller
             'subcategory_id' => $subcategoryId,
             'status' => $status,
             'user_id' => auth()->id(), // Asumsikan ada user yang sedang login
+            'colors' => $request->input('colors'), // array, otomatis diubah ke json oleh mutator
+            'sizes' => $request->input('sizes'),
         ]);
 
-        // Simpan relasi warna
-        $colorIds = collect($request->input('colors'))->pluck('value')->toArray();
-        $product->colors()->sync($colorIds);
-
-        // Simpan relasi ukuran
-        $sizeIds = collect($request->input('sizes'))->pluck('value')->toArray();
-        $product->sizes()->sync($sizeIds);
+        // Hapus relasi pivot jika tidak dipakai lagi:
+        // $product->colors()->sync([]);
+        // $product->sizes()->sync([]);
 
         // Simpan dan convert setiap gambar ke .webp
         $isFirstImage = true;
@@ -226,7 +224,7 @@ class ProductController extends Controller
             'colors' => Color::query()->get(),
             'sizes' => Size::query()->get(),
             // 'dataExists' => Product::with('category')->with('subcategory')->with('brand')->findOrFail($id)
-            'dataExists' => Product::with(['category','subcategory','brand','colors','sizes','images'])->findOrFail($id)
+            'dataExists' => Product::with(['category','subcategory','brand','images'])->findOrFail($id)
         ]);
     }
 
@@ -238,6 +236,7 @@ class ProductController extends Controller
         $product = Product::where('id', $id)->firstOrFail();
         // dd($request->input('colors.*.value'));
         // dd($request->type);
+        // dd($request->input('colors'));
 
         // Validasi semua field (required)
         $validated = $request->validate([
@@ -254,10 +253,10 @@ class ProductController extends Controller
             'brand.value' => 'required',
             'category.value' => 'required',
             'subcategory.value' => 'required',
-            'colors' => 'required|array|min:1',
-            'colors.*.value' => 'required',
-            'sizes' => 'required|array|min:1',
-            'sizes.*.value' => 'required',
+            // 'colors' => 'required|array|min:1',
+            // 'colors.*.value' => 'required',
+            // 'sizes' => 'required|array|min:1',
+            // 'sizes.*.value' => 'required',
             // 'images' => 'required|array|min:1',
             // 'images.*' => 'nullable|image|max:2048',
         ]);
@@ -291,15 +290,21 @@ class ProductController extends Controller
             'subcategory_id' => $subcategoryId,
             'status' => $status, // Set status ke draft atau publish
             'user_id' => auth()->id(),
+            'colors' => $request->input('colors'),
+            'sizes' => $request->input('sizes'),
         ]);
 
+        // Hapus relasi pivot jika tidak dipakai lagi:
+        // $product->colors()->sync([]);
+        // $product->sizes()->sync([]);
+
         // Simpan relasi warna
-        $colorIds = collect($request->input('colors'))->pluck('value')->toArray();
-        $product->colors()->sync($colorIds);
+        // $colorIds = collect($request->input('colors'))->pluck('value')->toArray();
+        // $product->colors()->sync($colorIds);
 
         // Simpan relasi ukuran
-        $sizeIds = collect($request->input('sizes'))->pluck('value')->toArray();
-        $product->sizes()->sync($sizeIds);
+        // $sizeIds = collect($request->input('sizes'))->pluck('value')->toArray();
+        // $product->sizes()->sync($sizeIds);
 
         // Hapus gambar lama jika ada gambar baru diupload
         if ($request->hasFile('images')) {
@@ -397,6 +402,6 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         Product::where('id', $id)->update(['status' => 99]);
-        return redirect()->route('product.index')->with('success', 'Product berhasil dihapus!');
+        return redirect()->back()->with('success', 'Product berhasil dihapus!');
     }
 }

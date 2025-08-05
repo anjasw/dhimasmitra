@@ -27,8 +27,8 @@ class FrontController extends Controller
         $laravelVersion = Application::VERSION;
         $phpVersion = PHP_VERSION;
 
-        $brands = Brand::query('status', 1)->limit(18)->get();
-
+        $brands = Brand::where('status', 1)->limit(18)->get();
+        // dd($brands);
         $sliders = Slider::where('is_active', 1)->orderBy('order')->get();
         
         $products = \App\Models\Product::where('status', 1)
@@ -488,8 +488,11 @@ class FrontController extends Controller
                 'slug' => $product->slug,
                 'price' => $product->fix_price,
                 'stock' => $product->stock,
+                'minimum_order' => $product->minimum_order,
                 'image_url' => $mainImage,
                 'description' => $product->description,
+                'colors' => $product->colors,
+                'sizes' => $product->sizes,
                 'gallery' => $gallery,
             ],
         ]);

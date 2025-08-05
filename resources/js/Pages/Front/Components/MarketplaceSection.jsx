@@ -1,14 +1,18 @@
 // resources/js/Components/MarketplaceSection.jsx
+import { usePage } from "@inertiajs/react";
 import React from "react";
 
-const marketplaces = [
-    { name: "Tokopedia", logo: "/icons/tokopedia.png" },
-    { name: "TikTok", logo: "/icons/tiktokshop.png" },
-    { name: "Shopee", logo: "/icons/shopee.png" },
-    { name: "Lazada", logo: "/icons/lazada.png" },
-];
 
 export default function MarketplaceSection() {
+    const contactSocialLink = usePage().props.contactSocialLink || {};
+    const marketplaces = [
+        { name: "Tokopedia", logo: "/icons/tokopedia.png", href: contactSocialLink.tokopedia_url || "#" },
+        { name: "TikTok", logo: "/icons/tiktokshop.png", href: contactSocialLink.tiktok_url || "#" },
+        { name: "Shopee", logo: "/icons/shopee.png", href: contactSocialLink.shopee_url || "#" },
+        { name: "Lazada", logo: "/icons/lazada.png", href: contactSocialLink.lazada_url || "#" },
+    ];
+    
+    console.log("Contact Social Linkssss:", contactSocialLink);
     return (
         <div className="bg-[#A55C37] mt-24 pb-12 px-4 relative">
             {/* Card Putih */}
@@ -23,12 +27,14 @@ export default function MarketplaceSection() {
                         {/* Logo Marketplace */}
                         <div className="flex justify-center md:justify-end items-center gap-4 flex-wrap w-full md:w-auto">
                             {marketplaces.map((marketplace) => (
-                                <img
-                                    key={marketplace.name}
-                                    src={marketplace.logo}
-                                    alt={marketplace.name}
-                                    className="h-12 md:h-24"
-                                />
+                                <a href={marketplace.href} target="_blank" key={marketplace.name}>
+                                    <img
+                                        
+                                        src={marketplace.logo}
+                                        alt={marketplace.name}
+                                        className="h-12 md:h-24"
+                                    />
+                                </a>
                             ))}
                         </div>
                     </div>

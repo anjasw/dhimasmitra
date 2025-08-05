@@ -94,7 +94,7 @@ class CategoryController extends Controller
 
         Category::create($validated);
 
-        return redirect()->route('category.index')->with('success', 'Kategori berhasil ditambahkan.');
+        return redirect()->back()->with('success', 'Kategori berhasil ditambahkan.');
     }
 
     /**
@@ -172,7 +172,7 @@ class CategoryController extends Controller
 
         $category->update($validated);
 
-        return redirect()->route('category.index')->with('success', 'Kategori berhasil diupdate.');
+        return redirect()->back()->with('success', 'Kategori berhasil diupdate.');
     }
 
     /**
@@ -186,6 +186,6 @@ class CategoryController extends Controller
     {
         $category = Category::where('id', $id)->firstOrFail();
         $category->update(['status' => 2]);
-        return redirect()->route('category.index')->with('success', 'Kategori berhasil dihapus.');
+        return redirect()->back()->with('success', 'Kategori berhasil dihapus.');
     }
 }
